@@ -1,0 +1,112 @@
+/**
+ *	Default Typography
+ */
+body {
+	color: #DDDDDD;
+	background-color: #101010;
+	
+	font-size: 14px;
+}
+
+h1 {
+	font-size: 2em;
+}
+
+h1 small {
+	color: #BBBBBB;
+	font-size: 0.75em;
+}
+
+a {
+	color: #AAEEAA;
+	text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+/**
+ *	Block-Groups
+ */
+
+#row-top {
+	padding-left: 18.75%;
+	height: 64px;
+	
+	background: -webkit-linear-gradient(#444444, #101010); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#444444, #101010); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#444444, #101010); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#444444, #101010); /* Standard syntax */
+}
+
+#logo-container {
+	position: absolute;
+	left: 0px;
+	
+	width: 18.75%;
+	
+	text-align: center;
+}
+
+#logo {
+	height: 122px;
+}
+
+#main-nav {
+	float: left;
+}
+
+#charstats {
+	text-align: right;
+}
+
+
+#row-main {
+	display: flex;
+	
+	border-top: 2px groove #f4cb5f;
+	border-bottom: 2px groove #f4cb5f;
+	
+	background-color: #1f1a12;
+}
+
+#col-nav {
+	width: 18.75%;
+	border-right: 2px ridge gray;
+	padding-top: 64px;
+	
+	background-color: #002200;
+	color: #AAEEAA;
+}
+
+.nav-container {width: 100%;}
+.nav-container .nav-item {}
+
+.nav-container .nav-title {
+	text-align: center;
+	font-weight: bold;
+}
+
+.nav-container .nav-title span:before {content: "- ";}
+.nav-container .nav-title span:after  {content: " -";}
+
+.nav-container .nav-link {
+	border-top: 1px solid #002200;
+	border-bottom: 1px solid #002200;
+	padding: 0.1em 0.5em;
+}
+
+.nav-container .nav-link:hover {
+	border-top: 1px solid #008800;
+	border-bottom: 1px solid #004400;
+	
+	background-color: #006600;
+	text-decoration: underline;
+}
+
+#col-content {
+	padding: 1em 0.5em;
+}
+
+#row-bottom {
+	padding: 0.5em;
+}

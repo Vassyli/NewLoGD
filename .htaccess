@@ -1,0 +1,10 @@
+RewriteEngine on
+
+RewriteRule ^\.htaccess$ - [F]
+
+RewriteRule ^index\.php$ main [R=301,L]
+RewriteRule ^/$ main [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ main.php?qs=$1 [L]
