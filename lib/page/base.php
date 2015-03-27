@@ -2,6 +2,8 @@
 
 namespace page;
 
+use \Navigation;
+
 abstract class Base implements api, \Basicmodelitem {
 	const IS_EDITABLE  = 0b000000001;
 	const IS_DELETABLE = 0b000000010;
@@ -39,6 +41,8 @@ abstract class Base implements api, \Basicmodelitem {
 	public function get_subtitle() { return $this->subtitle; }
 	
 	public function get_navigation() {
-		return $this->model->get("Navigations")->getby_pageid($this->get_id());
+		$container = new Navigation\Container();
+		$container->add_bulk($this->model->get("Navigations")->getby_pageid($this->get_id()));
+		return $container;
 	}
 }

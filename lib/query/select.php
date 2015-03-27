@@ -33,13 +33,13 @@ class Select extends Base {
 		}
 	}
 	
-	public function orderby($field = NULL, $order = parent::ORDER_ASC) {
+	public function orderby($field = NULL, $order = parent::ORDER_ASC, $inversion = false) {
 		if($field === NULL) {
 			$this->fragments["ORDERBY"] = array();
 			return $this;
 		}
 		
-		array_push($this->fragments["ORDERBY"], array($field, $order));
+		array_push($this->fragments["ORDERBY"], array($field, $order, $inversion));
 		return $this;
 	}
 	
@@ -130,7 +130,15 @@ class Select extends Base {
 				if($i > 0) {
 					$query .= ", ";
 				}
-				$query .= sprintf("%s %s", $clause[0], $clause[1]);
+				if($clause[2] == true) {
+					// Inverted query: field gets to -field, ASC gets DESC and DESC gets ASC.
+					// Used to get NULL values at the end.
+					$orderclause = ($clause[1] == self::ORDER_ASC ? self::ORDER_DESC : self::ORDER_ASC);
+					$query .= sprintf("-%s.%s %s", $this->model->add_prefix($this->table), $clause[0], $orderclause);
+				}
+				else {
+					$query .= sprintf("%s.%s %s", $this->model->add_prefix($this->table), $clause[0], $clause[1]);
+				}
 				$i++;
 			}
 		}

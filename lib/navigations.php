@@ -17,7 +17,7 @@ class Navigations implements Submodel {
 			return array();
 		}
 		else {
-			$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid");
+			$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
 			$instances = array();
 		
 			while($row = $result->fetchObject("\Navigation\Item", array($this->model))) {

@@ -17,8 +17,8 @@ class Template {
 		$this->parts['PAGE'] = $page;
 	}
 	
-	public function set_content($content) {
-		$this->parts['content'] = $content;
+	public function set_navigation($navigation) {
+		$this->parts['navigation'] = $navigation;
 	}
 	
 	public function set_copyright($copyright) {
@@ -37,8 +37,8 @@ class Template {
 		return $this->parts['PAGE'];
 	}
 	
-	public function get_content() {
-		return $this->parts['content'];
+	public function get_navigation() {
+		return $this->parts['navigation'];
 	}
 	
 	public function get_copyright() {
@@ -63,6 +63,10 @@ class Template {
 	
 	public function get_template_uribasepath($file = "") {
 		return sprintf("%s%s/%s", LOGD_TEMPLATE_URI, $this->tpl_name, $file);
+	}
+	
+	public function get_gameuri($action) {
+		return sprintf("%s/%s", LOGD_URI_ABS, $action);
 	}
 	
 	public function output() {

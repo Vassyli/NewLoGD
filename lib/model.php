@@ -35,7 +35,7 @@ class Model {
 	}
 	
 	protected function connect($host, $name, $user, $pass) {
-		$dsn = sprintf("mysql:dbname=%s;host=%s", $name, $host);
+		$dsn = sprintf("mysql:dbname=%s;host=%s;charset=utf8", $name, $host);
 		$this->dbh = new PDO($dsn, $user, $pass);
 	}
 	
