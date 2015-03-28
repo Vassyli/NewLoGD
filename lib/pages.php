@@ -20,6 +20,8 @@ class Pages implements Submodel {
 			
 			if($row === false) {
 				// Page not found
+				$page = new \Page\Error404($this->model, $action);
+				$this->set_lazy($page);
 			}
 			else {
 				$classname = sprintf("\Page\%s", filter_var($row["type"], FILTER_CALLBACK, array("options" => "filter_nonalpha")));

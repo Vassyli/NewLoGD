@@ -1,6 +1,10 @@
 /**
  *	Default Typography
  */
+html {
+	overflow-y: scroll;
+}
+
 body {
 	color: #DDDDDD;
 	background-color: #101010;
@@ -24,13 +28,31 @@ a {
 
 a:hover { text-decoration: underline; }
 
+input:not([type="submit"]) {
+	border: 1px solid black;
+	padding: 0.2em 0.5em;
+	color: #101010;
+	background-color: #FFFFFF;
+}
+
+input[type="submit"], button {
+	border: 1px solid black;
+	padding: 0.2em 0.5em;
+	color: #101010;
+}
+
+.sr-only {
+	display: none;
+}
+
 /**
  *	Block-Groups
  */
 
 #row-top {
 	padding-left: 18.75%;
-	height: 64px;
+	max-height: 6em;
+	min-height: 6em;
 	
 	background: -webkit-linear-gradient(#444444, #101010); /* For Safari 5.1 to 6.0 */
 	background: -o-linear-gradient(#444444, #101010); /* For Opera 11.1 to 12.0 */
@@ -55,10 +77,26 @@ a:hover { text-decoration: underline; }
 	float: left;
 }
 
-#charstats {
+#charstats, #loginform {
+	font-size: 0.8em;
 	text-align: right;
 }
 
+#loginform label  {	display: block;}
+#loginform fieldset {border: none; }
+
+#loginform input, #loginform button {
+	border-radius: 0.75em;
+	padding: 0.1em 0.5em;
+}
+
+#loginform a {
+	display: block;
+	float: right;
+	
+	padding: 0em 1em;
+	color: #AAEEAA;
+}
 
 #row-main {
 	display: flex;
@@ -116,6 +154,7 @@ a:hover { text-decoration: underline; }
 	color: #101010;
 	background-color: #DDDDDD;
 	
+	font-size: 0.8em;
 	font-family: monospace;
 	white-space: pre;
 }

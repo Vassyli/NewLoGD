@@ -26,6 +26,10 @@ class View {
 		$buffer = $template->output();
 		
 		// Send a few headers
+		if($page instanceof errorapi) {
+			http_response_code($page->get_errorcode());
+		}
+		
 		header("Content-type: text/html; charset=utf-8");
 		
 		print $buffer;

@@ -8,9 +8,12 @@ class Template {
 	
 	protected $parts = array();
 	
+	protected $parser = NULL;
+	
 	public function __construct($templatename) {
 		$this->tpl_name = $templatename;
 		$this->tpl_dir = LOGD_TEMPLATE.$templatename."/";
+		$this->parser = new Parser();
 	}
 	
 	public function set_page(\Page\api $page) {
@@ -39,6 +42,20 @@ class Template {
 	
 	public function get_navigation() {
 		return $this->parts['navigation'];
+	}
+	
+	public function get_parsed_content() {
+		$content = $this->parts['PAGE']->get_content();
+		
+		if($this->parts['PAGE']->keep_html() === false) {
+			$content = HTMLSpecialchars($content, ENT_HTML5, LOGD_ENCODING);
+		}
+		
+		if($this->parts['PAGE']->use_parser() === true) {
+			$content = $this->parser->parse($content);
+		}
+		
+		return $content;
 	}
 	
 	public function get_copyright() {

@@ -17,7 +17,19 @@
 			<div id="row-top">
 				<div id="logo-container"><img id="logo" src="<?=$this->get_template_uribasepath("ressource/logindragon.png") ?>" /></div>
 				<nav id="main-nav"><div class="main-nav-item">{forum}</div></nav>
-				<div id="charstats">{LOGIN}</div>
+				<?php if(true): ?>
+				<div id="loginform"><form action="<?=$this->get_gameuri("login") ?>" method="post">
+					<fieldset>
+						<label><span class="sr-only">E-Mail</span><input placeholder="E-Mail" type="email" /></label>
+						<label><span class="sr-only">E-Mail</span><input placeholder="Passwort" type="password" /></label>
+						<label><button type="submit">Einloggen</button></label>
+					</fieldset>
+					<a href="<?=$this->get_gameuri("pw_forgotten") ?>">Passwort vergessen?</a>
+					<a href="<?=$this->get_gameuri("register") ?>">Registrieren</a>
+				</form></div>
+				<?php else: ?>
+				<div id="charstats">{CHARSTATS}</div>
+				<?php endif; ?>
 			</div>
 			
 			<div id="row-main">
@@ -52,7 +64,7 @@
 						?> <small><?=$this->get_page()->get_subtitle()?></small><?php 
 					endif; ?></h1>
 					
-					<?=$this->get_page()->get_content() ?> 
+					<?=$this->get_parsed_content() ?> 
 				</div>
 			</div>
 			
