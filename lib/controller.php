@@ -14,6 +14,7 @@ class Controller {
 	
 	public function execute() {
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
+		$page->initiate();
 		$page->set_arguments($this->model->get_res_arguments());
 		
 		$page->execute();

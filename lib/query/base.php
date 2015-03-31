@@ -10,6 +10,9 @@ class Base {
 	const OPERATOR_IS = "IS";
 	const OPERATOR_ISNOT = "IS NOT";
 	
+	const JOIN_INNER = "INNER";
+	const JOIN_OUTER = "OUTER";
+	
 	const ORDER_ASC = "ASC";
 	const ORDER_DESC = "DESC";
 }

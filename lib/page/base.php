@@ -35,13 +35,9 @@ abstract class Base implements api, \Basicmodelitem {
 			($this->use_parser()?" ":"X"),
 			($this->keep_html()?"X":" ")
 		);
-		
-		$this->load_localmodules();
 	}
 	
-	public function set_arguments($args) {
-		$this->arguments = $args;
-	}
+	public function set_arguments($args) {$this->arguments = $args;}
 	
 	public function get_id() { return $this->id; }
 	public function get_type() { return $this->type; }
@@ -55,16 +51,4 @@ abstract class Base implements api, \Basicmodelitem {
 	public function is_deletable() { return ($this->flags & self::FLAG_IS_DELETABLE ? true : false); }
 	public function use_parser() { return ($this->flags & self::FLAG_NO_PARSE ? false : true); }
 	public function keep_html() { return ($this->flags & self::FLAG_KEEP_HTML ? true : false); }
-	
-	public function execute() {
-		
-	}
-	
-	public function output() {
-		
-	}
-	
-	protected function load_localmodules() {
-		//$modules =
-	}
 }

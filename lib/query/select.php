@@ -6,7 +6,7 @@ class Select extends Base {
 	protected $model = NULL;
 	protected $table = "";
 	
-	protected $fragments = array("SELECT" => array(), "WHERE" => array(), "GROUPBY" => array(), "ORDERBY" => array(), "LIMIT" => array());
+	protected $fragments = array("SELECT" => array(), "JOIN" => array(), "WHERE" => array(), "GROUPBY" => array(), "ORDERBY" => array(), "LIMIT" => array());
 	
 	protected $is_executed = false;
 	protected $result = NULL;
@@ -14,22 +14,6 @@ class Select extends Base {
 	public function __construct(\Model $model, $table) {
 		$this->model = $model;
 		$this->table = $table;
-	}
-	
-	public function where($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
-		if($field === NULL) {
-			$this->fragments["WHERE"] = array();
-		}
-		else {
-			array_push($this->fragments["WHERE"], array(
-				"field" => (is_array($field) ? $field[1] : $field),
-				"table" => (is_array($field) ? $field[0] : $this->table),
-				"value" => $value, 
-				"operator" => $operator,
-			));
-		}
-		
-		return $this;
 	}
 	
 	public function select($field = NULL, $alias = NULL) {
@@ -46,6 +30,45 @@ class Select extends Base {
 		
 		return $this;
 	}
+	
+	public function join($field1 = NULL, $field2 = NULL) {
+		if($field1 === NULL) {
+			$this->fragments["JOIN"] = array();
+		}
+		else {
+		}
+		
+		return $this;
+	}
+	
+	public function innerjoin($left_field, array $right_field, $operator = self::OPERATOR_EQ) {
+		array_push($this->fragments["JOIN"], array(
+			"join-type" => self::JOIN_INNER,
+			"left-field" => (is_array($left_field) ? $left_field[1] : $left_field),
+			"left-table" => (is_array($left_field) ? $left_field[0] : $this->table),
+			"right-field" => $right_field[1],
+			"right-table" => $right_field[0],
+			"operator" => $operator,
+		));
+		
+		return $this;
+	}
+	
+	public function where($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
+		if($field === NULL) {
+			$this->fragments["WHERE"] = array();
+		}
+		else {
+			array_push($this->fragments["WHERE"], array(
+				"field" => (is_array($field) ? $field[1] : $field),
+				"table" => (is_array($field) ? $field[0] : $this->table),
+				"value" => $value, 
+				"operator" => $operator,
+			));
+		}
+		
+		return $this;
+	}	
 	
 	public function orderby($field = NULL, $order = parent::ORDER_ASC, $inversion = false) {
 		if($field === NULL) {
@@ -140,7 +163,12 @@ class Select extends Base {
 				}
 				
 				if(empty($fieldInfo["alias"])) {
-					$query .= sprintf("`%s`.`%s`", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"]);
+					if($fieldInfo["field"] == "*") {
+						$query .= sprintf("`%s`.*", $this->model->add_prefix($fieldInfo["table"]));
+					}
+					else {
+						$query .= sprintf("`%s`.`%s`", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"]);
+					}
 				}
 				else {
 					$query .= sprintf("`%s`.`%s` AS \"%s\"", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"], $fieldInfo["alias"]);
@@ -152,6 +180,20 @@ class Select extends Base {
 		
 		// FROM
 		$query .= sprintf("\nFROM `%s`", $table);
+		
+		// JOIN
+		if(!empty($this->fragments["JOIN"])) {
+			foreach($this->fragments["JOIN"] as $clause) {
+				$query .= sprintf("\n%s JOIN %s ON\n", $clause["join-type"], $clause["right-table"]);
+				// In principle, there could be more than one on-condition. I will support those if I need them. Later.
+				$query .= sprintf(
+					"\n\t`%s`.`%s` %s `%s`.`%s`",
+					$clause["left-table"], $clause["left-field"],
+					$clause["operator"],
+					$clause["right-table"], $clause["right-field"]
+				);
+			}
+		}
 		
 		// WHERE
 		if(!empty($this->fragments["WHERE"])) {

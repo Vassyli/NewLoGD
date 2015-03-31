@@ -11,14 +11,14 @@ class Navigations implements Submodel {
 		$this->set_lazyset_keys(array("page_id"));
 	}
 	
-	public function getby_pageid($pageid) {
+	public function getby_page_id($page_id) {
 		if($this->has_lazyset("page_id")) {
 			$navs = $this->get_lazyset("page_id");
 			return array();
 		}
 		else {
-			//$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
-			$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid")->orderby_condition("action", NULL, \Query\Select::OPERATOR_EQ, "action", "sort")->orderby("sort");
+			//$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
+			$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby_condition("action", NULL, \Query\Select::OPERATOR_EQ, "action", "sort")->orderby("sort");
 			$instances = array();
 		
 			while($row = $result->fetchObject("\Navigation\Item", array($this->model))) {

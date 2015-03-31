@@ -6,17 +6,34 @@ use \Navigation;
 
 class Node extends Base {
 	protected $parser = NULL;
+	protected $modules = array();
 	
 	public function __construct($model, $row) {
 		parent::__construct($model, $row);
-		
+	}
+	
+	public function initiate() {	
 		$this->parser = new \Parser();
+		$this->load_localmodules();
+	}
+	
+	public function execute() {
+		
+	}
+	
+	public function output() {
+		
 	}
 	
 	public function get_navigation() {
 		$container = new Navigation\Container();
-		$container->add_bulk($this->model->get("Navigations")->getby_pageid($this->get_id()));
+		$container->add_bulk($this->model->get("Navigations")->getby_page_id($this->get_id()));
+		
 		return $container;
+	}
+	
+	protected function load_localmodules() {
+		$modules = $this->model->get("Localmodules")->getby_page_id($this->get_id());
 	}
 	
 	public function get_parsed_content() {
