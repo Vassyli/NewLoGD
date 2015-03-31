@@ -5,8 +5,7 @@ namespace page;
 use \Navigation;
 
 abstract class Base implements api, \Basicmodelitem {
-	
-	private $model;
+	protected $model;
 	
 	protected $id = 0;
 	protected $type = "";
@@ -30,12 +29,14 @@ abstract class Base implements api, \Basicmodelitem {
 		$this->flags = (int)$row['flags'];
 		
 		printf(
-			"Page Flags:\n  [%s] Editable\n  [%s] Deletable\n  [%s] No parse\n  [%s] Keep HTML",
+			"Page Flags:\n  [%s] Editable\n  [%s] Deletable\n  [%s] No parse\n  [%s] Keep HTML\n\n",
 			($this->is_editable()?"X":" "),
 			($this->is_deletable()?"X":" "),
 			($this->use_parser()?" ":"X"),
 			($this->keep_html()?"X":" ")
 		);
+		
+		$this->load_localmodules();
 	}
 	
 	public function set_arguments($args) {
@@ -47,6 +48,7 @@ abstract class Base implements api, \Basicmodelitem {
 	public function get_action() { return $this->action; }
 	public function get_title() { return $this->title; }
 	public function get_subtitle() { return $this->subtitle; }
+	public function get_content() {return $this->content;}
 	public function get_flags() { return $this->flags; }
 	
 	public function is_editable() { return ($this->flags & self::FLAG_IS_EDITABLE ? true : false); }
@@ -54,9 +56,15 @@ abstract class Base implements api, \Basicmodelitem {
 	public function use_parser() { return ($this->flags & self::FLAG_NO_PARSE ? false : true); }
 	public function keep_html() { return ($this->flags & self::FLAG_KEEP_HTML ? true : false); }
 	
-	public function get_navigation() {
-		$container = new Navigation\Container();
-		$container->add_bulk($this->model->get("Navigations")->getby_pageid($this->get_id()));
-		return $container;
+	public function execute() {
+		
+	}
+	
+	public function output() {
+		
+	}
+	
+	protected function load_localmodules() {
+		//$modules =
 	}
 }

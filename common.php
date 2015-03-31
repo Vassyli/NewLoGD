@@ -25,9 +25,11 @@ define("LOGD_SESSIONNAME", "newlogd_".array_pop($a));
 // general path configuration
 define("LOGD_EXT", ".php");
 define("LOGD_LIB_DIRNAME", "lib");
+define("LOGD_LOCALMODULE_DIRNAME", "localmodule");
 define("LOGD_TEMPLATE_DIRNAME", "template");
 
 define("LOGD_LIB", LOGD_PATH_ABS."/".LOGD_LIB_DIRNAME."/");
+define("LOGD_LOCALMODULE", LOGD_PATH_ABS."/".LOGD_LOCALMODULE_DIRNAME."/");
 define("LOGD_TEMPLATE", LOGD_PATH_ABS."/".LOGD_TEMPLATE_DIRNAME."/");
 define("LOGD_TEMPLATE_URI", LOGD_URI_ABS."/".LOGD_TEMPLATE_DIRNAME."/");
 define("LOGD_DBCONFIG", LOGD_PATH_ABS . "/dbconfig.php");
@@ -46,6 +48,6 @@ function debug($string) {
 }
 
 // Autoload-Magic
-set_include_path(get_include_path() . PATH_SEPARATOR . LOGD_LIB);
+set_include_path(get_include_path() . PATH_SEPARATOR . LOGD_LIB . PATH_SEPARATOR);
 spl_autoload_extensions(LOGD_EXT);
 spl_autoload_register();

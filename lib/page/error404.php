@@ -4,9 +4,7 @@ namespace page;
 
 use \Navigation;
 
-class Error404 implements api, errorapi, \Modelitem {
-	protected $model;
-	
+class Error404 implements api, errorapi, \Modelitem {	
 	protected $action = "";
 	protected $args = array();
 	
@@ -34,11 +32,6 @@ class Error404 implements api, errorapi, \Modelitem {
 		);
 	}
 	
-	public function get_navigation() {
-		$container = new Navigation\Container();
-		return $container;
-	}
-	
 	public function get_flags() {return 0;}
 	public function is_editable() {return false;}
 	public function is_deletable(){return false;}
@@ -46,4 +39,13 @@ class Error404 implements api, errorapi, \Modelitem {
 	public function keep_html(){return true;}
 	
 	public function get_errorcode() { return self::ERROR_NOT_FOUND; }
+	
+	public function get_navigation() {
+		$container = new Navigation\Container();
+		return $container;
+	}
+	
+	public function get_parsed_content() {
+		return $this->get_content();
+	}
 }

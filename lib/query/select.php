@@ -19,27 +19,60 @@ class Select extends Base {
 	public function where($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
 		if($field === NULL) {
 			$this->fragments["WHERE"] = array();
-			return $this;
+		}
+		else {
+			array_push($this->fragments["WHERE"], array(
+				"field" => (is_array($field) ? $field[1] : $field),
+				"table" => (is_array($field) ? $field[0] : $this->table),
+				"value" => $value, 
+				"operator" => $operator,
+			));
 		}
 		
-		array_push($this->fragments["WHERE"], array($field, $value, $operator));
 		return $this;
 	}
 	
-	public function select($field = NULL) {
+	public function select($field = NULL, $alias = NULL) {
 		if($field === NULL) {
 			$this->fragments["SELECT"] = array();
-			return $this;
 		}
+		else {
+			array_push($this->fragments["SELECT"], array(
+				"field" => (is_array($field) ? $field[1] : $field),
+				"table" => (is_array($field) ? $field[0] : $this->table),
+				"alias" => $alias,
+			));
+		}
+		
+		return $this;
 	}
 	
 	public function orderby($field = NULL, $order = parent::ORDER_ASC, $inversion = false) {
 		if($field === NULL) {
 			$this->fragments["ORDERBY"] = array();
-			return $this;
 		}
+		else {
+			array_push($this->fragments["ORDERBY"], array(
+				"field" => (is_array($field) ? $field[1] : $field),
+				"table" => (is_array($field) ? $field[0] : $this->table),
+				"order" => $order, 
+				"inversion" => $inversion
+			));
+		}
+		return $this;
+	}
+	
+	public function orderby_condition($condition_field, $value, $operator, $true_field, $false_field) {	
+		array_push($this->fragments["ORDERBY"], array(
+			"conditional" => true, 
+			"condition-field" => (is_array($condition_field) ? $condition_field[1] : $condition_field),
+			"condition-table" => (is_array($condition_field) ? $condition_field[0] : $this->table),
+			"condition-value" => $value, 
+			"operator" => $operator, 
+			"true-field" => $true_field, 
+			"false-field" => $false_field
+		));
 		
-		array_push($this->fragments["ORDERBY"], array($field, $order, $inversion));
 		return $this;
 	}
 	
@@ -76,6 +109,7 @@ class Select extends Base {
 	
 	protected function execute() {
 		$ret = $this->build_query();
+		debug("<b>Query:</b>\n&lt;".$ret[0]."&gt;\n");
 		
 		$prepared = $this->model->get_dbh()->prepare($ret[0]);
 		$result = $prepared->execute($ret[1]);
@@ -89,55 +123,130 @@ class Select extends Base {
 		$table = $this->model->add_prefix($this->table);
 		
 		// SELECT 
-		$query .= "SELECT ";
+		$query .= "SELECT\n\t";
 		if(empty($this->fragments["SELECT"])) {
-			$query .= "* ";
+			if(empty($this->fragments["JOINS"])) {
+				$query .= "*";
+			}
+			else {
+				$query .= sprintf("`%s`.*", $table);
+			}
 		}
 		else {
 			$i = 0;
-			foreach($this->fragments["SELECT"] as $field) {
+			foreach($this->fragments["SELECT"] as $fieldInfo) {
 				if($i > 0) {
-					$query .= ", ";
+					$query .= ",\n\t";
 				}
-				$query .= sprintf("%s.%s", $table, $field);
+				
+				if(empty($fieldInfo["alias"])) {
+					$query .= sprintf("`%s`.`%s`", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"]);
+				}
+				else {
+					$query .= sprintf("`%s`.`%s` AS \"%s\"", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"], $fieldInfo["alias"]);
+				}
+				
 				$i++;
 			}
 		}
 		
 		// FROM
-		$query .= sprintf(" FROM %s", $table);
+		$query .= sprintf("\nFROM `%s`", $table);
 		
 		// WHERE
 		if(!empty($this->fragments["WHERE"])) {
-			$query .= " WHERE ";
+			$query .= "\nWHERE ";
 			
 			$i = 0;
 			foreach($this->fragments["WHERE"] as $clause) {
 				if($i > 0) {
 					$query .= " AND ";
 				}
-				$query .= sprintf("%s.%s %s %s", $this->model->add_prefix($this->table), $clause[0], $clause[2], ":".$clause[0]);
-				$args[":".$clause[0]] = $clause[1];
+				
+				if(is_null($clause["value"])) {
+					if($clause["operator"] == self::OPERATOR_EQ) {
+						$clause["operator"] = self::OPERATOR_IS;
+					}
+					elseif($clause["operator"] == self::OPERATOR_NEQ) {
+						$clause["operator"] = self::OPERATOR_ISNOT;
+					}
+					
+					$query .= sprintf("`%s`.`%s` %s NULL", $clause["table"], $clause["field"], $clause["operator"]);
+				}
+				else {
+					$fieldvar = ":".$clause["table"]."_field_".$clause["field"];
+					$query .= sprintf("`%s`.`%s` %s %s", $clause["table"], $clause["field"], $clause["operator"], $fieldvar);
+					$args[$fieldvar] = $clause["value"];
+				}
+				
 				$i++;
 			}
 		}
 		
 		// ORDER BY
 		if(!empty($this->fragments["ORDERBY"])) {
-			$query .= " ORDER BY ";
+			$query .= "\nORDER BY \n\t";
 			$i = 0;
 			foreach($this->fragments["ORDERBY"] as $clause) {
 				if($i > 0) {
-					$query .= ", ";
+					$query .= ",\n\t";
 				}
-				if($clause[2] == true) {
-					// Inverted query: field gets to -field, ASC gets DESC and DESC gets ASC.
-					// Used to get NULL values at the end.
-					$orderclause = ($clause[1] == self::ORDER_ASC ? self::ORDER_DESC : self::ORDER_ASC);
-					$query .= sprintf("-%s.%s %s", $this->model->add_prefix($this->table), $clause[0], $orderclause);
+				
+				if(empty($clause["conditional"])) {
+					// Standard order-by
+					if($clause["inversion"] == true) {
+						// Inverted query: field gets to -field, ASC gets DESC and DESC gets ASC.
+						// Used to get NULL values at the end.
+						$query .= sprintf(
+							"-`%s`.`%s` %s", 
+							$clause["table"], 
+							$clause["field"], 
+							($clause["order"] == self::ORDER_ASC ? self::ORDER_DESC : self::ORDER_ASC)
+						);
+					}
+					else {
+						$query .= sprintf(
+							"`%s`.`%s` %s", 
+							$clause["table"], 
+							$clause["field"],
+							($clause["order"] == self::ORDER_ASC ? self::ORDER_ASC : self::ORDER_DESC)
+						);
+					}
 				}
 				else {
-					$query .= sprintf("%s.%s %s", $this->model->add_prefix($this->table), $clause[0], $clause[1]);
+					// Conditional order-by
+					if(is_null($clause["condition-value"])) {
+						if($clause["operator"] == self::OPERATOR_EQ) {
+							$clause["operator"] = self::OPERATOR_IS;
+						}
+						elseif($clause["operator"] == self::OPERATOR_NEQ) {
+							$clause["operator"] = self::OPERATOR_ISNOT;
+						}
+						
+						$orderclause = "IF(`%s`.`%s` %s NULL, `%s`, `%s`)";
+						$query .= sprintf(
+							$orderclause, 
+							$clause["condition-table"],
+							$clause["condition-field"], 
+							$clause["operator"], 
+							$clause["true-field"], 
+							$clause["false-field"]
+						);
+					}
+					else {
+						$orderclause = "IF(`%s`.`%s` %s %s, `%s`, `%s`)";
+						$fieldvar = ":conditional_".$clause["condition-table"]."_field_".$clause["condition-field"];
+						$args[$fieldvar] = $clause["condition-value"];
+						$query .= sprintf(
+							$orderclause,
+							$clause["condition-table"],
+							$clause["condition-field"], 
+							$clause["operator"], 
+							$fieldvar,
+							$clause["true-field"], 
+							$clause["false-field"]
+						);
+					}
 				}
 				$i++;
 			}

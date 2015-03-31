@@ -64,7 +64,7 @@
 						?> <small><?=$this->get_page()->get_subtitle()?></small><?php 
 					endif; ?></h1>
 					
-					<?=$this->get_parsed_content() ?> 
+					<?=$this->get_page()->get_parsed_content() ?> 
 				</div>
 			</div>
 			

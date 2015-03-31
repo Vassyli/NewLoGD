@@ -1,6 +1,6 @@
 <?php
 
-class Navigations implements Submodel {
+class Localmodules implements Submodel {
 	use lazy;
 	
 	private $model;
@@ -17,16 +17,18 @@ class Navigations implements Submodel {
 			return array();
 		}
 		else {
+			$result = $this->model->from("localmodule")
+				->innerjoin("page_localmodule_xref");
 			//$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
-			$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid")->orderby_condition("action", NULL, \Query\Select::OPERATOR_EQ, "action", "sort")->orderby("sort");
-			$instances = array();
+			//$result = $this->model->from("navigation")->where("page_id", $pageid)->orderby("parentid")->orderby_condition("action", NULL, \Query\Select::OPERATOR_EQ, "action", "sort")->orderby("sort");
+			/*$instances = array();
 		
 			while($row = $result->fetchObject("\Navigation\Item", array($this->model))) {
 				$i = $this->set_lazyset("page_id", $row);
 				array_push($instances, $i);
 			}
 			
-			return $instances;
+			return $instances;*/
 		}
 	}
 }

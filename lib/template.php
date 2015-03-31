@@ -8,12 +8,9 @@ class Template {
 	
 	protected $parts = array();
 	
-	protected $parser = NULL;
-	
 	public function __construct($templatename) {
 		$this->tpl_name = $templatename;
 		$this->tpl_dir = LOGD_TEMPLATE.$templatename."/";
-		$this->parser = new Parser();
 	}
 	
 	public function set_page(\Page\api $page) {
@@ -44,7 +41,7 @@ class Template {
 		return $this->parts['navigation'];
 	}
 	
-	public function get_parsed_content() {
+	/*public function get_content() {
 		$content = $this->parts['PAGE']->get_content();
 		
 		if($this->parts['PAGE']->keep_html() === false) {
@@ -56,7 +53,7 @@ class Template {
 		}
 		
 		return $content;
-	}
+	}*/
 	
 	public function get_copyright() {
 		return $this->parts['copyright'];
