@@ -2,6 +2,18 @@
 
 namespace Localmodule;
 
-class Registration implements \LocalmoduleAPI {
-	public function hello_world() { print "Hello world"; }
+class Registration extends \LocalmoduleBasis {
+	protected $model;
+	
+	protected $id;
+	
+	public function __construct($model, $row) {
+		parent::__construct($model, $row);
+	}
+	
+	public function execute() {
+	}
+	
+	public function output() {
+	}
 }

@@ -8,6 +8,8 @@ class Node extends Base {
 	protected $parser = NULL;
 	protected $modules = array();
 	
+	protected $navigation = NULL;
+	
 	public function __construct($model, $row) {
 		parent::__construct($model, $row);
 	}
@@ -22,14 +24,20 @@ class Node extends Base {
 	}
 	
 	public function output() {
+		$maincontent = $this->get_parsed_content();
 		
+		return $maincontent;
+	}
+	
+	public function load_navigation() {
+		if($this->navigation === NULL) {
+			$this->navigation = new Navigation\Container();
+			$this->navigation->add_bulk($this->model->get("Navigations")->getby_page_id($this->get_id()));
+		}
 	}
 	
 	public function get_navigation() {
-		$container = new Navigation\Container();
-		$container->add_bulk($this->model->get("Navigations")->getby_page_id($this->get_id()));
-		
-		return $container;
+		return $this->navigation;
 	}
 	
 	protected function load_localmodules() {

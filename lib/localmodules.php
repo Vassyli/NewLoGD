@@ -20,10 +20,15 @@ class Localmodules implements Submodel {
 			$result = $this->model->from("localmodule")
 				->select("*")
 				->select(array("page_localmodule_xref", "config"), "pageconfig")
-				->innerjoin("id", array("page_localmodule_xref", "localmodule_id"));
+				->innerjoin("id", array("page_localmodule_xref", "localmodule_id"))
+				->where(array("page_localmodule_xref", "page_id"), $page_id)
+				->where("active", 1);
+				
+			$set = array();
 				
 			while($row = $result->fetch()) {
-				var_dump($row);
+				$classname = sprintf("\Localmodule\%s", filter_var($row["class"], FILTER_CALLBACK, array("options" => "filter_nonalpha")));
+				array_push($set, new $classname($this->model, $row, $this->model->get("Pages")->getby_id($page_id)));
 			}
 			//$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
 			//$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby_condition("action", NULL, \Query\Select::OPERATOR_EQ, "action", "sort")->orderby("sort");

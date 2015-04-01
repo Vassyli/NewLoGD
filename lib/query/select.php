@@ -184,10 +184,10 @@ class Select extends Base {
 		// JOIN
 		if(!empty($this->fragments["JOIN"])) {
 			foreach($this->fragments["JOIN"] as $clause) {
-				$query .= sprintf("\n%s JOIN %s ON\n", $clause["join-type"], $clause["right-table"]);
+				$query .= sprintf("\n%s JOIN %s ON\n\t", $clause["join-type"], $clause["right-table"]);
 				// In principle, there could be more than one on-condition. I will support those if I need them. Later.
 				$query .= sprintf(
-					"\n\t`%s`.`%s` %s `%s`.`%s`",
+					"`%s`.`%s` %s `%s`.`%s`",
 					$clause["left-table"], $clause["left-field"],
 					$clause["operator"],
 					$clause["right-table"], $clause["right-field"]
@@ -197,12 +197,12 @@ class Select extends Base {
 		
 		// WHERE
 		if(!empty($this->fragments["WHERE"])) {
-			$query .= "\nWHERE ";
+			$query .= "\nWHERE\n\t";
 			
 			$i = 0;
 			foreach($this->fragments["WHERE"] as $clause) {
 				if($i > 0) {
-					$query .= " AND ";
+					$query .= " AND\n\t";
 				}
 				
 				if(is_null($clause["value"])) {

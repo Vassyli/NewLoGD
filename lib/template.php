@@ -17,10 +17,6 @@ class Template {
 		$this->parts['PAGE'] = $page;
 	}
 	
-	public function set_navigation($navigation) {
-		$this->parts['navigation'] = $navigation;
-	}
-	
 	public function set_copyright($copyright) {
 		$this->parts['copyright'] = $copyright;
 	}
@@ -35,10 +31,6 @@ class Template {
 	
 	public function get_page() {
 		return $this->parts['PAGE'];
-	}
-	
-	public function get_navigation() {
-		return $this->parts['navigation'];
 	}
 	
 	/*public function get_content() {

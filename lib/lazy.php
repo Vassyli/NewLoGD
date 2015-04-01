@@ -9,8 +9,8 @@ trait lazy {
 	private $lazy = array();
 	private $lazyset = array();
 	
-	private function set_lazy_keys(array $keys = array()) {
-		if(!in_array("id", $keys)) {
+	private function set_lazy_keys(array $keys = array(), $noid = false) {
+		if(!in_array("id", $keys) and $noid === false) {
 			array_push($keys, "id");
 		}
 		

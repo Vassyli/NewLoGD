@@ -36,7 +36,7 @@
 				<div id="col-nav">
 					<nav class="nav-container">
 						<?php 
-						foreach($this->get_navigation() as $k=>$v): 
+						foreach($this->get_page()->get_navigation() as $k=>$v): 
 							// Nav-Points with an $k = 0 have no parent, they do not need a header.
 							if($k !== 0):
 						?>
@@ -64,7 +64,7 @@
 						?> <small><?=$this->get_page()->get_subtitle()?></small><?php 
 					endif; ?></h1>
 					
-					<?=$this->get_page()->get_parsed_content() ?> 
+					<?=$this->get_page()->output() ?> 
 				</div>
 			</div>
 			

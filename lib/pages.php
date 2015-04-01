@@ -7,13 +7,40 @@ class Pages implements Submodel {
 	
 	public function __construct($model) {
 		$this->model = $model;
-		$this->set_lazy_keys(array("action"));
+		$this->set_lazy_keys(array("id", "action"));
+	}
+	
+	public function getby_id($id) {
+		if($this->has_lazy("id", $id) === false) {
+			$query = $this->model->from("page")
+				->where("id", $id);
+			$row = $query->fetch();
+			
+			$page = NULL;
+			
+			if($row === false) {
+				throw new Exception(sprintf("Page(id=%i) was not found in database.", $id));
+			}
+			else {
+				$classname = $this->get_classname($row["type"]);
+				
+				if(class_exists($classname)) {
+					$page = new $classname($this->model, $row);
+					$this->set_lazy($page);
+				}
+			}
+		}
+		else {
+			return $this->get_lazy("id", $id);
+		}
 	}
 	
 	public function getby_action($action) {
 		//if(!isset($this->lazy["action"][$action])) {
 		if($this->has_lazy("action", $action) === false) {
-			$query = $this->model->from("page")->where("action", $action);
+			$query = $this->model->from("page")
+				->where("action", $action);
+				
 			$row = $query->fetch();
 			
 			$page = NULL;
@@ -24,7 +51,7 @@ class Pages implements Submodel {
 				$this->set_lazy($page);
 			}
 			else {
-				$classname = sprintf("\Page\%s", filter_var($row["type"], FILTER_CALLBACK, array("options" => "filter_nonalpha")));
+				$classname = $this->get_classname($row["type"]);
 				
 				try {
 					if(class_exists($classname)) {
@@ -42,5 +69,9 @@ class Pages implements Submodel {
 		else {
 			return $this->get_lazy("action", $action);
 		}
+	}
+	
+	protected function get_classname($type) {
+		return sprintf("\Page\%s", filter_var($type, FILTER_CALLBACK, array("options" => "filter_nonalpha")));
 	}
 }
