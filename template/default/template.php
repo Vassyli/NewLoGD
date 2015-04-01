@@ -18,14 +18,14 @@
 				<div id="logo-container"><img id="logo" src="<?=$this->get_template_uribasepath("ressource/logindragon.png") ?>" /></div>
 				<nav id="main-nav"><div class="main-nav-item">{forum}</div></nav>
 				<?php if(true): ?>
-				<div id="loginform"><form action="<?=$this->get_gameuri("login") ?>" method="post">
+				<div id="loginform"><form action="<?=get_gameuri("login") ?>" method="post">
 					<fieldset>
 						<label><span class="sr-only">E-Mail</span><input placeholder="E-Mail" type="email" /></label>
 						<label><span class="sr-only">E-Mail</span><input placeholder="Passwort" type="password" /></label>
 						<label><button type="submit">Einloggen</button></label>
 					</fieldset>
-					<a href="<?=$this->get_gameuri("pw_forgotten") ?>">Passwort vergessen?</a>
-					<a href="<?=$this->get_gameuri("register") ?>">Registrieren</a>
+					<a href="<?=get_gameuri("pw_forgotten") ?>">Passwort vergessen?</a>
+					<a href="<?=get_gameuri("register") ?>">Registrieren</a>
 				</form></div>
 				<?php else: ?>
 				<div id="charstats">{CHARSTATS}</div>
@@ -46,7 +46,7 @@
 							foreach($v["childs"] as $l=>$w):
 								// Actual Nav-Points
 						?>
-							<div class="nav-item nav-link"><a href="<?=$this->get_gameuri($w["item"]->get_action()) ?>"><?=$w["item"]->get_title()?></a></div>
+							<div class="nav-item nav-link"><a href="<?=get_gameuri($w["item"]->get_action()) ?>"><?=$w["item"]->get_title()?></a></div>
 						<?php
 							endforeach;
 						endforeach;

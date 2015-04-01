@@ -7,7 +7,7 @@ class Localmodules implements Submodel {
 	
 	public function __construct($model) {
 		$this->model = $model;
-		$this->set_lazy_keys();
+		$this->set_lazy_keys(array("id", "classname"));
 		$this->set_lazyset_keys(array("page_id"));
 	}
 	
@@ -28,18 +28,12 @@ class Localmodules implements Submodel {
 				
 			while($row = $result->fetch()) {
 				$classname = sprintf("\Localmodule\%s", filter_var($row["class"], FILTER_CALLBACK, array("options" => "filter_nonalpha")));
-				array_push($set, new $classname($this->model, $row, $this->model->get("Pages")->getby_id($page_id)));
-			}
-			//$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
-			//$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby_condition("action", NULL, \Query\Select::OPERATOR_EQ, "action", "sort")->orderby("sort");
-			/*$instances = array();
-		
-			while($row = $result->fetchObject("\Navigation\Item", array($this->model))) {
-				$i = $this->set_lazyset("page_id", $row);
-				array_push($instances, $i);
+				$instance = new $classname($this->model, $row, $this->model->get("Pages")->getby_id($page_id));
+				$this->set_lazyset("page_id", $instance);
+				array_push($set, $instance);
 			}
 			
-			return $instances;*/
+			return $set;
 		}
 	}
 }

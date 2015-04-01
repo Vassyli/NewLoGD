@@ -17,7 +17,7 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
 		$this->description = $row['description'];
 		$this->active = (bool)$row['active'];
 		
-		$this->set_config($row['pageconfig']);
+		$this->set_pageconfig($row['pageconfig']);
 	}
 	
 	public function get_id() {return $this->id;}
@@ -25,7 +25,13 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
 	public function get_name() {return $this->name;}
 	public function get_description() {return $this->description;}
 	
-	protected function set_config($pageconfig) {
+	protected function set_pageconfig($pageconfig) {
 		$this->pageconfig = json_decode($pageconfig, true);
+	}
+	
+	public function get_pageconfig_field($key) {
+		if(isset($this->pageconfig[$key])) {
+			return $this->pageconfig[$key];
+		}
 	}
 }

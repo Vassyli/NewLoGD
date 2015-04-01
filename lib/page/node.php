@@ -20,13 +20,22 @@ class Node extends Base {
 	}
 	
 	public function execute() {
-		
+		// Execute Modules
+		foreach($this->modules as $module) {
+			$module->execute();
+		}
 	}
 	
 	public function output() {
 		$maincontent = $this->get_parsed_content();
 		
-		return $maincontent;
+		$modulecontent = "";
+		
+		foreach($this->modules as $module) {
+			$modulecontent .= sprintf("\n\n<!-- Content by %s-->\n%s", $module->get_name(), $this->parser->parse($module->output()));
+		}
+		
+		return $maincontent.$modulecontent;;
 	}
 	
 	public function load_navigation() {
@@ -41,7 +50,7 @@ class Node extends Base {
 	}
 	
 	protected function load_localmodules() {
-		$modules = $this->model->get("Localmodules")->getby_page_id($this->get_id());
+		$this->modules = $this->model->get("Localmodules")->getby_page_id($this->get_id());
 	}
 	
 	public function get_parsed_content() {

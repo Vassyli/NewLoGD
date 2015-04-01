@@ -71,10 +71,6 @@ class Template {
 		return sprintf("%s%s/%s", LOGD_TEMPLATE_URI, $this->tpl_name, $file);
 	}
 	
-	public function get_gameuri($action) {
-		return sprintf("%s/%s", LOGD_URI_ABS, $action);
-	}
-	
 	public function output() {
 		// Get output buffer content
 		$this->set_debug(ob_get_contents());

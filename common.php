@@ -50,8 +50,12 @@ function filter_nonalpha($string) {
 
 function debug($string) {
 	if(LOGD_SHOW_DEBUG === true) {
-		print $string."<br />";
+		print "<b style=\"color: red;\">Debug</b>\n$string\n";
 	}
+}
+
+function get_gameuri($action) {
+	return sprintf("%s/%s", LOGD_URI_ABS, $action);
 }
 
 // Autoload-Magic

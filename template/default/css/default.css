@@ -10,6 +10,7 @@ body {
 	background-color: #101010;
 	
 	font-size: 14px;
+	line-height: 1.42em;
 }
 
 h1 {
@@ -82,7 +83,7 @@ input[type="submit"], button {
 	text-align: right;
 }
 
-#loginform label  {	display: block;}
+#loginform label  {	display: block; line-height: 0.9em;}
 #loginform fieldset {border: none; }
 
 #loginform input, #loginform button {
@@ -162,3 +163,44 @@ input[type="submit"], button {
 #row-bottom {
 	padding: 0.5em;
 }
+
+fieldset {
+	width: 100%;
+	margin: 0;
+	border: 0;
+	padding: 0;
+}
+
+fieldset legend {	
+	font-weight: bold;
+	font-size: 1.4em;
+}
+
+.form-group {
+}
+
+.form-group label {
+	width: 33%;
+	padding-right: 2em;
+	box-sizing: border-box;
+	
+	display: inline-block;
+	
+	text-align: right;
+	font-weight: bold;
+}
+
+.form-group .form-input {
+	width: 66%;
+	padding-right: 2em;
+	box-sizing: border-box;
+	
+	display: inline-block;
+}
+
+.form-group .form-input * {
+	width: 100%;
+}
+
+.form-group label:after{content: ":";}
+
