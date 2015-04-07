@@ -10,6 +10,8 @@ class Node extends Base {
 	
 	protected $navigation = NULL;
 	
+	protected $block_output = false;
+	
 	public function __construct($model, $row) {
 		parent::__construct($model, $row);
 	}
@@ -32,7 +34,7 @@ class Node extends Base {
 		$modulecontent = "";
 		
 		foreach($this->modules as $module) {
-			$modulecontent .= sprintf("\n\n<!-- Content by %s-->\n%s", $module->get_name(), $this->parser->parse($module->output()));
+			$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->get_name(), $this->parser->parse($module->output()));
 		}
 		
 		return $maincontent.$modulecontent;;
@@ -54,16 +56,29 @@ class Node extends Base {
 	}
 	
 	public function get_parsed_content() {
-		$content = $this->get_content();
-		
-		if($this->keep_html() === false) {
-			$content = HTMLSpecialchars($content, ENT_HTML5, LOGD_ENCODING);
+		if($this->block_output === false) {
+			$content = $this->get_content();
+			
+			if($this->keep_html() === false) {
+				$content = HTMLSpecialchars($content, ENT_HTML5, LOGD_ENCODING);
+			}
+			
+			if($this->use_parser() === true) {
+				$content = $this->parser->parse($content);
+			}
+			
+			return $content;
 		}
-		
-		if($this->use_parser() === true) {
-			$content = $this->parser->parse($content);
+		else {
+			return "<!--Default page output is blocked.-->";
 		}
-		
-		return $content;
+	}
+	
+	public function block_output() {
+		$this->block_output = true;
+	}
+	
+	public function unblock_output() {
+		$this->block_output = false;
 	}
 }

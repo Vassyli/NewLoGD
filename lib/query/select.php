@@ -132,7 +132,7 @@ class Select extends Base {
 	
 	protected function execute() {
 		$ret = $this->build_query();
-		debug("<b>Query:</b>\n&lt;".$ret[0]."&gt;\n");
+		if(LOGD_SHOW_DEBUG_SQL) { debug("<b>Query:</b>\n&lt;".$ret[0]."&gt;\n"); }
 		
 		$prepared = $this->model->get_dbh()->prepare($ret[0]);
 		$result = $prepared->execute($ret[1]);

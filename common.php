@@ -12,6 +12,7 @@ define("LOGD_SCRIPT_START", microtime(true));
 
 // development config
 define("LOGD_SHOW_DEBUG", true);
+define("LOGD_SHOW_DEBUG_SQL", false);
 
 if(LOGD_SHOW_DEBUG) {
 	error_reporting(E_ALL);
@@ -50,7 +51,7 @@ function filter_nonalpha($string) {
 
 function debug($string) {
 	if(LOGD_SHOW_DEBUG === true) {
-		print "<b style=\"color: red;\">Debug</b>\n$string\n";
+		print "$string\n";
 	}
 }
 

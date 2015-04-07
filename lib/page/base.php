@@ -28,13 +28,13 @@ abstract class Base implements api, \Basicmodelitem {
 		$this->content = $row['content'];
 		$this->flags = (int)$row['flags'];
 		
-		printf(
-			"Page Flags:\n  [%s] Editable\n  [%s] Deletable\n  [%s] No parse\n  [%s] Keep HTML\n\n",
+		debug(sprintf(
+			"<b>Page Flags:</b>\n  [%s] Editable\n  [%s] Deletable\n  [%s] No parse\n  [%s] Keep HTML",
 			($this->is_editable()?"X":" "),
 			($this->is_deletable()?"X":" "),
 			($this->use_parser()?" ":"X"),
 			($this->keep_html()?"X":" ")
-		);
+		));
 	}
 	
 	public function set_arguments($args) {$this->arguments = $args;}

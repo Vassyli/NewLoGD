@@ -84,4 +84,17 @@ class Model {
 	public function get_res_arguments() {
 		return $this->res_arguments;
 	}
+	
+	public function get_postvalue($key) {
+		if(!empty($this->post[$key])) {
+			return $this->post[$key];
+		}
+		else {
+			return "";
+		}
+	}
+	
+	public function get_postarray() {
+		return $this->post;
+	}
 }

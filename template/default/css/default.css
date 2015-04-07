@@ -177,11 +177,12 @@ fieldset legend {
 }
 
 .form-group {
+	height: 25px;
 }
 
 .form-group label {
 	width: 33%;
-	padding-right: 2em;
+	padding-right: 1em;
 	box-sizing: border-box;
 	
 	display: inline-block;
@@ -193,14 +194,21 @@ fieldset legend {
 .form-group .form-input {
 	width: 66%;
 	padding-right: 2em;
+	padding-left: 1em;
 	box-sizing: border-box;
 	
 	display: inline-block;
 }
 
-.form-group .form-input * {
-	width: 100%;
+.form-group .skip-desc {
+	margin-left: 33.33%;
+	padding-left: 1em;
 }
+
+.form-group .form-input * {border-radius: 0.25em; }
+.form-group .form-input input {width: 100%;}
+.form-errors label {color: #DD0000; }
+.form-errors input {background-color: #FFFF99;}
 
 .form-group label:after{content: ":";}
 
