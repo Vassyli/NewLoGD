@@ -30,6 +30,12 @@ define("LOGD_COPYRIGHT", "Copyright 2002-2003, Game: Eric Stevens; Copyright 201
 $a = explode("/", LOGD_URI_ABS);
 define("LOGD_SESSIONNAME", "newlogd_".array_pop($a));
 
+switch(PASSWORD_DEFAULT) {
+	case PASSWORD_BCRYPT:
+		define("LOGD_PASSWORD_MAXLENGTH", "72"); // In Bytes, not characters!
+		break;
+}
+
 // general path configuration
 define("LOGD_EXT", ".php");
 define("LOGD_LIB_DIRNAME", "lib");
@@ -44,6 +50,7 @@ define("LOGD_DBCONFIG", LOGD_PATH_ABS . "/dbconfig.php");
 
 // Start output buffering
 ob_start();
+mb_internal_encoding(LOGD_ENCODING);
 
 function filter_nonalpha($string) {
 	return preg_replace("/[^[:alpha:]]/ui", '', $string);

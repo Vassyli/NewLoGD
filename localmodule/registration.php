@@ -59,13 +59,21 @@ class Registration extends \LocalmoduleBasis {
 					"password1",
 					array(
 						"min-length" => 8,
+						"max-length" => LOGD_PASSWORD_MAXLENGTH,
+						"max-bytelength" => LOGD_PASSWORD_MAXLENGTH,
 						"required" => true,
 						"crosscheck" => "password2",
 					)
 				)
 				->add_password(
 					$this->get_pageconfig_field("password2_fieldname"), 
-					"password2"
+					"password2",
+					array(
+						"min-length" => 8,
+						"max-length" => LOGD_PASSWORD_MAXLENGTH,
+						"max-bytelength" => LOGD_PASSWORD_MAXLENGTH,
+						"required" => true,
+					)
 				)
 				->add_email(
 					$this->get_pageconfig_field("email1_fieldname"),
@@ -80,7 +88,11 @@ class Registration extends \LocalmoduleBasis {
 				->add_email(
 					$this->get_pageconfig_field("email2_fieldname"),
 					"email2",
-					""
+					"",
+					array(
+						"max-length" => 100,
+						"required" => true,
+					)
 				)
 				->add_submitbutton(
 					$this->get_pageconfig_field("submitbutton_name"),

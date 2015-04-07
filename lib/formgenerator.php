@@ -41,13 +41,13 @@ class FormGenerator {
 				elseif($inp["type"] & self::TYPE_PASSWORD) { $type = "password"; }
 				else { $type = "text"; }
 				
-				$fields.= sprintf("\t\t<label for=\"%s\">%s</label>\n", $inp["id"], $inp["description"]);
+				$fields.= sprintf("\t\t<label for=\"%s\">%s</label>\n", $inp["id"], HTMLSpecialchars($inp["description"]));
 				$fields.= "\t\t<div class=\"form-input\">\n";
 				$fields.= sprintf("\t\t\t<input type=\"%s\" id=\"%s\" name=\"%s\"%s%s%s>\n", 
 					$type, 
 					$inp["id"], 
-					$name, 
-					$inp["value"]===NULL?"":" value=\"".$inp["value"]."\"",
+					HTMLSpecialchars($name), 
+					$inp["value"]===NULL?"":" value=\"".HTMLSpecialchars($inp["value"])."\"",
 					empty($inp["validator"]["required"])?"":" required",
 					empty($inp["validator"]["max-length"])?"":" maxlength=\"".$inp["validator"]["max-length"]."\""
 				);
@@ -57,13 +57,14 @@ class FormGenerator {
 			$fields.= "\t</div>\n";
 		}
 		
-		return sprintf("<form action=\"%s\" method=\"post\">\n<fieldset>\n\t<legend>%s</legend>%s</fieldset></form>", $this->action, $this->formtitle, $fields);
+		return sprintf("<form action=\"%s\" method=\"post\">\n<fieldset>\n\t<legend>%s</legend>%s</fieldset></form>", $this->action, HTMLSpecialchars($this->formtitle), $fields);
 	}
 	
 	public function sanitize($values, $set_as_value = false) {
 		$errors = 0;
 		
 		$debug = ("<b>Form-Validation</b>\n");
+		var_dump($values);
 		
 		foreach($this->form_elements as $name => $inp) {
 			// Check if its not there
@@ -75,8 +76,6 @@ class FormGenerator {
 			elseif(isset($values[$name])) {
 				// Trim value
 				$values[$name] = trim($values[$name]);
-				// Escape HTML
-				$values[$name] = filter_var($values[$name], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 				
 				$errors_before = $errors;
 				
@@ -120,6 +119,15 @@ class FormGenerator {
 								$this->form_elements[$name]["errors"]["max-length"] = 1;
 							}
 						}
+						
+						// Check maximum byte length
+						if(isset($inp["validator"]["max-bytelength"])) {
+							if(strlen($values[$name]) > $inp["validator"]["max-bytelength"]) {
+								$debug .= (sprintf("\t[%s] has too much bytes (Is: %s/%s)\n", $name, strlen($values[$name]), $inp["validator"]["max-bytelength"]));
+								$errors++;
+								$this->form_elements[$name]["errors"]["max-bytelength"] = 1;
+							}
+						}
 						break;
 				}
 				
@@ -142,6 +150,8 @@ class FormGenerator {
 				$values[$name] = $inp["default"];
 			}
 		}
+		
+		var_dump($values);
 		
 		if($errors > 0) {
 			$debug .= (sprintf("\t<b>Total FormErrors:</b> %s.\n", $errors));
