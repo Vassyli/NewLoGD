@@ -28,6 +28,9 @@ class View {
 	
 	/**
 	 * Loads the template and runs the processing code needed for rendering the webpage including some HTTP response codes if needed.
+	 *
+	 * @param void
+	 * @return void
 	 */
 	public function output() {
 		// Get template handler

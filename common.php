@@ -12,7 +12,7 @@ define("LOGD_SCRIPT_START", microtime(true));
 
 // development config
 define("LOGD_SHOW_DEBUG", true);
-define("LOGD_SHOW_DEBUG_SQL", true);
+define("LOGD_SHOW_DEBUG_SQL", false);
 
 if(LOGD_SHOW_DEBUG) {
 	error_reporting(E_ALL);
@@ -52,16 +52,33 @@ define("LOGD_DBCONFIG", LOGD_PATH_ABS . "/dbconfig.php");
 ob_start();
 mb_internal_encoding(LOGD_ENCODING);
 
+/**
+ * Filters all non-alphabetic characters from a string.
+ *
+ * @param string $string The string which has to be sanitized
+ * @return string The sanitized string
+ */
 function filter_nonalpha($string) {
 	return preg_replace("/[^[:alpha:]]/ui", '', $string);
 }
 
+/**
+ * Prints information if the constant LOGD_SHOW_DEBUG is set to true
+ *
+ * @param string $string The debug information
+ * @return void
+ */
 function debug($string) {
 	if(LOGD_SHOW_DEBUG === true) {
 		print "$string\n";
 	}
 }
 
+/**
+ * Returns the absolute URL of a given $action
+ *
+ * @param string $action The action for which a url has to be generated
+ */
 function get_gameuri($action) {
 	return sprintf("%s/%s", LOGD_URI_ABS, $action);
 }

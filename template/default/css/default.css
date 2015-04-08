@@ -176,8 +176,12 @@ fieldset legend {
 	font-size: 1.4em;
 }
 
+#col-content fieldset {
+	padding-top: 1em;
+}
+
 .form-group {
-	height: 25px;
+	height: 2.5em;
 }
 
 .form-group label {
@@ -206,7 +210,7 @@ fieldset legend {
 }
 
 .form-group .form-input * {border-radius: 0.25em; }
-.form-group .form-input input {width: 100%;}
+.form-group .form-input input {width: 100%; background-color: #DDDDDD;}
 .form-errors label {color: #DD0000; }
 .form-errors input {background-color: #FFFF99;}
 
