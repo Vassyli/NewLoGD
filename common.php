@@ -12,7 +12,7 @@ define("LOGD_SCRIPT_START", microtime(true));
 
 // development config
 define("LOGD_SHOW_DEBUG", true);
-define("LOGD_SHOW_DEBUG_SQL", false);
+define("LOGD_SHOW_DEBUG_SQL", true);
 
 if(LOGD_SHOW_DEBUG) {
 	error_reporting(E_ALL);
@@ -87,3 +87,6 @@ function get_gameuri($action) {
 set_include_path(get_include_path() . PATH_SEPARATOR . LOGD_LIB . PATH_SEPARATOR);
 spl_autoload_extensions(LOGD_EXT);
 spl_autoload_register();
+
+// Additional debug
+debug("<b>INT_MAX:</b> ".PHP_INT_MAX);

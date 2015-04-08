@@ -5,12 +5,10 @@ namespace Localmodule;
 class Registration extends \LocalmoduleBasis {
 	protected $model;
 	
-	protected $id;
-	
 	private $form = NULL;
 	private $form_state = 0;
 	
-	public function __construct($model, $row, $page = NULL) {
+	public function __construct(\Model $model, array $row, $page = NULL) {
 		parent::__construct($model, $row, $page);
 	}
 	

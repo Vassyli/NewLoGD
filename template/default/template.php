@@ -20,8 +20,8 @@
 				<?php if(true): ?>
 				<div id="loginform"><form action="<?=get_gameuri("login") ?>" method="post">
 					<fieldset>
-						<label><span class="sr-only">E-Mail</span><input placeholder="E-Mail" type="email" /></label>
-						<label><span class="sr-only">E-Mail</span><input placeholder="Passwort" type="password" /></label>
+						<label><span class="sr-only">E-Mail</span><input placeholder="E-Mail" type="email" name="email" /></label>
+						<label><span class="sr-only">E-Mail</span><input placeholder="Passwort" type="password" name="password" /></label>
 						<label><button type="submit">Einloggen</button></label>
 					</fieldset>
 					<a href="<?=get_gameuri("pw_forgotten") ?>">Passwort vergessen?</a>

@@ -143,6 +143,7 @@ class Model {
 	 * @throws Exception if the requested Submodel does not implement the interface Submodel
 	 */
 	public function get($submodel) {
+		$submodel = strtolower($submodel);
 		if(!isset($this->submodels[$submodel])) {
 			if(in_array("Submodel", class_implements($submodel))) {
 				$this->submodels[$submodel] = new $submodel($this);

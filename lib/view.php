@@ -32,31 +32,39 @@ class View {
 	 * @param void
 	 * @return void
 	 */
-	public function output() {
-		// Get template handler
-		$template = new Template("default");
-		
+	public function output() {		
 		// Get Page-Instance
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
-		$page->load_navigation();
 		
-		// Set some additional template variables
-		$template->set_page($page);
-		$template->set_copyright(LOGD_COPYRIGHT);
-		
-		// Get the generated template
-		$buffer = $template->output();
-		
-		// Send a few headers if needed
-		if($page instanceof errorapi) {
-			http_response_code($page->get_errorcode());
+		// Start output handler only if the Page has output
+		if($page->has_output()) {
+			// Get template handler
+			$template = new Template("default");
+
+			// Load navigation
+			$page->load_navigation();
+
+			// Set some additional template variables
+			$template->set_page($page);
+			$template->set_copyright(LOGD_COPYRIGHT);
+
+			// Get the generated template
+			$buffer = $template->output();
+
+			// Send a few headers if needed
+			if($page instanceof errorapi) {
+				http_response_code($page->get_errorcode());
+			}
+
+			// Send content type and charset
+			header("Content-type: text/html; charset=utf-8");
+
+			// Print rendered content and exit.
+			print $buffer;
+			exit;
 		}
-		
-		// Send content type and charset
-		header("Content-type: text/html; charset=utf-8");
-		
-		// Print rendered content and exit.
-		print $buffer;
-		exit;
+		else {
+			$page->output();
+		}
 	}
 }

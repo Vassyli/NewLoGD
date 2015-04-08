@@ -26,6 +26,9 @@ class Controller {
 	 * Runs the processing code of all loaded components.
 	 */
 	public function execute() {
+		// Load and start the Session
+		$this->model->get("Session")->start();
+		
 		// Load the page given by action and initialize it properly.
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
 		$page->initiate();
@@ -33,5 +36,8 @@ class Controller {
 		
 		// Execute the page-code.
 		$page->execute();
+		
+		// Stop the Session. Session can be read (and changed) afterwards, but not saved.
+		$this->model->get("Session")->stop();
 	}
 }

@@ -1,5 +1,5 @@
 <?php
 
 interface Basicmodelitem extends Modelitem {
-	public function __construct($model, $row);
+	public function __construct(\Model $model, array $row);
 }

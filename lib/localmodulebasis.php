@@ -7,7 +7,7 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
 	protected $id;
 	protected $class;
 	
-	public function __construct($model, $row, $page = NULL) {
+	public function __construct(\Model $model, array $row, $page = NULL) {
 		$this->model = $model;
 		$this->page = $page;
 		

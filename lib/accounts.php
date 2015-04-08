@@ -8,19 +8,40 @@ class Accounts implements Submodel {
 	const HASH_ALGO = PASSWORD_DEFAULT;
 	const HASH_COST = 10;
 	
-	public function __construct($model) {
+	public function __construct(Model $model) {
 		$this->model = $model;
-		$this->set_lazy_keys(array("id", "name"));
+		$this->set_lazy_keys(array("id", "name", "email"));
+	}
+	
+	public function getby_email($email) {
+		if($this->has_lazyset("email", $email)) {
+			$row = $this->get_lazyset("email", $email);
+			return $row;
+		}
+		else {
+			$result = $this->model->from("accounts")
+				->where("email", $email)
+				->where("locked", 0);
+			
+			if(count($result) > 0) {
+				$row = $result->fetchObject("AccountItem", array($this->model));
+				$this->set_lazy($row);
+				return $row;
+			}
+			else {
+				return false;
+			}
+		}
 	}
 	
 	public function create($name, $password, $email) {
 		$query = $this->model->insertInto("accounts")
 			->addFields("name", "password", "email", array("created-on", new \Query\SQLFunction("NOW")))
-			->addValues($name, $this->hash($password), $email)
+			->addValues($name, self::hash($password), $email)
 			->execute();
 	}
 	
-	public function hash($inp) {
+	public static function hash($inp) {
 		if(self::HASH_ALGO == PASSWORD_BCRYPT) {
 			return password_hash($inp, self::HASH_ALGO, array("cost" => self::HASH_COST));
 		}

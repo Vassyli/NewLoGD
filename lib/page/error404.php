@@ -8,15 +8,16 @@ class Error404 implements api, errorapi, \Modelitem {
 	protected $action = "";
 	protected $args = array();
 	
-	public function __construct($model, $action) {
+	public function __construct(\Model $model, array $action) {
 		$this->model = $model;
-		$this->action = $action;
+		$this->action = $action[0];
 	}
 	
-	public function set_arguments($args) {}
+	public function set_arguments(array $args) {$this->args = $args;}
 	public function execute() {}
 	
 	public function get_id() { return -404; }
+	public function get_type() { return "error404"; }
 	public function get_title() { return "Error 404"; }
 	public function get_subtitle() { return "Seite nicht gefunden."; }
 	public function get_action() { return $this->action; }
@@ -32,20 +33,24 @@ class Error404 implements api, errorapi, \Modelitem {
 		);
 	}
 	
-	public function get_flags() {return 0;}
+	public function get_flags() {return 48;}
 	public function is_editable() {return false;}
 	public function is_deletable(){return false;}
 	public function use_parser(){return false;}
 	public function keep_html(){return true;}
+	public function has_output(){return true;}
 	
 	public function get_errorcode() { return self::ERROR_NOT_FOUND; }
 	
+	public function load_navigation() {}
 	public function get_navigation() {
 		$container = new Navigation\Container();
 		return $container;
 	}
 	
-	public function get_parsed_content() {
+	public function output() {
 		return $this->get_content();
 	}
+	
+	public function initiate() {}
 }

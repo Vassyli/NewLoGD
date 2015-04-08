@@ -1,5 +1,5 @@
 <?php
 
 interface Submodel {
-	public function __construct($model);
+	public function __construct(Model $model);
 }

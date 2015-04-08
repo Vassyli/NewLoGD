@@ -5,7 +5,7 @@ class Pages implements Submodel {
 	
 	private $model;
 	
-	public function __construct($model) {
+	public function __construct(Model $model) {
 		$this->model = $model;
 		$this->set_lazy_keys(array("id", "action"));
 	}
@@ -47,7 +47,7 @@ class Pages implements Submodel {
 			
 			if($row === false) {
 				// Page not found
-				$page = new \Page\Error404($this->model, $action);
+				$page = new \Page\Error404($this->model, array($action));
 				$this->set_lazy($page);
 			}
 			else {

@@ -5,7 +5,7 @@ class Localmodules implements Submodel {
 	
 	private $model;
 	
-	public function __construct($model) {
+	public function __construct(Model $model) {
 		$this->model = $model;
 		$this->set_lazy_keys(array("id", "classname"));
 		$this->set_lazyset_keys(array("page_id"));

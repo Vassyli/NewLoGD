@@ -29,7 +29,6 @@ For running this game, you will need:
 	- A webserver with PHP support
 	- PHP 5.5 or higher
 	- A running MySQL server (MySQL 5.6.20 works, earlier versions probably as well)
-	- A basi
 
 #
 #   INSTALLATION

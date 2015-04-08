@@ -12,7 +12,7 @@ class Node extends Base {
 	
 	protected $block_output = false;
 	
-	public function __construct($model, $row) {
+	public function __construct(\Model $model, array $row) {
 		parent::__construct($model, $row);
 	}
 	
