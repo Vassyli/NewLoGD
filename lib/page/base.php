@@ -39,16 +39,27 @@ abstract class Base implements api, \Basicmodelitem {
 	
 	public function set_arguments($args) {$this->arguments = $args;}
 	
+	// @inheritDoc
 	public function get_id() { return $this->id; }
+	// @inheritDoc
 	public function get_type() { return $this->type; }
+	// @inheritDoc
 	public function get_action() { return $this->action; }
+	// @inheritDoc
 	public function get_title() { return $this->title; }
+	// @inheritDoc
 	public function get_subtitle() { return $this->subtitle; }
+	// @inheritDoc
 	public function get_content() {return $this->content;}
+	// @inheritDoc
 	public function get_flags() { return $this->flags; }
 	
+	// @inheritDoc
 	public function is_editable() { return ($this->flags & self::FLAG_IS_EDITABLE ? true : false); }
+	// @inheritDoc
 	public function is_deletable() { return ($this->flags & self::FLAG_IS_DELETABLE ? true : false); }
+	// @inheritDoc
 	public function use_parser() { return ($this->flags & self::FLAG_NO_PARSE ? false : true); }
+	// @inheritDoc
 	public function keep_html() { return ($this->flags & self::FLAG_KEEP_HTML ? true : false); }
 }

@@ -155,6 +155,9 @@ class Model {
 		return $this->submodels[$submodel];
 	}
 	
+        /**
+         * Parses the query-string contained in $_GET['qs'] (and in $this->get['qs'])
+         */
 	private function parse_qs() {
 		$parts = explode("/", $this->get['qs']);
 		$this->res_action = array_shift($parts);
@@ -168,14 +171,30 @@ class Model {
 		}
 	}
 	
+        /**
+         * Returns the action of the requested ressource
+         * 
+         * @return string Returns the requested action
+         */
 	public function get_res_action() {
 		return $this->res_action;
 	}
 	
+        /**
+         * Returns additional arguments of the requested ressource
+         * 
+         * @return array Returns additional Arguments
+         */
 	public function get_res_arguments() {
 		return $this->res_arguments;
 	}
 	
+        /**
+         * Returns a POST-Value given by it's argument
+         * 
+         * @param string $key The requested key
+         * @return string The value which belongs to $key
+         */
 	public function get_postvalue($key) {
 		if(!empty($this->post[$key])) {
 			return $this->post[$key];
@@ -185,6 +204,11 @@ class Model {
 		}
 	}
 	
+        /*
+         * Returns an array of all POST values
+         * 
+         * @return array POST-values
+         */
 	public function get_postarray() {
 		return $this->post;
 	}
