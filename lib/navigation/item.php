@@ -27,7 +27,7 @@ class Item implements \Truemodelitem, ItemAPI {
 			case self::FIELD_ID:
 			case self::FIELD_PARENTID:
 			case self::FIELD_PAGE_ID:
-				$this->name = ($value === NULL) ? NULL : intval($value);
+				$this->$name = ($value === NULL) ? NULL : intval($value);
 				break;
 			
 			// String Rest

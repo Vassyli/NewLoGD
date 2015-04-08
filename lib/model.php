@@ -144,7 +144,7 @@ class Model {
 	 */
 	public function get($submodel) {
 		if(!isset($this->submodels[$submodel])) {
-			if(in_array("submodel", class_implements($submodel))) {
+			if(in_array("Submodel", class_implements($submodel))) {
 				$this->submodels[$submodel] = new $submodel($this);
 			}
 			else {
