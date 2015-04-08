@@ -38,4 +38,4 @@ For running this game, you will need:
 1. Create a new table
 2. Import the .sql file including the values
 3. Edit the file dbconfig.php with the connection informations
-4. Enjoy.
+4. Enjoy. Default login is Admin/CHANGEME (if it would work)

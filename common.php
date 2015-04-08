@@ -12,7 +12,7 @@ define("LOGD_SCRIPT_START", microtime(true));
 
 // development config
 define("LOGD_SHOW_DEBUG", true);
-define("LOGD_SHOW_DEBUG_SQL", false);
+define("LOGD_SHOW_DEBUG_SQL", true);
 
 if(LOGD_SHOW_DEBUG) {
 	error_reporting(E_ALL);
@@ -26,7 +26,7 @@ define("LOGD_PATH_ABS", dirname(__FILE__));
 define("LOGD_URI_ABS", dirname($_SERVER['PHP_SELF']));
 
 // general configuration
-define("LOGD_COPYRIGHT", "Copyright 2002-2003, Game: Eric Stevens; Copyright 2015, Rewrite Game Code: Basilius Sauter");
+define("LOGD_COPYRIGHT", "Copyright 2015, Game Code: Basilius Sauter\nCopyright 2002-2003, Game: Eric Stevens; ");
 $a = explode("/", LOGD_URI_ABS);
 define("LOGD_SESSIONNAME", "newlogd_".array_pop($a));
 

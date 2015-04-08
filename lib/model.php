@@ -36,7 +36,12 @@ class Model {
 	
 	protected function connect($host, $name, $user, $pass) {
 		$dsn = sprintf("mysql:dbname=%s;host=%s;charset=utf8", $name, $host);
-		$this->dbh = new PDO($dsn, $user, $pass);
+		try {
+			$this->dbh = new PDO($dsn, $user, $pass);
+		}
+		catch(PDOException $e) {
+			die("Error: Connection to Database was not possible.");
+		}
 	}
 	
 	public function add_prefix($table) {
@@ -53,6 +58,11 @@ class Model {
 			$query->where("id", $id);
 		}
 		
+		return $query;
+	}
+	
+	public function insertInto($table) {
+		$query = new \Query\InsertInto($this, $table);
 		return $query;
 	}
 	

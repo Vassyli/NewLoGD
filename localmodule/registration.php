@@ -22,6 +22,9 @@ class Registration extends \LocalmoduleBasis {
 			try {
 				$sanitize = $this->get_form()->sanitize($this->model->get_postarray(), true);
 				$this->form_state = -1;
+				
+				$this->model->get("Accounts")->create($sanitize["name"], $sanitize["password1"], $sanitize["email1"]);
+				$this->form_state = -2;
 			}
 			catch(\Exception $e) {
 				$this->form_state = 0;
@@ -36,8 +39,11 @@ class Registration extends \LocalmoduleBasis {
 		if($this->form_state >= 0) {
 			return $this->get_form()->get_HTML();
 		}
+		elseif($this->form_state == -1) {
+			return "Beim Erstellen des Accounts ist etwas schief gegangen.";
+		}
 		else {
-			return "";
+			return "Der Account wurde erfolgreich erstellt.";
 		}
 	}
 	
@@ -52,6 +58,7 @@ class Registration extends \LocalmoduleBasis {
 						"min-length" => 1, 
 						"max-length" => 50,
 						"required" => true,
+						"callback" => array(array($this->model->get("Accounts"), "check_name"), "Der Name ist bereits in Verwendung"),
 					)
 				)
 				->add_password(
@@ -83,6 +90,7 @@ class Registration extends \LocalmoduleBasis {
 						"max-length" => 100,
 						"required" => true,
 						"crosscheck" => "email2",
+						"callback" => array(array($this->model->get("Accounts"), "check_email"), "Diese Email-Adresse ist bereits in Verwendung"),
 					)
 				)
 				->add_email(

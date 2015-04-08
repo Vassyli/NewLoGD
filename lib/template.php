@@ -18,7 +18,7 @@ class Template {
 	}
 	
 	public function set_copyright($copyright) {
-		$this->parts['copyright'] = $copyright;
+		$this->parts['copyright'] = nl2br($copyright);
 	}
 	
 	public function set_pagegen($pagegen) {
@@ -32,20 +32,6 @@ class Template {
 	public function get_page() {
 		return $this->parts['PAGE'];
 	}
-	
-	/*public function get_content() {
-		$content = $this->parts['PAGE']->get_content();
-		
-		if($this->parts['PAGE']->keep_html() === false) {
-			$content = HTMLSpecialchars($content, ENT_HTML5, LOGD_ENCODING);
-		}
-		
-		if($this->parts['PAGE']->use_parser() === true) {
-			$content = $this->parser->parse($content);
-		}
-		
-		return $content;
-	}*/
 	
 	public function get_copyright() {
 		return $this->parts['copyright'];

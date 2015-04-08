@@ -2,7 +2,7 @@
 
 namespace Query;
 
-class Select extends Base {
+class Select extends Base implements \Countable {
 	protected $model = NULL;
 	protected $table = "";
 	
@@ -10,6 +10,8 @@ class Select extends Base {
 	
 	protected $is_executed = false;
 	protected $result = NULL;
+	
+	protected $countable_column = "*";
 	
 	public function __construct(\Model $model, $table) {
 		$this->model = $model;
@@ -162,16 +164,45 @@ class Select extends Base {
 					$query .= ",\n\t";
 				}
 				
-				if(empty($fieldInfo["alias"])) {
-					if($fieldInfo["field"] == "*") {
-						$query .= sprintf("`%s`.*", $this->model->add_prefix($fieldInfo["table"]));
+				if($fieldInfo["field"] instanceof SQLFunction) {
+					$function = $fieldInfo["field"]->get_functionname();
+					$fieldclass = $fieldInfo["field"]->get_field();
+					
+					if(is_array($fieldclass)) {
+						$table = $fieldclass[0];
+						$field = $fieldclass[1];
 					}
 					else {
-						$query .= sprintf("`%s`.`%s`", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"]);
+						$table = $this->model->add_prefix($fieldInfo["table"]);
+						$field = $fieldclass;
+					}
+					
+					if(!empty($fieldInfo["alias"])) {
+						$alias = " AS \"".$fieldInfo["alias"]."\"";
+					}
+					else {
+						$alias = "";
+					}
+					
+					if($field == "*") {
+						$query .= sprintf("%s(*)%s", $function, $alias);
+					}
+					else {
+						$query .= sprintf("%s(`%s`.`%s`)%s", $function, $table, $field, $alias);
 					}
 				}
 				else {
-					$query .= sprintf("`%s`.`%s` AS \"%s\"", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"], $fieldInfo["alias"]);
+					if(empty($fieldInfo["alias"])) {
+						if($fieldInfo["field"] == "*") {
+							$query .= sprintf("`%s`.*", $this->model->add_prefix($fieldInfo["table"]));
+						}
+						else {
+							$query .= sprintf("`%s`.`%s`", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"]);
+						}
+					}
+					else {
+						$query .= sprintf("`%s`.`%s` AS \"%s\"", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"], $fieldInfo["alias"]);
+					}
 				}
 				
 				$i++;
@@ -295,5 +326,17 @@ class Select extends Base {
 		}
 		
 		return array($query, $args);
+	}
+	
+	public function set_countable_column($col) {
+		$this->countable_column = $col;
+		return $this;
+	}
+	
+	public function count() {
+		$clone = clone($this);
+		$clone->select(NULL)->select(new SQLFunction("COUNT", $this->countable_column), "c");
+		$row = $clone->fetch();
+		return (int)$row["c"];
 	}
 }

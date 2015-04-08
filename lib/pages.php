@@ -12,8 +12,9 @@ class Pages implements Submodel {
 	
 	public function getby_id($id) {
 		if($this->has_lazy("id", $id) === false) {
-			$query = $this->model->from("page")
+			$query = $this->model->from("pages")
 				->where("id", $id);
+				
 			$row = $query->fetch();
 			
 			$page = NULL;
@@ -38,9 +39,8 @@ class Pages implements Submodel {
 	public function getby_action($action) {
 		//if(!isset($this->lazy["action"][$action])) {
 		if($this->has_lazy("action", $action) === false) {
-			$query = $this->model->from("page")
+			$query = $this->model->from("pages")
 				->where("action", $action);
-				
 			$row = $query->fetch();
 			
 			$page = NULL;

@@ -17,11 +17,11 @@ class Localmodules implements Submodel {
 			return array();
 		}
 		else {
-			$result = $this->model->from("localmodule")
+			$result = $this->model->from("localmodules")
 				->select("*")
-				->select(array("page_localmodule_xref", "config"), "pageconfig")
-				->innerjoin("id", array("page_localmodule_xref", "localmodule_id"))
-				->where(array("page_localmodule_xref", "page_id"), $page_id)
+				->select(array("pages_localmodules_xref", "config"), "pageconfig")
+				->innerjoin("id", array("pages_localmodules_xref", "localmodule_id"))
+				->where(array("pages_localmodules_xref", "page_id"), $page_id)
 				->where("active", 1);
 				
 			$set = array();

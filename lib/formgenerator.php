@@ -64,7 +64,6 @@ class FormGenerator {
 		$errors = 0;
 		
 		$debug = ("<b>Form-Validation</b>\n");
-		var_dump($values);
 		
 		foreach($this->form_elements as $name => $inp) {
 			// Check if its not there
@@ -132,12 +131,24 @@ class FormGenerator {
 				}
 				
 				// Some universal checks
+				
+				// Cross-Check: Check if another field contains the same value
 				if(isset($inp["validator"]["crosscheck"])) {
 					if($values[$name] != $values[$inp["validator"]["crosscheck"]]) {
 						$debug .= (sprintf("\t[%s] does not match [%s]\n", $name, $inp["validator"]["crosscheck"]));
 						$errors++;
 						$this->form_elements[$name]["errors"]["crosscheck"] = 1;
 						$this->form_elements[$inp["validator"]["crosscheck"]]["errors"]["crosscheck"] = 1;
+					}
+				}
+				
+				// Callback-Check: Call a callback function to check the input
+				if(isset($inp["validator"]["callback"])) {
+					$ret = call_user_func($inp["validator"]["callback"][0], $values[$name]);
+					if($ret === false) {
+						$debug .= (sprintf("\t[%s] does not pass callback\n", $name));
+						$errors++;
+						$this->form_elements[$name]["errors"]["callback"] = 1;
 					}
 				}
 				
@@ -150,8 +161,6 @@ class FormGenerator {
 				$values[$name] = $inp["default"];
 			}
 		}
-		
-		var_dump($values);
 		
 		if($errors > 0) {
 			$debug .= (sprintf("\t<b>Total FormErrors:</b> %s.\n", $errors));
