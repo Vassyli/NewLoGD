@@ -39,6 +39,25 @@ class Controller {
 		
 		// Load the page given by action and initialize it properly.
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
+		
+		// Check if user actually has access
+		if($this->model->get("Session")->is_loggedin() == false) {
+			if($page->check_access(\Page\api::ACCESS_ANONYMOUS)) {
+				// Anonymous Access ok
+			}
+			else {
+				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
+			}
+		}
+		else {
+			if($page->check_access(\Page\api::ACCESS_ACCOUNT)) {
+				// Account Access ok
+			}
+			else {
+				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
+			}
+		}
+		
 		$page->initiate();
 		$page->set_arguments($this->model->get_res_arguments());
 		

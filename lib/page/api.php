@@ -17,6 +17,15 @@ interface api {
 	/** @var int Notates if a page wants to use default output handler */
 	const FLAG_HAS_NO_OUTPUT= 0b100000000; // 256
 	
+	/** @var int Allow Anonymous Access */
+	const ACCESS_ANONYMOUS        = 0b0001;
+	/** @var int Allow Account-Access */
+	const ACCESS_ACCOUNT          = 0b0010;
+	/** @var int Allow Character-access (if nav allows it) */
+	const ACCESS_CHARACTER        = 0b0100;
+	/** @var int Allow Character-access even if nav disallow it */
+	const ACCESS_CHARACTER_NONNAV = 0b1000;
+	
 	//public function __construct($model, $row);
 	/**
 	 * Sets additional arguments to the page.
@@ -24,84 +33,79 @@ interface api {
 	 * @param array $args sets additional arguments
 	 */
 	public function set_arguments(array $args);
-	
 	/**
 	 * Executes all controller code
 	 */
-	public function execute();
-	
+	public function execute();	
 	/**
 	 * Initiate everything
 	 */
-	public function initiate();
-	
+	public function initiate();	
 	/**
 	 * Returns a reference to the Model
 	 * 
 	 * @return \Model Reference to the Model
 	 */
-	public function get_model();
-	
+	public function get_model();	
 	/**
 	 * Returns the ID of the page
 	 * 
 	 * @return string ID of the page
 	 */
-	public function get_id();
-	
+	public function get_id();	
 	/**
 	 * Returns the type of the page
 	 * 
 	 * @return string Node of the page
 	 */
-	public function get_type();
-	
+	public function get_type();	
 	/**
 	 * Returns the title of the page
 	 * 
 	 * @return string Title of the page
 	 */
-	public function get_title();
-	
+	public function get_title();	
 	/**
 	 * Returns the subtitle of the page
 	 * 
 	 * @return string Subtitle of the page
 	 */
 	public function get_subtitle();
-	
 	/**
 	 * Returns the action of the page
 	 * 
 	 * @return string action of the page
 	 */
 	public function get_action();
-	
 	/**
 	 * Returns the content of the page
 	 * 
 	 * @return string Content of the page
 	 */
 	public function get_content();
-	
 	/**
 	 * Preload the navigation
 	 */
-	public function load_navigation();
-	
+	public function load_navigation();	
 	/**
 	 * Returns the title of the page
 	 * 
 	 * @return \Navigation\Container Container containing the navigation
 	 */
 	public function get_navigation();
-	
 	/*
 	 * Returns the flag-field
 	 * 
 	 * @return int All flags
 	 */
 	public function get_flags();
+	/*
+	 * Returns if the page has a certain access flag
+	 * 
+	 * @param int the Flag to check against.
+	 * @return bool true if the requested access flag is set.
+	 */
+	public function check_access($flag);
 	
 	/**
 	 * Checks if the page is editable
@@ -109,28 +113,24 @@ interface api {
 	 * @return bool true if the page is editable, false if not.
 	 */
 	public function is_editable();
-	
 	/**
 	 * Checks if the page is deletable
 	 * 
 	 * @return bool true if the page is deletable, false if not.
 	 */
 	public function is_deletable();
-	
 	/**
 	 * Checks if the page wants to use the parser (Checks the absence of self::FLAG_NO_PARSE)
 	 * 
 	 * @return bool true if the page is uses the parser, false if not.
 	 */
 	public function use_parser();
-	
 	/**
 	 * Checks if the page wants to keep it's HTML
 	 * 
 	 * @return bool true if the page wants to keep the HTML, false if not.
 	 */
 	public function keep_html();
-	
 	/**
 	 * Checks if a page wants to use default output handler
 	 * 

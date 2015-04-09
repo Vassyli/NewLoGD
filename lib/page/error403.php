@@ -4,7 +4,7 @@ namespace page;
 
 use \Navigation;
 
-class Error404 implements api, errorapi, \Modelitem {
+class Error403 implements api, errorapi, \Modelitem {
 	private $model = NULL;
 	
 	protected $action = "";
@@ -20,9 +20,9 @@ class Error404 implements api, errorapi, \Modelitem {
 	public function execute() {}
 	
 	public function get_model() { return $this->model; }
-	public function get_id() { return -404; }
-	public function get_type() { return "error404"; }
-	public function get_title() { return "Error 404"; }
+	public function get_id() { return -ERROR_ACCESS_FORBIDDEN; }
+	public function get_type() { return "error403"; }
+	public function get_title() { return "Error 403"; }
 	public function get_subtitle() { return "Seite nicht gefunden."; }
 	public function get_action() { return $this->action; }
 	public function get_content() { 
@@ -30,9 +30,13 @@ class Error404 implements api, errorapi, \Modelitem {
 		array_push($arr, implode("/", $this->args)); 
 		
 		return sprintf("
-				Die gewünschte Seite unter der Ressource [%s] wurde nicht gefunden. 
-				Entweder wurde sie entfernt, jemand hat sich verschrieben, oder ein 
-				Krake hat sie entführt. Wir bitten Sie für die Umstände um Verzeihung."
+				Der Zugriff auf die gewünschte Ressource [%s] ist nicht erlaubt. 
+				Sollten Sie mit Absicht auf diese Seite gestossen sein, so schämen 
+				Sie sich, dieser Cheatversuch ging schief.. ;)
+				
+				Sollten Sie versehentlich hier her gelangt sein (zum Beispiel via 
+				einem kaputten Navigationspunkt), so gehen Sie einfach eine Seite 
+				zurück."
 			, implode("/", $arr)
 		);
 	}
@@ -47,7 +51,7 @@ class Error404 implements api, errorapi, \Modelitem {
 	public function keep_html(){return true;}
 	public function has_output(){return true;}
 	
-	public function get_errorcode() { return self::ERROR_NOT_FOUND; }
+	public function get_errorcode() { return self::ERROR_ACCESS_FORBIDDEN; }
 	
 	public function load_navigation() {}
 	public function get_navigation() {

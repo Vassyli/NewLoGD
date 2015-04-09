@@ -71,6 +71,18 @@ class Pages implements Submodel {
 		}
 	}
 	
+	public function get_403page($action) {
+		if($this->has_lazy("id", -403)) {
+			$page = $this->get_lazy("id", -403);
+		}
+		else {
+			$page = new \Page\Error403($this->model, array($action));
+			$this->set_lazy($page);
+		}
+		
+		return $page;
+	}
+	
 	protected function get_classname($type) {
 		return sprintf("\Page\%s", filter_var($type, FILTER_CALLBACK, array("options" => "filter_nonalpha")));
 	}
