@@ -4,6 +4,7 @@ class Accounts implements Submodel {
 	use lazy;
 	
 	private $model;
+	private $active;
 	
 	const HASH_ALGO = PASSWORD_DEFAULT;
 	const HASH_COST = 10;
@@ -13,14 +14,13 @@ class Accounts implements Submodel {
 		$this->set_lazy_keys(array("id", "name", "email"));
 	}
 	
-	public function getby_email($email) {
-		if($this->has_lazyset("email", $email)) {
-			$row = $this->get_lazyset("email", $email);
-			return $row;
+	private function getby_uniquekey($key, $val) {
+		if($this->has_lazy($key, $val)) {
+			return $this->get_lazy($key, $val);
 		}
 		else {
 			$result = $this->model->from("accounts")
-				->where("email", $email)
+				->where($key, $val)
 				->where("locked", 0);
 			
 			if(count($result) > 0) {
@@ -32,6 +32,23 @@ class Accounts implements Submodel {
 				return false;
 			}
 		}
+	}
+	
+	public function getby_id($id) {
+		return $this->getby_uniquekey("id", $id);
+	}
+	
+	public function getby_email($email) {
+		return $this->getby_uniquekey("email", $email);
+	}
+	
+	public function set_active($id) {
+		$this->active = $id;
+		$this->getby_id($id);
+	}
+	
+	public function get_active() {
+		return $this->getby_id($this->active);
 	}
 	
 	public function create($name, $password, $email) {

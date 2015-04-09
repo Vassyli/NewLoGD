@@ -75,7 +75,7 @@ trait lazy {
 	}
 	
 	private function has_lazy($key, $val) {
-		if(isset($this->lazy[$key][$val])) {
+		if(isset($this->lazy[$key]) and isset($this->lazy[$key][$val])) {
 			return true;
 		}
 		else {

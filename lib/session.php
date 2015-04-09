@@ -27,4 +27,37 @@ class Session implements Submodel {
 		session_write_close();
 		\debug("<b style=\"color: green;\">Session write and close.</b>");
 	}
+	
+	public function is_loggedin() {
+		return $this->get_sessionval("loggedin", false) ? true : false;
+	}
+	
+	public function login() {
+		$this->set_sessionval("loggedin", true);
+	}
+	
+	public function logout() {
+		$this->set_sessionval("loggedin", false);
+	}
+	
+	public function clear() {
+		session_destroy();
+		// ToDo: Delete session cookie.
+	}
+	
+	public function set_active_account($id) {
+		$this->set_sessionval("active_account", $id);
+	}
+	
+	public function get_active_account() {
+		return $this->get_sessionval("active_account", 0);
+	}
+	
+	protected function get_sessionval($key, $default = NULL) {
+		return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+	}
+	
+	protected function set_sessionval($key, $val) {
+		$_SESSION[$key] = $val;
+	}
 }

@@ -29,6 +29,14 @@ class Controller {
 		// Load and start the Session
 		$this->model->get("Session")->start();
 		
+		if($this->model->get("Session")->is_loggedin()) {
+			debug("<b style=\"\">Account is logged in</b>");
+			$this->model->get("Accounts")->set_active($this->model->get("Session")->get_active_account());
+		}
+		else {
+			debug("<b style=\"\">Account is NOT logged in</b>");
+		}
+		
 		// Load the page given by action and initialize it properly.
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
 		$page->initiate();
@@ -39,5 +47,10 @@ class Controller {
 		
 		// Stop the Session. Session can be read (and changed) afterwards, but not saved.
 		$this->model->get("Session")->stop();
+		
+		// If the page has no output, it should redirect to somewhere.
+		if($page->has_output() === false) {
+			die("Page has no output, should have redirect. Script was stopped in controller.");
+		}
 	}
 }

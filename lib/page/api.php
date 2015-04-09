@@ -36,6 +36,13 @@ interface api {
 	public function initiate();
 	
 	/**
+	 * Returns a reference to the Model
+	 * 
+	 * @return \Model Reference to the Model
+	 */
+	public function get_model();
+	
+	/**
 	 * Returns the ID of the page
 	 * 
 	 * @return string ID of the page

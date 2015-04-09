@@ -4,10 +4,12 @@ namespace page;
 
 use \Navigation;
 
-class Error404 implements api, errorapi, \Modelitem {	
+class Error404 implements api, errorapi, \Modelitem {
+	private $model = NULL;
+	
 	protected $action = "";
 	protected $args = array();
-	
+
 	public function __construct(\Model $model, array $action) {
 		$this->model = $model;
 		$this->action = $action[0];
@@ -16,6 +18,7 @@ class Error404 implements api, errorapi, \Modelitem {
 	public function set_arguments(array $args) {$this->args = $args;}
 	public function execute() {}
 	
+	public function get_model() { return $this->model; }
 	public function get_id() { return -404; }
 	public function get_type() { return "error404"; }
 	public function get_title() { return "Error 404"; }

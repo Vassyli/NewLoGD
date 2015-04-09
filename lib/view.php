@@ -58,13 +58,11 @@ class View {
 
 			// Send content type and charset
 			header("Content-type: text/html; charset=utf-8");
-
-			// Print rendered content and exit.
-			print $buffer;
-			exit;
 		}
-		else {
-			$page->output();
-		}
+		else $buffer = "";
+		
+		// Print rendered content and exit.
+		print $buffer;
+		exit;
 	}
 }

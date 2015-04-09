@@ -4,7 +4,7 @@ namespace page;
 
 use \Navigation;
 
-class Login extends Base {	
+class Logout extends Base {	
 	protected $parser = NULL;
 	protected $modules = array();
 	
@@ -21,25 +21,11 @@ class Login extends Base {
 	public function initiate() {}
 	
 	public function execute() {
-		$acc = $this->model->get("Accounts")->getby_email($this->model->get_postvalue("email"));
+		// Maybe some additional Account-Management here? Maybe not.
 		
-		if($acc !== false and $acc->verify_password($this->model->get_postvalue("password"))) {
-			$this->login_valid = 1;
-		}
-		else {
-			$this->login_valid = 0;
-		}
-		
-		if($this->login_valid > 0) {
-			$this->model->get("Session")->login();
-			$this->model->get("Session")->set_active_account($acc->get_id());
-			header(sprintf("Location: %s", get_gameuri("ucp")));
-		}
-		else {
-			$this->model->get("Session")->logout();
-			$this->model->get("Session")->clear();
-			header(sprintf("Location: %s", get_gameuri("main")));
-		}
+		$this->model->get("Session")->logout();
+		$this->model->get("Session")->clear();
+		header(sprintf("Location: %s", get_gameuri("main")));
 	}
 	
 	public function output() {

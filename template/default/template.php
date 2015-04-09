@@ -17,18 +17,23 @@
 			<div id="row-top">
 				<div id="logo-container"><img id="logo" src="<?=$this->get_template_uribasepath("ressource/logindragon.png") ?>" /></div>
 				<nav id="main-nav"><div class="main-nav-item">{forum}</div></nav>
-				<?php if(true): ?>
+				<?php if($this->get_model()->get("Session")->is_loggedin() === false): ?>
 				<div id="loginform"><form action="<?=get_gameuri("login") ?>" method="post">
 					<fieldset>
 						<label><span class="sr-only">E-Mail</span><input placeholder="E-Mail" type="email" name="email" /></label>
 						<label><span class="sr-only">E-Mail</span><input placeholder="Passwort" type="password" name="password" /></label>
 						<label><button type="submit">Einloggen</button></label>
 					</fieldset>
-					<a href="<?=get_gameuri("pw_forgotten") ?>">Passwort vergessen?</a>
 					<a href="<?=get_gameuri("register") ?>">Registrieren</a>
+					<a href="<?=get_gameuri("pw_forgotten") ?>">Passwort vergessen?</a>
 				</form></div>
 				<?php else: ?>
-				<div id="charstats">{CHARSTATS}</div>
+				<div id="charstats">
+					ID: <?=$this->get_model()->get("Accounts")->get_active()->get_id() ?><br />
+					Name: <?=$this->get_model()->get("Accounts")->get_active()->get_name() ?><br />
+					E-Mail: <?=$this->get_model()->get("Accounts")->get_active()->get_email() ?><br />
+					<a href="<?=get_gameuri("logout") ?>">Ausloggen</a>
+				</div>
 				<?php endif; ?>
 			</div>
 			

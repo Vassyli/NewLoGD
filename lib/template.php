@@ -29,6 +29,10 @@ class Template {
 		$this->parts['debug'] = $debug;
 	}
 	
+	public function get_model() {
+		return $this->parts['PAGE']->get_model();
+	}
+	
 	public function get_page() {
 		return $this->parts['PAGE'];
 	}

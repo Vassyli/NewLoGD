@@ -51,6 +51,8 @@ input[type="submit"], button {
  */
 
 #row-top {
+	display: flex;
+	
 	padding-left: 18.75%;
 	max-height: 6em;
 	min-height: 6em;
@@ -75,10 +77,18 @@ input[type="submit"], button {
 }
 
 #main-nav {
+	width: 69.54%;
 	float: left;
+	display: inline-block;
 }
 
 #charstats, #loginform {
+	box-sizing: border-box;
+	width: 30.46%;
+	padding-right: 1em;
+	padding-top: 1em;
+	
+	display: inline-block;
 	font-size: 0.8em;
 	text-align: right;
 }
@@ -87,15 +97,17 @@ input[type="submit"], button {
 #loginform fieldset {border: none; }
 
 #loginform input, #loginform button {
+	box-sizing: border-box;
+	width: 100%;
 	border-radius: 0.75em;
 	padding: 0.1em 0.5em;
 }
 
-#loginform a {
-	display: block;
-	float: right;
-	
-	padding: 0em 1em;
+#loginform button { width: 50%; }
+
+#loginform a, #charstats a {
+	display: inline-block;
+	padding-left: 1em;
 	color: #AAEEAA;
 }
 
