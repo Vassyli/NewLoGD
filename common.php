@@ -14,10 +14,6 @@ define("LOGD_SCRIPT_START", microtime(true));
 define("LOGD_SHOW_DEBUG", true);
 define("LOGD_SHOW_DEBUG_SQL", true);
 
-if(LOGD_SHOW_DEBUG) {
-	error_reporting(E_ALL);
-}
-
 // some php configuration
 define("LOGD_ENCODING", "utf-8");
 
@@ -48,9 +44,6 @@ define("LOGD_TEMPLATE", LOGD_PATH_ABS."/".LOGD_TEMPLATE_DIRNAME."/");
 define("LOGD_TEMPLATE_URI", LOGD_URI_ABS."/".LOGD_TEMPLATE_DIRNAME."/");
 define("LOGD_DBCONFIG", LOGD_PATH_ABS . "/dbconfig.php");
 
-// Start output buffering
-ob_start();
-mb_internal_encoding(LOGD_ENCODING);
 
 /**
  * Filters all non-alphabetic characters from a string.
@@ -60,6 +53,16 @@ mb_internal_encoding(LOGD_ENCODING);
  */
 function filter_nonalpha($string) {
 	return preg_replace("/[^[:alpha:]]/ui", '', $string);
+}
+
+/**
+ * Filters all characters that are not: letter, 0-9, _ or -.
+ *
+ * @param string $string The string which has to be sanitized
+ * @return string The sanitized string
+ */
+function filter_word($string) {
+	return preg_replace("/[^\p{L}0-9_-]/u", '', $string);
 }
 
 /**
@@ -82,11 +85,3 @@ function debug($string) {
 function get_gameuri($action) {
 	return sprintf("%s/%s", LOGD_URI_ABS, $action);
 }
-
-// Autoload-Magic
-set_include_path(get_include_path() . PATH_SEPARATOR . LOGD_LIB . PATH_SEPARATOR);
-spl_autoload_extensions(LOGD_EXT);
-spl_autoload_register();
-
-// Additional debug
-debug("<b>INT_MAX:</b> ".PHP_INT_MAX);

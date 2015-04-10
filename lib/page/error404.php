@@ -17,6 +17,7 @@ class Error404 implements api, errorapi, \Modelitem {
 	}
 	
 	public function set_arguments(array $args) {$this->args = $args;}
+	public function get_arguments() { return $this->args; }
 	public function execute() {}
 	
 	public function get_model() { return $this->model; }

@@ -43,18 +43,51 @@ class Select extends Base implements \Countable {
 		return $this;
 	}
 	
-	public function innerjoin($left_field, array $right_field, $operator = self::OPERATOR_EQ) {
+	public function innerjoin($left_field, $right_field = NULL, $operator = self::OPERATOR_EQ) {
+        if(empty($right_field)) {
+            // Magic
+            $foreign_table = $left_field;
+            $right_field = array($foreign_table, "id"); 
+            $left_field = "{$foreign_table}_id";
+        }
+        else {
+            if(is_array($left_field) && !is_array($right_field)) {
+                $foreign_table = $left_field[0];
+            }
+            elseif(!is_array($left_field) && is_array($right_field)) {
+                $foreign_table = $right_field[0];
+            }
+        }
+        
 		array_push($this->fragments["JOIN"], array(
 			"join-type" => self::JOIN_INNER,
 			"left-field" => (is_array($left_field) ? $left_field[1] : $left_field),
 			"left-table" => (is_array($left_field) ? $left_field[0] : $this->table),
-			"right-field" => $right_field[1],
-			"right-table" => $right_field[0],
+			"right-field" => (is_array($right_field) ? $right_field[1] : $right_field),
+			"right-table" => (is_array($right_field) ? $right_field[0] : $this->table),
 			"operator" => $operator,
+            "foreign-table" => $foreign_table,
+            "ON" => array(),
 		));
 		
 		return $this;
 	}
+    
+    public function on($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
+        $lastjoin = count($this->fragments["JOIN"]) - 1;
+        if($field === NULL) {
+            $this->fragments["JOIN"][$lastjoin]["ON"] = array();
+        }
+        else {
+            array_push($this->fragments["JOIN"][$lastjoin]["ON"], array(
+                "field" => $field,
+				"value" => $value, 
+				"operator" => $operator,
+            ));
+        }
+        
+        return $this;
+    }
 	
 	public function where($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
 		if($field === NULL) {
@@ -223,6 +256,27 @@ class Select extends Base implements \Countable {
 					$clause["operator"],
 					$clause["right-table"], $clause["right-field"]
 				);
+                
+                // Additional ON-Clauses
+                foreach($clause["ON"] as $onclause) {
+                    $query .= " AND\n\t";
+                    
+                    if(is_null($onclause["value"])) {
+                        if($onclause["operator"] == self::OPERATOR_EQ) {
+                            $onclause["operator"] = self::OPERATOR_IS;
+                        }
+                        elseif($onclause["operator"] == self::OPERATOR_NEQ) {
+                            $onclause["operator"] = self::OPERATOR_ISNOT;
+                        }
+
+                        $query .= sprintf("`%s`.`%s` %s NULL", $clause["foreign-table"], $onclause["field"], $onclause["operator"]);
+                    }
+                    else {
+                        $fieldvar = ":".$clause["foreign-table"]."_on_field_".$onclause["field"];
+                        $query .= sprintf("`%s`.`%s` %s %s", $clause["foreign-table"], $onclause["field"], $onclause["operator"], $fieldvar);
+                        $args[$fieldvar] = $onclause["value"];
+                    }
+                }
 			}
 		}
 		

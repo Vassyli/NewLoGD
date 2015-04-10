@@ -54,6 +54,8 @@ abstract class Base implements api, \Basicmodelitem {
 	
 	// @inheritDoc
 	public function set_arguments(array $args) {$this->arguments = $args;}
+	// @inheritDoc
+	public function get_arguments() {return $this->arguments; }
 	
 	// @inheritDoc
 	public function get_model() { return $this->model; }

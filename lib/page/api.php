@@ -34,6 +34,12 @@ interface api {
 	 */
 	public function set_arguments(array $args);
 	/**
+	 * Gets additional arguments from the page.
+	 * 
+	 * return array Additional $_GET arguments
+	 */
+	public function get_arguments();
+	/**
 	 * Executes all controller code
 	 */
 	public function execute();	

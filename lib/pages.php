@@ -9,6 +9,23 @@ class Pages implements Submodel {
 		$this->model = $model;
 		$this->set_lazy_keys(array("id", "action"));
 	}
+    
+    public function all() {
+        $query = $this->model->from("pages");
+        $instances = array();
+        while($row = $query->fetch()) {
+            $classname = $this->get_classname($row["type"]);
+            if(!class_exists($classname)) {
+                $classname = $this->get_classname($row["node"]);
+            }
+            
+            $page = new $classname($this->model, $row);
+            array_push($instances, $page);
+            $this->set_lazy($page);
+        }
+        
+        return $instances;
+    }
 	
 	public function getby_id($id) {
 		if($this->has_lazy("id", $id) === false) {
@@ -82,6 +99,7 @@ class Pages implements Submodel {
 		
 		return $page;
 	}
+    
 	
 	protected function get_classname($type) {
 		return sprintf("\Page\%s", filter_var($type, FILTER_CALLBACK, array("options" => "filter_nonalpha")));

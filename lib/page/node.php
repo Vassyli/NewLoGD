@@ -24,20 +24,26 @@ class Node extends Base {
 	public function execute() {
 		// Execute Modules
 		foreach($this->modules as $module) {
-			$module->execute();
+			if(empty($arguments[0]) || $arguments[0] == $module->get_class()) {
+				$module->execute();
+			}
 		}
 	}
 	
 	public function output() {
+		$arguments = $this->get_arguments();
 		$maincontent = $this->get_parsed_content();
 		
 		$modulecontent = "";
 		
 		foreach($this->modules as $module) {
-			$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->get_name(), $this->parser->parse($module->output()));
+			// Execute module only if first argument is empty or equals the module
+			if(empty($arguments[0]) || $arguments[0] == $module->get_class()) {
+				$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->get_name(), $this->parser->parse($module->output()));
+			}
 		}
 		
-		return $maincontent.$modulecontent;;
+		return $maincontent.$modulecontent;
 	}
 	
 	public function load_navigation() {

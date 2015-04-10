@@ -17,13 +17,14 @@ class Error403 implements api, errorapi, \Modelitem {
 	}
 	
 	public function set_arguments(array $args) {$this->args = $args;}
+	public function get_arguments() { return $this->args; }
 	public function execute() {}
 	
 	public function get_model() { return $this->model; }
 	public function get_id() { return -ERROR_ACCESS_FORBIDDEN; }
 	public function get_type() { return "error403"; }
 	public function get_title() { return "Error 403"; }
-	public function get_subtitle() { return "Seite nicht gefunden."; }
+	public function get_subtitle() { return "Zugriff verboten."; }
 	public function get_action() { return $this->action; }
 	public function get_content() { 
 		$arr = array(LOGD_URI_ABS, $this->action); 
