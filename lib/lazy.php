@@ -32,7 +32,7 @@ trait lazy {
 	
 	private function set_lazy(Modelitem $instance) {
 		foreach($this->lazy_keys as $key) {
-			$method = "get_".$key;
+			$method = "get".$key;
 			$this->lazy[$key][$instance->$method()] = $instance;
 		}
 	}
@@ -49,9 +49,9 @@ trait lazy {
 		elseif($instances instanceof Modelitem) {
 			if(in_array($instances, $this->lazyset[$set_key]) == false) {
 				// Check if there is already an instance of this object
-				if($this->has_lazy("id", $instances->get_id())) {
+				if($this->has_lazy("id", $instances->getId())) {
 					debug("LazyLoading: Get from Memory Storage");
-					$otherinstance = $this->get_lazy("id", $instance->get_id());
+					$otherinstance = $this->get_lazy("id", $instance->getId());
 					array_push($this->lazyset[$set_key], $otherinstance);
 					return $otherinstance;
 				}

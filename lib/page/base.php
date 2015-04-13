@@ -45,47 +45,47 @@ abstract class Base implements api, \Basicmodelitem {
 		
 		debug(sprintf(
 			"<b>Page Flags:</b>\n  [%s] Editable\n  [%s] Deletable\n  [%s] No parse\n  [%s] Keep HTML",
-			($this->is_editable()?"X":" "),
-			($this->is_deletable()?"X":" "),
-			($this->use_parser()?" ":"X"),
-			($this->keep_html()?"X":" ")
+			($this->isEditable()?"X":" "),
+			($this->isDeletable()?"X":" "),
+			($this->useParser()?" ":"X"),
+			($this->keepHtml()?"X":" ")
 		));
 	}
 	
 	// @inheritDoc
 	public function set_arguments(array $args) {$this->arguments = $args;}
 	// @inheritDoc
-	public function get_arguments() {return $this->arguments; }
+	public function getArguments() {return $this->arguments; }
 	
 	// @inheritDoc
-	public function get_model() { return $this->model; }
+	public function getModel() { return $this->model; }
 	// @inheritDoc
-	public function get_id() { return $this->id; }
+	public function getId() { return $this->id; }
 	// @inheritDoc
-	public function get_type() { return $this->type; }
+	public function getType() { return $this->type; }
 	// @inheritDoc
-	public function get_action() { return $this->action; }
+	public function getAction() { return $this->action; }
 	// @inheritDoc
-	public function get_title() { return $this->title; }
+	public function getTitle() { return $this->title; }
 	// @inheritDoc
-	public function get_subtitle() { return $this->subtitle; }
+	public function getSubtitle() { return $this->subtitle; }
 	// @inheritDoc
-	public function get_content() {return $this->content;}
+	public function getContent() {return $this->content;}
 	// @inheritDoc
-	public function get_flags() { return $this->flags; }
+	public function getFlags() { return $this->flags; }
 	// @inheritDoc
-	public function check_access($flag) {
+	public function checkAccess($flag) {
 		return $this->access & $flag ? true : false;
 	}
 	
 	// @inheritDoc
-	public function is_editable() { return ($this->flags & self::FLAG_IS_EDITABLE ? true : false); }
+	public function isEditable() { return ($this->flags & self::FLAG_IS_EDITABLE ? true : false); }
 	// @inheritDoc
-	public function is_deletable() { return ($this->flags & self::FLAG_IS_DELETABLE ? true : false); }
+	public function isDeletable() { return ($this->flags & self::FLAG_IS_DELETABLE ? true : false); }
 	// @inheritDoc
-	public function use_parser() { return ($this->flags & self::FLAG_NO_PARSE ? false : true); }
+	public function useParser() { return ($this->flags & self::FLAG_NO_PARSE ? false : true); }
 	// @inheritDoc
-	public function keep_html() { return ($this->flags & self::FLAG_KEEP_HTML ? true : false); }
+	public function keepHtml() { return ($this->flags & self::FLAG_KEEP_HTML ? true : false); }
 	// @inheritDoc
-	public function has_output() {return ($this->flags & self::FLAG_HAS_NO_OUTPUT ? false : true); }
+	public function hasOutput() {return ($this->flags & self::FLAG_HAS_NO_OUTPUT ? false : true); }
 }

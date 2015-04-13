@@ -24,52 +24,52 @@ class Node extends Base {
 	public function execute() {
 		// Execute Modules
 		foreach($this->modules as $module) {
-			if(empty($arguments[0]) || $arguments[0] == $module->get_class()) {
+			if(empty($arguments[0]) || $arguments[0] == $module->getClass()) {
 				$module->execute();
 			}
 		}
 	}
 	
 	public function output() {
-		$arguments = $this->get_arguments();
+		$arguments = $this->getArguments();
 		$maincontent = $this->get_parsed_content();
 		
 		$modulecontent = "";
 		
 		foreach($this->modules as $module) {
 			// Execute module only if first argument is empty or equals the module
-			if(empty($arguments[0]) || $arguments[0] == $module->get_class()) {
-				$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->get_name(), $this->parser->parse($module->output()));
+			if(empty($arguments[0]) || $arguments[0] == $module->getClass()) {
+				$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->getName(), $this->parser->parse($module->output()));
 			}
 		}
 		
 		return $maincontent.$modulecontent;
 	}
 	
-	public function load_navigation() {
+	public function loadNavigation() {
 		if($this->navigation === NULL) {
 			$this->navigation = new Navigation\Container();
-			$this->navigation->add_bulk($this->model->get("Navigations")->getby_page_id($this->get_id()));
+			$this->navigation->add_bulk($this->model->get("Navigations")->getby_page_id($this->getId()));
 		}
 	}
 	
-	public function get_navigation() {
+	public function getNavigation() {
 		return $this->navigation;
 	}
 	
 	protected function load_localmodules() {
-		$this->modules = $this->model->get("Localmodules")->getby_page_id($this->get_id());
+		$this->modules = $this->model->get("Localmodules")->getby_page_id($this->getId());
 	}
 	
 	public function get_parsed_content() {
 		if($this->block_output === false) {
-			$content = $this->get_content();
+			$content = $this->getContent();
 			
-			if($this->keep_html() === false) {
+			if($this->keepHtml() === false) {
 				$content = HTMLSpecialchars($content, ENT_HTML5, LOGD_ENCODING);
 			}
 			
-			if($this->use_parser() === true) {
+			if($this->useParser() === true) {
 				$content = $this->parser->parse($content);
 			}
 			

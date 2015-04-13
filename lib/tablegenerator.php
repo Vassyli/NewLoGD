@@ -32,24 +32,36 @@ class TableGenerator extends Datatypes {
             if(is_array($row)) {
                 foreach($this->cols as $id => $col) {
                     $content = htmlspecialchars($row[$id]);
-                    $buffer .= "\t\t<td>{$content}</td>";
+                    $buffer .= "\t\t<td class=\"".$this->getCellClassType($col["fieldtype"])."\">{$content}</td>\n";
                 }
             }
             elseif($row instanceof \Modelitem) {
                 foreach($this->cols as $id => $col) {
+                    $content = "";
                     $field = filter_var($id, FILTER_CALLBACK, array("options" => "filter_word"));
                     $methodname = "get".$field;
-                    if(!method_exists($row, $methodname)) {
-                        // Support of oldstyle method names (Deprecated)
-                        $methodname = "get_".$field;
+                    
+                    if(!is_numeric($field)) {           
+                        $content = htmlspecialchars($row->$methodname());
+                        // Use later the property of $col to check fieldtype
+                        if(mb_strlen($content) > 255) {
+                            $content = mb_substr($content, 0, 255)."[...]";
+                        }
+                    }
+                    else {
+                        // Numeric Field have special meanings
+                        $content = $col["custom-content"];
+                        $args = array();
+                        
+                        foreach($col["custom-variables"] as $var) {
+                            $methodname = "get".filter_var($var, FILTER_CALLBACK, array("options" => "filter_word"));
+                            array_push($args, $row->$methodname());
+                        }
+                        
+                        $content = vsprintf($content, $args);
                     }
                     
-                    $content = htmlspecialchars($row->$methodname());
-                    // Use later the property of $col to check fieldtype
-                    if(mb_strlen($content) > 255) {
-                        $content = mb_substr($content, 0, 255)."[...]";
-                    }
-                    $buffer .= "\t\t<td>{$content}</td>";
+                    $buffer .= "\t\t<td class=\"".$this->getCellClassType($col["fieldtype"])."\">{$content}</td>\n";
                 }
             }
             else {
@@ -61,10 +73,21 @@ class TableGenerator extends Datatypes {
         $buffer.= "</table>";
         return $buffer;
 	}
+    
+    protected function getCellClassType($type) {
+        switch($type) {
+            case self::TYPE_LINE:
+            default:
+                return "datatype_text";
+        }
+    }
 	
-	public function addCol($col_id, $col_title) {
+	public function addCol($col_id, $col_title, $options = array()) {
         $this->cols[$col_id] = array(
             "title" => $col_title,
+            "fieldtype" => isset($options["type"]) ? $options["type"] : self::TYPE_LINE,
+            "custom-content" => isset($options["custom-content"]) ? $options["custom-content"] : NULL,
+            "custom-variables" => isset($options["custom-variables"]) ? $options["custom-variables"] : array(),
         );
 		return $this;
 	}

@@ -17,7 +17,7 @@ class Item implements \Truemodelitem, ItemAPI {
 	const DEFAULT_ACTION = NULL;
 	const DEFAULT_TITLE = "";
 	
-	public function __construct($model) {
+	public function __construct(\Model $model) {
 		$this->model = $model;
 	}
 	
@@ -37,8 +37,8 @@ class Item implements \Truemodelitem, ItemAPI {
 		}
 	}
 	
-	public function get_id()       {return $this->id;}
-	public function get_parentid() {return $this->parentid;}
-	public function get_action()   {return $this->action;}
-	public function get_title()    {return $this->title;}
+	public function getId()       {return $this->id;}
+	public function getParentid() {return $this->parentid;}
+	public function getAction()   {return $this->action;}
+	public function getTitle()    {return $this->title;}
 }

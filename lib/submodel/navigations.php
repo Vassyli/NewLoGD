@@ -1,11 +1,13 @@
 <?php
 
-class Navigations implements Submodel {
-	use lazy;
+namespace Submodel;
+
+class Navigations implements SubmodelInterface {
+	use \lazy;
 	
 	private $model;
 	
-	public function __construct(Model $model) {
+	public function __construct(\Model $model) {
 		$this->model = $model;
 		$this->set_lazy_keys();
 		$this->set_lazyset_keys(array("page_id"));

@@ -178,7 +178,7 @@ class Select extends Base implements \Countable {
 	protected function build_query() {
 		$query = "";
 		$args = array();
-		$table = $this->model->add_prefix($this->table);
+		$table = $this->model->addPrefix($this->table);
 		
 		// SELECT 
 		$query .= "SELECT\n\t";
@@ -206,7 +206,7 @@ class Select extends Base implements \Countable {
 						$field = $fieldclass[1];
 					}
 					else {
-						$table = $this->model->add_prefix($fieldInfo["table"]);
+						$table = $this->model->addPrefix($fieldInfo["table"]);
 						$field = $fieldclass;
 					}
 					
@@ -227,14 +227,14 @@ class Select extends Base implements \Countable {
 				else {
 					if(empty($fieldInfo["alias"])) {
 						if($fieldInfo["field"] == "*") {
-							$query .= sprintf("`%s`.*", $this->model->add_prefix($fieldInfo["table"]));
+							$query .= sprintf("`%s`.*", $this->model->addPrefix($fieldInfo["table"]));
 						}
 						else {
-							$query .= sprintf("`%s`.`%s`", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"]);
+							$query .= sprintf("`%s`.`%s`", $this->model->addPrefix($fieldInfo["table"]), $fieldInfo["field"]);
 						}
 					}
 					else {
-						$query .= sprintf("`%s`.`%s` AS \"%s\"", $this->model->add_prefix($fieldInfo["table"]), $fieldInfo["field"], $fieldInfo["alias"]);
+						$query .= sprintf("`%s`.`%s` AS \"%s\"", $this->model->addPrefix($fieldInfo["table"]), $fieldInfo["field"], $fieldInfo["alias"]);
 					}
 				}
 				

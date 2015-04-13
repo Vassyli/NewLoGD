@@ -12,7 +12,7 @@ class Tableedit extends \LocalmoduleBasis {
 	}
 	
 	public function execute() {		
-		$arguments = $this->page->get_arguments();
+		$arguments = $this->page->getArguments();
 		
 		if(empty($arguments[0])) {
 		}
@@ -28,12 +28,12 @@ class Tableedit extends \LocalmoduleBasis {
 	}
 	
 	public function output() {
-		$arguments = $this->page->get_arguments();
+		$arguments = $this->page->getArguments();
 		$buffer = "";
 		
 		if(empty($arguments[0])) {
 			// Empty Argument - Show a table of all items.
-			$buffer = $this->get_table()->getHtml();
+			$buffer = $this->getTable()->getHtml();
 		}
 		elseif(empty($arguments[1])) {	
 		}
@@ -46,20 +46,33 @@ class Tableedit extends \LocalmoduleBasis {
 		return $buffer;
 	}
 	
-	protected function get_form() {
+	protected function getForm() {
 		
 	}
 	
-	protected function get_table() {
-        $dbtablename = filter_var($this->get_pageconfig_field("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
+	protected function getTable() {
+        $dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
         //SELECT `table_fields`.* FROM `table_fields` INNER JOIN `tables` ON `tables`.id = `table_fields`.`table_id` and `tables`.`name` = 'pages'
         $fields = $this->model->get("TableFields")->getByTablename($dbtablename);
         $data = $this->model->get("Pages")->all();
         
 		$table = new \TableGenerator();
+        $url_e = get_gameuri($this->page->getAction(), array("edit", "%s"));
+        $url_x = get_gameuri($this->page->getAction(), array("drop", "%s"));
+        var_dump($url_e, $url_x);
+        $table->addCol(0, "Optionen", array(
+                "custom-content" => "[<a href=\"$url_e\">E</a>] [<a href=\"$url_x\">X</a>]",
+                "custom-variables" => array("id", "id"),
+        ));
         
         foreach($fields as $row) {
-            $table->addCol($row["fieldname"], $row["description"]);
+            $table->addCol(
+                $row->getFieldname(), 
+                $row->getDescription(), 
+                array(
+                    "type" => $row->getFieldtype(),
+                )
+            );
         }
           
         $table->addRows($data);

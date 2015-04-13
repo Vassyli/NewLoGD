@@ -79,7 +79,7 @@ class InsertInto extends Base {
 	}
 	
 	protected function build_query() {
-		$table = $this->model->add_prefix($this->table);
+		$table = $this->model->addPrefix($this->table);
 		$fields = "";
 		$values = "";
 		$i = 0;

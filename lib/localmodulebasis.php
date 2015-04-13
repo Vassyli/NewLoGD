@@ -17,19 +17,19 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
 		$this->description = $row['description'];
 		$this->active = (bool)$row['active'];
 		
-		$this->set_pageconfig($row['pageconfig']);
+		$this->setPageconfig($row['pageconfig']);
 	}
 	
-	public function get_id() {return $this->id;}
-	public function get_class() {return $this->class; }
-	public function get_name() {return $this->name;}
-	public function get_description() {return $this->description;}
+	public function getId() {return $this->id;}
+	public function getClass() {return $this->class; }
+	public function getName() {return $this->name;}
+	public function getDescription() {return $this->description;}
 	
-	protected function set_pageconfig($pageconfig) {
+	protected function setPageconfig($pageconfig) {
 		$this->pageconfig = json_decode($pageconfig, true);
 	}
 	
-	public function get_pageconfig_field($key) {
+	public function getPageconfigField($key) {
 		if(isset($this->pageconfig[$key])) {
 			return $this->pageconfig[$key];
 		}

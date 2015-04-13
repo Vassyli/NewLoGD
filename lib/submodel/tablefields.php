@@ -1,13 +1,20 @@
 <?php
+/**
+ * NewLoGD
+ *
+ * @author      Basilius Sauter <basilius.sauter@hispeed.ch>
+ * @copyright   Copyright (c) 2015, Basilius Sauter
+ * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
+ */
 
 namespace Submodel;
 
-class TableFields implements Submodel {
+class TableFields implements SubmodelInterface {
 	use \lazy;
 	
 	private $model;
 	
-	public function __construct(Model $model) {
+	public function __construct(\Model $model) {
 		$this->model = $model;
 		$this->set_lazy_keys();
 		$this->set_lazyset_keys(array("name"));
@@ -19,7 +26,6 @@ class TableFields implements Submodel {
 			return array();
 		}
 		else {
-			//$result = $this->model->from("navigation")->where("page_id", $page_id)->orderby("parentid")->orderby("action", \Query\Select::ORDER_ASC, true);
 			$result = $this->model->from("table_fields")
                 ->select("*")
                 ->select(array("tables", "name"))
@@ -28,9 +34,9 @@ class TableFields implements Submodel {
 
 			$instances = array();
 		
-			//while($row = $result->fetchObject("\Navigation\Item", array($this->model))) {
-            while($row = $result->fetch()) {
-				//$i = $this->set_lazyset("name", $row);
+			while($row = $result->fetchObject("\Submodel\Item\TableFieldItem", array($this->model))) {
+            //while($row = $result->fetch()) {
+				$i = $this->set_lazyset("name", $row);
 				array_push($instances, $row);
 			}
 			

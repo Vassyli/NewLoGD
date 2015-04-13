@@ -37,16 +37,16 @@ class View {
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
 		
 		// Start output handler only if the Page has output
-		if($page->has_output()) {
+		if($page->hasOutput()) {
 			// Get template handler
 			$template = new Template("default");
 
 			// Load navigation
-			$page->load_navigation();
+			$page->loadNavigation();
 
 			// Set some additional template variables
-			$template->set_page($page);
-			$template->set_copyright(LOGD_COPYRIGHT);
+			$template->setPage($page);
+			$template->setCopyright(LOGD_COPYRIGHT);
 
 			// Get the generated template
 			$buffer = $template->output();

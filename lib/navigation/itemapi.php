@@ -3,8 +3,8 @@
 namespace Navigation;
 
 interface ItemAPI {
-	public function get_id();
-	public function get_parentid();
-	public function get_action();
-	public function get_title();
+	public function getId();
+	public function getParentid();
+	public function getAction();
+	public function getTitle();
 }

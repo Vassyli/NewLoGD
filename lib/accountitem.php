@@ -1,8 +1,10 @@
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * NewLoGD
+ *
+ * @author      Basilius Sauter <basilius.sauter@hispeed.ch>
+ * @copyright   Copyright (c) 2015, Basilius Sauter
+ * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
  */
 
 class Accountitem implements \Truemodelitem {
@@ -18,7 +20,7 @@ class Accountitem implements \Truemodelitem {
 	const DEFAULT_EMAIL = "";
 	const DEFAULT_PASSWORD = "";
 	
-	public function __construct($model) {
+	public function __construct(\Model $model) {
 		$this->model = $model;
 	}
 	
@@ -36,17 +38,17 @@ class Accountitem implements \Truemodelitem {
 		}
 	}
 	
-	public function get_id()       {return $this->id;}
-	public function get_name() {return $this->name;}
-	public function get_email()   {return $this->email;}
-	public function get_password()    {return $this->password;}
+	public function getId()       {return $this->id;}
+	public function getName() {return $this->name;}
+	public function getEmail()   {return $this->email;}
+	public function getPassword()    {return $this->password;}
 	
-	public function set_password($password) {$this->password = $password;}
+	public function setPassword($password) {$this->password = $password;}
 	
-	public function verify_password($password, $update = true) {
-		if(password_verify($password, $this->get_password())) {
-			if(password_needs_rehash($this->get_password(),  Accounts::HASH_ALGO)) {
-				$this->set_password(Accounts::hash());
+	public function verifyPassword($password, $update = true) {
+		if(password_verify($password, $this->getPassword())) {
+			if(password_needs_rehash($this->getPassword(),  Accounts::HASH_ALGO)) {
+				$this->setPassword(Accounts::hash());
 			}
 			
 			return true;

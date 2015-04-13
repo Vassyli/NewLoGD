@@ -47,9 +47,9 @@ class Registration extends \LocalmoduleBasis {
 	
 	protected function get_form() {
 		if($this->form === NULL) {
-			$this->form = new \FormGenerator("Registrierungs-Formular", get_gameuri($this->page->get_action()));
+			$this->form = new \FormGenerator("Registrierungs-Formular", get_gameuri($this->page->getAction()));
 			$this->form->add_line(
-					$this->get_pageconfig_field("name_fieldname"), 
+					$this->getPageconfigField("name_fieldname"), 
 					"name", 
 					"", 
 					array(
@@ -60,7 +60,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->add_password(
-					$this->get_pageconfig_field("password1_fieldname"), 
+					$this->getPageconfigField("password1_fieldname"), 
 					"password1",
 					array(
 						"min-length" => 8,
@@ -71,7 +71,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->add_password(
-					$this->get_pageconfig_field("password2_fieldname"), 
+					$this->getPageconfigField("password2_fieldname"), 
 					"password2",
 					array(
 						"min-length" => 8,
@@ -81,7 +81,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->add_email(
-					$this->get_pageconfig_field("email1_fieldname"),
+					$this->getPageconfigField("email1_fieldname"),
 					"email1",
 					"",
 					array(
@@ -92,7 +92,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->add_email(
-					$this->get_pageconfig_field("email2_fieldname"),
+					$this->getPageconfigField("email2_fieldname"),
 					"email2",
 					"",
 					array(
@@ -101,7 +101,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->add_submitbutton(
-					$this->get_pageconfig_field("submitbutton_name"),
+					$this->getPageconfigField("submitbutton_name"),
 					"register_submit",
 					"1"
 				)

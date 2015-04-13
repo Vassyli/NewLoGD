@@ -1,11 +1,13 @@
 <?php
 
-class Pages implements Submodel {
-	use lazy;
+namespace Submodel;
+
+class Pages implements SubmodelInterface {
+	use \lazy;
 	
 	private $model;
 	
-	public function __construct(Model $model) {
+	public function __construct(\Model $model) {
 		$this->model = $model;
 		$this->set_lazy_keys(array("id", "action"));
 	}

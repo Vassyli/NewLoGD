@@ -5,8 +5,8 @@
 		<meta charset="utf-8">
 		
 		<!-- Ressources -->
-		<link rel="stylesheet" type="text/css" href="<?=$this->get_template_uribasepath() ?>normalize.css" media="screen">
-		<link rel="stylesheet" type="text/css" href="<?=$this->get_template_uribasepath() ?>css/<?=$this->get_cssfilename() ?>" media="screen">
+		<link rel="stylesheet" type="text/css" href="<?=$this->getTemplateUribasepath() ?>normalize.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="<?=$this->getTemplateUribasepath() ?>css/<?=$this->getCssFilename() ?>" media="screen">
 		
 		<!-- Title -->
 		<title></title>
@@ -15,9 +15,9 @@
 	<body>
 		<div id="container">
 			<div id="row-top">
-				<div id="logo-container"><img id="logo" src="<?=$this->get_template_uribasepath("ressource/logindragon.png") ?>" /></div>
+				<div id="logo-container"><img id="logo" src="<?=$this->getTemplateUribasepath("ressource/logindragon.png") ?>" /></div>
 				<nav id="main-nav"><div class="main-nav-item">{forum}</div></nav>
-				<?php if($this->get_model()->get("Session")->is_loggedin() === false): ?>
+				<?php if($this->getModel()->get("Session")->is_loggedin() === false): ?>
 				<div id="loginform"><form action="<?=get_gameuri("login") ?>" method="post">
 					<fieldset>
 						<label><span class="sr-only">E-Mail</span><input placeholder="E-Mail" type="email" name="email" /></label>
@@ -29,9 +29,9 @@
 				</form></div>
 				<?php else: ?>
 				<div id="charstats">
-					ID: <?=$this->get_model()->get("Accounts")->get_active()->get_id() ?><br />
-					Name: <?=$this->get_model()->get("Accounts")->get_active()->get_name() ?><br />
-					E-Mail: <?=$this->get_model()->get("Accounts")->get_active()->get_email() ?><br />
+					ID: <?=$this->getModel()->get("Accounts")->get_active()->getId() ?><br />
+					Name: <?=$this->getModel()->get("Accounts")->get_active()->getName() ?><br />
+					E-Mail: <?=$this->getModel()->get("Accounts")->get_active()->getEmail() ?><br />
 					<a href="<?=get_gameuri("logout") ?>">Ausloggen</a>
 				</div>
 				<?php endif; ?>
@@ -41,17 +41,17 @@
 				<div id="col-nav">
 					<nav class="nav-container">
 						<?php 
-						foreach($this->get_page()->get_navigation() as $k=>$v): 
+						foreach($this->getPage()->getNavigation() as $k=>$v): 
 							// Nav-Points with an $k = 0 have no parent, they do not need a header.
 							if($k !== 0):
 						?>
-							<div class="nav-item nav-title"><span><?=$v["item"]->get_title()?></span></div>
+							<div class="nav-item nav-title"><span><?=$v["item"]->getTitle()?></span></div>
 						<?php
 							endif;
 							foreach($v["childs"] as $l=>$w):
 								// Actual Nav-Points
 						?>
-							<div class="nav-item nav-link"><a href="<?=get_gameuri($w["item"]->get_action()) ?>"><?=$w["item"]->get_title()?></a></div>
+							<div class="nav-item nav-link"><a href="<?=get_gameuri($w["item"]->getAction()) ?>"><?=$w["item"]->getTitle()?></a></div>
 						<?php
 							endforeach;
 						endforeach;
@@ -60,22 +60,22 @@
 				</div>
 				
 				<div id="col-content">
-					<?php if(!empty($this->get_debug())): ?>
-					<div id="debug"><?=$this->get_debug() ?></div>
+					<?php if(!empty($this->getDebug())): ?>
+					<div id="debug"><?=$this->getDebug() ?></div>
 					<?php endif; ?>
 					
-					<h1><?=$this->get_page()->get_title(); 
-					if(!empty($this->get_page()->get_subtitle())): 
-						?> <small><?=$this->get_page()->get_subtitle()?></small><?php 
+					<h1><?=$this->getPage()->getTitle(); 
+					if(!empty($this->getPage()->getSubtitle())): 
+						?> <small><?=$this->getPage()->getSubtitle()?></small><?php 
 					endif; ?></h1>
 					
-					<?=$this->get_page()->output() ?> 
+					<?=$this->getPage()->output() ?> 
 				</div>
 			</div>
 			
 			<div id="row-bottom">	
-				<div id="row-bottom-copyright"><?=$this->get_copyright() ?></div>
-				<div id="row-bottom-pagegen"><?=$this->get_pagegen(); ?></div>
+				<div id="row-bottom-copyright"><?=$this->getCopyright() ?></div>
+				<div id="row-bottom-pagegen"><?=$this->getPagegen(); ?></div>
 			</div>
 		</div>
 	</body>

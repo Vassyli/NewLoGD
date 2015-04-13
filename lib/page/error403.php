@@ -17,16 +17,16 @@ class Error403 implements api, errorapi, \Modelitem {
 	}
 	
 	public function set_arguments(array $args) {$this->args = $args;}
-	public function get_arguments() { return $this->args; }
+	public function getArguments() { return $this->args; }
 	public function execute() {}
 	
-	public function get_model() { return $this->model; }
-	public function get_id() { return -ERROR_ACCESS_FORBIDDEN; }
-	public function get_type() { return "error403"; }
-	public function get_title() { return "Error 403"; }
-	public function get_subtitle() { return "Zugriff verboten."; }
-	public function get_action() { return $this->action; }
-	public function get_content() { 
+	public function getModel() { return $this->model; }
+	public function getId() { return -self::ERROR_ACCESS_FORBIDDEN; }
+	public function getType() { return "error403"; }
+	public function getTitle() { return "Error 403"; }
+	public function getSubtitle() { return "Zugriff verboten."; }
+	public function getAction() { return $this->action; }
+	public function getContent() { 
 		$arr = array(LOGD_URI_ABS, $this->action); 
 		array_push($arr, implode("/", $this->args)); 
 		
@@ -42,26 +42,26 @@ class Error403 implements api, errorapi, \Modelitem {
 		);
 	}
 	
-	public function get_flags() {return 48;}
-	public function check_access($flag) {
+	public function getFlags() {return 48;}
+	public function checkAccess($flag) {
 		return $this->access & $flag ? true : false;
 	}
-	public function is_editable() {return false;}
-	public function is_deletable(){return false;}
-	public function use_parser(){return false;}
-	public function keep_html(){return true;}
-	public function has_output(){return true;}
+	public function isEditable() {return false;}
+	public function isDeletable(){return false;}
+	public function useParser(){return false;}
+	public function keepHtml(){return true;}
+	public function hasOutput(){return true;}
 	
 	public function get_errorcode() { return self::ERROR_ACCESS_FORBIDDEN; }
 	
-	public function load_navigation() {}
-	public function get_navigation() {
+	public function loadNavigation() {}
+	public function getNavigation() {
 		$container = new Navigation\Container();
 		return $container;
 	}
 	
 	public function output() {
-		return $this->get_content();
+		return $this->getContent();
 	}
 	
 	public function initiate() {}

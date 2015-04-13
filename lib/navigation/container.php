@@ -31,25 +31,25 @@ class Container implements \IteratorAggregate {
 	public function add_bulk($rows) {
 		foreach($rows as $item) {
 			// Actual Link without an action
-			if($item->get_parentid() === NULL and $item->get_action() !== NULL) {
-				$this->navs[0]["childs"][$item->get_id()] = array(
+			if($item->getParentid() === NULL and $item->getAction() !== NULL) {
+				$this->navs[0]["childs"][$item->getId()] = array(
 					"item" => $item,
 				);
 			}
 			// Actual Link with a parent
-			elseif($item->get_parentid() !== NULL and $item->get_action() !== NULL) {
-				if(empty($this->navs[$item->get_parentid()])) {
-					debug(sprintf("Navigation-Item with ID=%i has a parent assigned that does not exist.\n", $item->get_id()));
+			elseif($item->getParentid() !== NULL and $item->getAction() !== NULL) {
+				if(empty($this->navs[$item->getParentid()])) {
+					debug(sprintf("Navigation-Item with ID=%i has a parent assigned that does not exist.\n", $item->getId()));
 				}
 				else {
-					$this->navs[$item->get_parentid()]["childs"][$item->get_id()] = array(
+					$this->navs[$item->getParentid()]["childs"][$item->getId()] = array(
 						"item" => $item,
 					);
 				}
 			}
 			// Link-Title - Let's ignore the parent
-			elseif($item->get_action() === NULL) {
-				$this->navs[$item->get_id()] = array(
+			elseif($item->getAction() === NULL) {
+				$this->navs[$item->getId()] = array(
 					"item" => $item,
 					"childs" => array(),
 				);

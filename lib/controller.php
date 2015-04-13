@@ -42,7 +42,7 @@ class Controller {
 		
 		// Check if user actually has access
 		if($this->model->get("Session")->is_loggedin() == false) {
-			if($page->check_access(\Page\api::ACCESS_ANONYMOUS)) {
+			if($page->checkAccess(\Page\api::ACCESS_ANONYMOUS)) {
 				// Anonymous Access ok
 			}
 			else {
@@ -50,7 +50,7 @@ class Controller {
 			}
 		}
 		else {
-			if($page->check_access(\Page\api::ACCESS_ACCOUNT)) {
+			if($page->checkAccess(\Page\api::ACCESS_ACCOUNT)) {
 				// Account Access ok
 			}
 			else {
@@ -68,7 +68,7 @@ class Controller {
 		$this->model->get("Session")->stop();
 		
 		// If the page has no output, it should redirect to somewhere.
-		if($page->has_output() === false) {
+		if($page->hasOutput() === false) {
 			die("Page has no output, should have redirect. Script was stopped in controller.");
 		}
 	}

@@ -176,6 +176,10 @@ input[type="submit"], button {
 	padding: 0.5em;
 }
 
+/**
+ * FORM
+ */
+
 fieldset {
 	width: 100%;
 	margin: 0;
@@ -228,3 +232,23 @@ fieldset legend {
 
 .form-group label:after{content: ":";}
 
+/**
+ * TABLE
+ */
+
+th {
+    border-top: 2px solid #999999;
+    border-bottom: 2px solid #999999;
+    
+    background-color: #006600;
+    
+    text-align: left;
+    font-weight: bold;
+}
+
+th, td {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    
+    vertical-align: top;
+}

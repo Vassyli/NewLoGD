@@ -6,14 +6,16 @@
  * @copyright   Copyright (c) 2015, Basilius Sauter
  * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
  */
+ 
+ namespace Submodel;
 
 /**
  * Contains and manages Session
  */
-class Session implements Submodel {
+class Session implements SubmodelInterface {
 	private $model;
 	
-	public function __construct(Model $model) {
+	public function __construct(\Model $model) {
 		$this->model = $model;
 	}
 	

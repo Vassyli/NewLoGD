@@ -82,6 +82,12 @@ function debug($string) {
  *
  * @param string $action The action for which a url has to be generated
  */
-function get_gameuri($action) {
-	return sprintf("%s/%s", LOGD_URI_ABS, $action);
+function get_gameuri($action, array $arguments = array()) {
+	$uri = sprintf("%s/%s", LOGD_URI_ABS, $action);
+    if(!empty($arguments)) {
+        foreach($arguments as $arg) {
+            $uri .= "/".$arg;
+        }
+    }
+    return $uri;
 }

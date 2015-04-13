@@ -23,7 +23,7 @@ class Login extends Base {
 	public function execute() {
 		$acc = $this->model->get("Accounts")->getby_email($this->model->get_postvalue("email"));
 		
-		if($acc !== false and $acc->verify_password($this->model->get_postvalue("password"))) {
+		if($acc !== false and $acc->verifyPassword($this->model->get_postvalue("password"))) {
 			$this->login_valid = 1;
 		}
 		else {
@@ -32,7 +32,7 @@ class Login extends Base {
 		
 		if($this->login_valid > 0) {
 			$this->model->get("Session")->login();
-			$this->model->get("Session")->set_active_account($acc->get_id());
+			$this->model->get("Session")->set_active_account($acc->getId());
 			header(sprintf("Location: %s", get_gameuri("ucp")));
 		}
 		else {
@@ -45,8 +45,8 @@ class Login extends Base {
 	public function output() {
 	}
 	
-	public function load_navigation() {}
-	public function get_navigation() {}
+	public function loadNavigation() {}
+	public function getNavigation() {}
 	protected function load_localmodules() {}
 	public function get_parsed_content() {return "";}
 	

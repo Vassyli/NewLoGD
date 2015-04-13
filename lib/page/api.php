@@ -38,7 +38,7 @@ interface api {
 	 * 
 	 * return array Additional $_GET arguments
 	 */
-	public function get_arguments();
+	public function getArguments();
 	/**
 	 * Executes all controller code
 	 */
@@ -52,95 +52,95 @@ interface api {
 	 * 
 	 * @return \Model Reference to the Model
 	 */
-	public function get_model();	
+	public function getModel();	
 	/**
 	 * Returns the ID of the page
 	 * 
 	 * @return string ID of the page
 	 */
-	public function get_id();	
+	public function getId();	
 	/**
 	 * Returns the type of the page
 	 * 
 	 * @return string Node of the page
 	 */
-	public function get_type();	
+	public function getType();	
 	/**
 	 * Returns the title of the page
 	 * 
 	 * @return string Title of the page
 	 */
-	public function get_title();	
+	public function getTitle();	
 	/**
 	 * Returns the subtitle of the page
 	 * 
 	 * @return string Subtitle of the page
 	 */
-	public function get_subtitle();
+	public function getSubtitle();
 	/**
 	 * Returns the action of the page
 	 * 
 	 * @return string action of the page
 	 */
-	public function get_action();
+	public function getAction();
 	/**
 	 * Returns the content of the page
 	 * 
 	 * @return string Content of the page
 	 */
-	public function get_content();
+	public function getContent();
 	/**
 	 * Preload the navigation
 	 */
-	public function load_navigation();	
+	public function loadNavigation();	
 	/**
 	 * Returns the title of the page
 	 * 
 	 * @return \Navigation\Container Container containing the navigation
 	 */
-	public function get_navigation();
+	public function getNavigation();
 	/*
 	 * Returns the flag-field
 	 * 
 	 * @return int All flags
 	 */
-	public function get_flags();
+	public function getFlags();
 	/*
 	 * Returns if the page has a certain access flag
 	 * 
 	 * @param int the Flag to check against.
 	 * @return bool true if the requested access flag is set.
 	 */
-	public function check_access($flag);
+	public function checkAccess($flag);
 	
 	/**
 	 * Checks if the page is editable
 	 * 
 	 * @return bool true if the page is editable, false if not.
 	 */
-	public function is_editable();
+	public function isEditable();
 	/**
 	 * Checks if the page is deletable
 	 * 
 	 * @return bool true if the page is deletable, false if not.
 	 */
-	public function is_deletable();
+	public function isDeletable();
 	/**
 	 * Checks if the page wants to use the parser (Checks the absence of self::FLAG_NO_PARSE)
 	 * 
 	 * @return bool true if the page is uses the parser, false if not.
 	 */
-	public function use_parser();
+	public function useParser();
 	/**
 	 * Checks if the page wants to keep it's HTML
 	 * 
 	 * @return bool true if the page wants to keep the HTML, false if not.
 	 */
-	public function keep_html();
+	public function keepHtml();
 	/**
 	 * Checks if a page wants to use default output handler
 	 * 
 	 * @return bool true if a page wants to use default output handler, false if not
 	 */
-	public function has_output();
+	public function hasOutput();
 }

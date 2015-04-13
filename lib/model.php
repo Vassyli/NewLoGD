@@ -51,7 +51,7 @@ class Model {
 		// Get db informations
 		Include LOGD_DBCONFIG;
 		
-		$this->set_type($DB_TYPE);                              // Set DB type
+		$this->setType($DB_TYPE);                              // Set DB type
 		$this->prefix = $DB_PREFIX;                             // Set prefix
 		$this->connect($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS); // Establish DB connection
 	}
@@ -61,7 +61,7 @@ class Model {
 	 *
 	 * @param string $type A identifier for the database type.
 	 */
-	private function set_type($type) {
+	private function setType($type) {
 		switch($type) {
 			case self::DB_MYSQL: $this->type = self::DB_MYSQL; break;
 			default: throw new Exception(sprintf("ModelError: Unknown DB Type: %s", $type));
@@ -95,7 +95,7 @@ class Model {
 	 * @param string $table Tablename which has get a prefix added
 	 * @return string The tablename with an added prefix
 	 */
-	public function add_prefix($table) {
+	public function addPrefix($table) {
 		return $this->prefix . $table;
 	}
 	
@@ -144,8 +144,9 @@ class Model {
 	 */
 	public function get($submodel) {
 		$submodel = strtolower($submodel);
+		$submodel = "Submodel\\{$submodel}";
 		if(!isset($this->submodels[$submodel])) {
-			if(in_array("Submodel", class_implements($submodel))) {
+			if(in_array("Submodel\SubmodelInterface", class_implements($submodel))) {
 				$this->submodels[$submodel] = new $submodel($this);
 			}
 			else {

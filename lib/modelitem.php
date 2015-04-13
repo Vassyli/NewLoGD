@@ -1,5 +1,5 @@
 <?php
 
 interface Modelitem {
-	public function get_id();
+	public function getId();
 }

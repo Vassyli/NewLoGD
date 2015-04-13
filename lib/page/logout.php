@@ -31,8 +31,8 @@ class Logout extends Base {
 	public function output() {
 	}
 	
-	public function load_navigation() {}
-	public function get_navigation() {}
+	public function loadNavigation() {}
+	public function getNavigation() {}
 	protected function load_localmodules() {}
 	public function get_parsed_content() {return "";}
 	
