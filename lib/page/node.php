@@ -39,7 +39,7 @@ class Node extends Base {
 		foreach($this->modules as $module) {
 			// Execute module only if first argument is empty or equals the module
 			if(empty($arguments[0]) || $arguments[0] == $module->getClass()) {
-				$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->getName(), $this->parser->parse($module->output()));
+				$modulecontent .= sprintf("\n\n<!--Content(Localmodule\\%s)-->\n%s", $module->getName(), $module->output());
 			}
 		}
 		

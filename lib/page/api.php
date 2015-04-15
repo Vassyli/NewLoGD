@@ -105,6 +105,12 @@ interface api {
 	 * @return int All flags
 	 */
 	public function getFlags();
+    /*
+	 * Returns the access-field
+	 * 
+	 * @return int All flags
+	 */
+	public function getAccess();
 	/*
 	 * Returns if the page has a certain access flag
 	 * 

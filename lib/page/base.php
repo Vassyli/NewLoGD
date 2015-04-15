@@ -73,6 +73,8 @@ abstract class Base implements api, \Basicmodelitem {
 	public function getContent() {return $this->content;}
 	// @inheritDoc
 	public function getFlags() { return $this->flags; }
+    // @inheritDoc
+	public function getAccess() { return $this->access; }
 	// @inheritDoc
 	public function checkAccess($flag) {
 		return $this->access & $flag ? true : false;

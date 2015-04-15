@@ -41,22 +41,7 @@ class Controller {
 		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
 		
 		// Check if user actually has access
-		if($this->model->get("Session")->is_loggedin() == false) {
-			if($page->checkAccess(\Page\api::ACCESS_ANONYMOUS)) {
-				// Anonymous Access ok
-			}
-			else {
-				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
-			}
-		}
-		else {
-			if($page->checkAccess(\Page\api::ACCESS_ACCOUNT)) {
-				// Account Access ok
-			}
-			else {
-				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
-			}
-		}
+        $page = $this->checkAccess($page);
 		
 		$page->initiate();
 		$page->set_arguments($this->model->get_res_arguments());
@@ -72,4 +57,25 @@ class Controller {
 			die("Page has no output, should have redirect. Script was stopped in controller.");
 		}
 	}
+    
+    protected function checkAccess(\Page\Api $page) {
+        if($this->model->get("Session")->is_loggedin() == false) {
+			if($page->checkAccess(\Page\api::ACCESS_ANONYMOUS)) {
+				// Anonymous Access ok
+			}
+			else {
+				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
+			}
+		}
+		else {
+			if($page->checkAccess(\Page\api::ACCESS_ACCOUNT)) {
+				// Account Access ok
+			}
+			else {
+				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
+			}
+		}
+        
+        return $page;
+    }
 }

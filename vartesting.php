@@ -11,10 +11,15 @@ header("Content-type: text/plain; charset=utf-8");
 	"submitbutton_name" => "Registrierung bestätigen",
 );*/
 
-$array = array(
-	"table-to-edit" => "pages",
-);
-
+$array = [
+    "enum" => [
+        0b0001 => "Anonymer Zugriff erlaubt",
+        0b0010 => "Zugriff auf Account-Level erlaubt",
+        0b0100 => "Zugriff auf Charakter-Ebene erlaubt, sofern Navigation möglich",
+        0b1000 => "Zugriff auf Charakter-Ebene immer erlaubt",
+    ]
+];
+    
 print json_encode($array, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_BIGINT_AS_STRING);
 
 print "\n";

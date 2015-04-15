@@ -35,7 +35,7 @@ class Registration extends \LocalmoduleBasis {
 	
 	public function output() {		
 		if($this->form_state >= 0) {
-			return $this->get_form()->get_HTML();
+			return $this->get_form()->getHtml();
 		}
 		elseif($this->form_state == -1) {
 			return "Beim Erstellen des Accounts ist etwas schief gegangen.";
@@ -48,7 +48,7 @@ class Registration extends \LocalmoduleBasis {
 	protected function get_form() {
 		if($this->form === NULL) {
 			$this->form = new \FormGenerator("Registrierungs-Formular", get_gameuri($this->page->getAction()));
-			$this->form->add_line(
+			$this->form->addLine(
 					$this->getPageconfigField("name_fieldname"), 
 					"name", 
 					"", 
@@ -59,7 +59,7 @@ class Registration extends \LocalmoduleBasis {
 						"callback" => array(array($this->model->get("Accounts"), "check_name"), "Der Name ist bereits in Verwendung"),
 					)
 				)
-				->add_password(
+				->addPassword(
 					$this->getPageconfigField("password1_fieldname"), 
 					"password1",
 					array(
@@ -70,7 +70,7 @@ class Registration extends \LocalmoduleBasis {
 						"crosscheck" => "password2",
 					)
 				)
-				->add_password(
+				->addPassword(
 					$this->getPageconfigField("password2_fieldname"), 
 					"password2",
 					array(
@@ -80,7 +80,7 @@ class Registration extends \LocalmoduleBasis {
 						"required" => true,
 					)
 				)
-				->add_email(
+				->addEmail(
 					$this->getPageconfigField("email1_fieldname"),
 					"email1",
 					"",
@@ -91,7 +91,7 @@ class Registration extends \LocalmoduleBasis {
 						"callback" => array(array($this->model->get("Accounts"), "check_email"), "Diese Email-Adresse ist bereits in Verwendung"),
 					)
 				)
-				->add_email(
+				->addEmail(
 					$this->getPageconfigField("email2_fieldname"),
 					"email2",
 					"",
@@ -100,7 +100,7 @@ class Registration extends \LocalmoduleBasis {
 						"required" => true,
 					)
 				)
-				->add_submitbutton(
+				->addSubmitButton(
 					$this->getPageconfigField("submitbutton_name"),
 					"register_submit",
 					"1"

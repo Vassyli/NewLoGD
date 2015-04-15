@@ -13,15 +13,14 @@ class Tableedit extends \LocalmoduleBasis {
 	
 	public function execute() {		
 		$arguments = $this->page->getArguments();
+        $subaction = isset($arguments[1]) ? $arguments[1] : "";
+        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
 		
 		if(empty($arguments[0])) {
 		}
-		elseif(empty($arguments[1])) {	
-			$this->page->block_output();
-		}
 		else {
 			$this->page->block_output();
-			switch($arguments[1]) {
+			switch($subaction) {
 
 			}
 		}
@@ -29,40 +28,82 @@ class Tableedit extends \LocalmoduleBasis {
 	
 	public function output() {
 		$arguments = $this->page->getArguments();
+        $subaction = isset($arguments[1]) ? $arguments[1] : "";
+        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
 		$buffer = "";
 		
 		if(empty($arguments[0])) {
 			// Empty Argument - Show a table of all items.
 			$buffer = $this->getTable()->getHtml();
 		}
-		elseif(empty($arguments[1])) {	
-		}
 		else {
-			switch($arguments[1]) {
-
+			switch($subaction) {
+                case "edit":
+                    $buffer = $this->getForm($id, "Editieren", $this->getModuleGameUri("edit", $id))->getHtml();
+                    break;
+                
+                case "drop":
+                    break;
+                
+                case "new":
+                    $buffer = $this->getForm($id, "Neu", $this->getModuleGameUri("new"))->getHtml();
+                    break;
 			}
 		}
 		
 		return $buffer;
 	}
+    
+    /**
+     * @return \Submodel\TableFields
+     */
+    protected function getFields() {
+        $dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
+        return $this->model->get("TableFields")->getByTablename($dbtablename);
+    }
 	
-	protected function getForm() {
-		
+    /**
+     * 
+     * @param int $id ID of row which has to be edited.
+     * @return \FormGenerator
+     */
+	protected function getForm($id = NULL, $title = "", $action = "") {
+        $fields = $this->getFields();
+        if(!is_null($id)) {
+            $page = $this->model->get("Pages")->getById($id);
+        }
+        
+		$formgenerator = new \FormGenerator($title, $action);
+        foreach($fields as $field) {
+            $formgenerator->addInput(
+                $field->getFieldtype(), 
+                $field->getDescription(), 
+                $field->getFieldname(), 
+                $page->{"get".$field->getFieldname()}(), [
+                    
+                ], $field->getProperty("flags", [])
+            );
+        }
+        $formgenerator->addSubmitButton("Bestätigen", "tableedit_submit", 1);
+        return $formgenerator;
 	}
 	
+    /**
+     * 
+     * @return \TableGenerator
+     */
 	protected function getTable() {
-        $dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
-        //SELECT `table_fields`.* FROM `table_fields` INNER JOIN `tables` ON `tables`.id = `table_fields`.`table_id` and `tables`.`name` = 'pages'
-        $fields = $this->model->get("TableFields")->getByTablename($dbtablename);
+        $fields = $this->getFields();
         $data = $this->model->get("Pages")->all();
         
 		$table = new \TableGenerator();
-        $url_e = get_gameuri($this->page->getAction(), array("edit", "%s"));
-        $url_x = get_gameuri($this->page->getAction(), array("drop", "%s"));
-        var_dump($url_e, $url_x);
+        $url_e = $this->getModuleGameUri("edit", "%s");
+        $url_x = $this->getModuleGameUri("drop", "%s");
         $table->addCol(0, "Optionen", array(
-                "custom-content" => "[<a href=\"$url_e\">E</a>] [<a href=\"$url_x\">X</a>]",
+                "custom-content" => array("[<a href=\"$url_e\">E</a>]", "[<a href=\"$url_x\">X</a>]"),
                 "custom-variables" => array("id", "id"),
+                "custom-check" => array("isEditable", "isDeletable"),
+                "custom-alternate" => array("[E]", "[X]")
         ));
         
         foreach($fields as $row) {

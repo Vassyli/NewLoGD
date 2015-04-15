@@ -47,7 +47,7 @@ class Accountitem implements \Truemodelitem {
 	
 	public function verifyPassword($password, $update = true) {
 		if(password_verify($password, $this->getPassword())) {
-			if(password_needs_rehash($this->getPassword(),  Accounts::HASH_ALGO)) {
+			if(password_needs_rehash($this->getPassword(),  \Submodel\Accounts::HASH_ALGO)) {
 				$this->setPassword(Accounts::hash());
 			}
 			

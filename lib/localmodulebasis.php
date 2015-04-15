@@ -34,4 +34,8 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
 			return $this->pageconfig[$key];
 		}
 	}
+    
+    protected function getModuleGameUri() {
+        return get_gameuri($this->page->getAction(), array_merge(array($this->getClass()), func_get_args()));
+    }
 }

@@ -29,7 +29,8 @@ a {
 
 a:hover { text-decoration: underline; }
 
-input:not([type="submit"]) {
+input:not([type="submit"]),
+textarea {
 	border: 1px solid black;
 	padding: 0.2em 0.5em;
 	color: #101010;
@@ -197,16 +198,18 @@ fieldset legend {
 }
 
 .form-group {
-	height: 2.5em;
+    margin: 0.5em 0em;
 }
 
-.form-group label {
+.form-group > label,
+.form-group > .label {
 	width: 33%;
 	padding-right: 1em;
 	box-sizing: border-box;
 	
 	display: inline-block;
 	
+    vertical-align: top;
 	text-align: right;
 	font-weight: bold;
 }
@@ -220,17 +223,41 @@ fieldset legend {
 	display: inline-block;
 }
 
-.form-group .skip-desc {
-	margin-left: 33.33%;
-	padding-left: 1em;
+.form-group .form-input * {border-radius: 0.25em; }
+.form-group .form-input input {
+    width: 100%; 
+    background-color: #DDDDDD;
+}
+.form-group .form-input textarea {
+    width: 100%; 
+    background-color: #DDDDDD; 
+    min-height: 10em;
 }
 
-.form-group .form-input * {border-radius: 0.25em; }
-.form-group .form-input input {width: 100%; background-color: #DDDDDD;}
-.form-errors label {color: #DD0000; }
-.form-errors input {background-color: #FFFF99;}
+.form-group .skip-desc {
+    margin-left: 33%;
+    padding-right: 2em;
+	padding-left: 1.2em;
+	box-sizing: border-box;
+}
 
-.form-group label:after{content: ":";}
+.form-errors > label,
+.form-errors > .label {color: #DD0000; }
+.form-errors input, .form-errors textarea {background-color: #FFFF99;}
+
+.form-group > label:after,
+.form-group > .label:after {content: ":";}
+
+.form-bitfield label {
+    display: block;
+}
+
+.form-bitfield input {
+    text-align: left;
+    max-width: 1em !important;
+    margin-right: 1em;
+}
+
 
 /**
  * TABLE

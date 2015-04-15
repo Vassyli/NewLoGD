@@ -30,7 +30,7 @@ class Localmodules implements SubmodelInterface {
 				
 			while($row = $result->fetch()) {
 				$classname = sprintf("\Localmodule\%s", filter_var($row["class"], FILTER_CALLBACK, array("options" => "filter_nonalpha")));
-				$instance = new $classname($this->model, $row, $this->model->get("Pages")->getby_id($page_id));
+				$instance = new $classname($this->model, $row, $this->model->get("Pages")->getbyId($page_id));
 				$this->set_lazyset("page_id", $instance);
 				array_push($set, $instance);
 			}

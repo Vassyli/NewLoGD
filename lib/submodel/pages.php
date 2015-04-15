@@ -29,7 +29,7 @@ class Pages implements SubmodelInterface {
         return $instances;
     }
 	
-	public function getby_id($id) {
+	public function getById($id) {
 		if($this->has_lazy("id", $id) === false) {
 			$query = $this->model->from("pages")
 				->where("id", $id);
@@ -48,6 +48,8 @@ class Pages implements SubmodelInterface {
 					$page = new $classname($this->model, $row);
 					$this->set_lazy($page);
 				}
+                
+                return $page;
 			}
 		}
 		else {

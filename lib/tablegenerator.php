@@ -50,15 +50,27 @@ class TableGenerator extends Datatypes {
                     }
                     else {
                         // Numeric Field have special meanings
-                        $content = $col["custom-content"];
-                        $args = array();
+                        $content = "";
                         
-                        foreach($col["custom-variables"] as $var) {
-                            $methodname = "get".filter_var($var, FILTER_CALLBACK, array("options" => "filter_word"));
-                            array_push($args, $row->$methodname());
+                        foreach($col["custom-content"] as $id => $customitem) {
+                            $content_temp = $customitem;
+                            $methodname = "get".filter_var($col["custom-variables"][$id], FILTER_CALLBACK, array("options" => "filter_word"));
+                            
+                            if(!empty($col["custom-check"][$id])) {
+                                if($row->{$col["custom-check"][$id]}() == true) {
+                                    $content_temp = sprintf($content_temp, htmlspecialchars($row->$methodname()));
+                                }
+                                else {
+                                    $content_temp = $col["custom-alternate"][$id];
+                                }
+                            }
+                            else {
+                                // Empty check => display always
+                                $content_temp = sprintf($content_temp, htmlspecialchars($row->$methodname()));
+                            }
+                            
+                            $content .= $content_temp;
                         }
-                        
-                        $content = vsprintf($content, $args);
                     }
                     
                     $buffer .= "\t\t<td class=\"".$this->getCellClassType($col["fieldtype"])."\">{$content}</td>\n";
@@ -82,13 +94,14 @@ class TableGenerator extends Datatypes {
         }
     }
 	
-	public function addCol($col_id, $col_title, $options = array()) {
-        $this->cols[$col_id] = array(
-            "title" => $col_title,
+	public function addCol($col_id, $col_title, array $options = []) {
+        $this->cols[$col_id] = ["title" => $col_title,
             "fieldtype" => isset($options["type"]) ? $options["type"] : self::TYPE_LINE,
-            "custom-content" => isset($options["custom-content"]) ? $options["custom-content"] : NULL,
-            "custom-variables" => isset($options["custom-variables"]) ? $options["custom-variables"] : array(),
-        );
+            "custom-content" => isset($options["custom-content"]) ? $options["custom-content"] : [],
+            "custom-variables" => isset($options["custom-variables"]) ? $options["custom-variables"] : [],
+            "custom-check" => isset($options["custom-check"]) ? $options["custom-check"] : [],
+            "custom-alternate" => isset($options["custom-alternate"]) ? $options["custom-alternate"] : [],
+        ];
 		return $this;
 	}
     
