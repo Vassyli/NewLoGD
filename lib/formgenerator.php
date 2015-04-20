@@ -130,13 +130,40 @@ HTML;
 			}
 			elseif(isset($values[$name])) {
 				// Trim value
-				$values[$name] = trim($values[$name]);
+                if(is_array($values[$name])) {
+                    $values[$name] = array_map("trim", $values[$name]);
+                }
+                else {
+                    $values[$name] = trim($values[$name]);
+                }
 				
 				$errors_before = $errors;
 				
 				// Validation depends always on the field type. For example, integer form fields need another validation/sanitation 
 				//  than varchar fields.
 				switch($inp["type"]) {
+                    case self::TYPE_BITFIELD:
+                        // Check if Bitfields are valid
+                        $maxfield = 0;
+                        $field = 0;
+                        foreach($inp["options"] as $key => $desc) {
+                            $maxfield |= intval($key);
+                        }
+                        
+                        foreach($values[$name] as $val) {
+                            $field |= intval($val);
+                        }
+                        
+                        if($field > $maxfield or $field < 0) {
+                            $debug .= (sprintf("\t[%s] has illegal arguments (max flags: %s, has flags: %s", $name, $maxfield, $field));
+                            $errors++;
+                            $this->form_elements[$name]["errors"]["bitfield"] = 1;
+                        }
+                        else {
+                            $values[$name] = $field;
+                        }
+                        break;
+                    
 					case self::TYPE_SUBMIT:
                     case self::TYPE_RESET:
 						// Button -  Do nothing, except removing the value from values
@@ -209,7 +236,7 @@ HTML;
 					}
 				}
 				
-				if($errors_before === $errors and $inp["value"] !== NULL) {
+				if($errors_before === $errors and $inp["value"] !== NULL and isset($values[$name])) {
 					$this->form_elements[$name]["value"] = $values[$name];
 				}
 			}

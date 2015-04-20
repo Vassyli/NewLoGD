@@ -22,6 +22,9 @@ abstract class Base implements api, \Basicmodelitem {
 	protected $content = "";
 	/** @var int flags, the flag */
 	protected $flags = 0;
+    
+    /** @var boolean True if Data was changed actively **/
+    protected $has_changed = false;
 	
 	/** @var array contains additional arguments passed on to this page */
 	protected $arguments = array();
@@ -75,11 +78,33 @@ abstract class Base implements api, \Basicmodelitem {
 	public function getFlags() { return $this->flags; }
     // @inheritDoc
 	public function getAccess() { return $this->access; }
-	// @inheritDoc
+	
+    protected function set($key, $value) {
+        $this->has_changed = true;
+        $this->$key = $value;
+    }
+    
+    public function setType($value) { $this->set("type", $value); }
+    public function setAction($value) { $this->set("action", $value); }
+    public function setTitle($value) { $this->set("title", $value); }
+    public function setSubtitle($value) { $this->set("subtitle", $value); }
+    public function setContent($value) { $this->set("content", $value); }
+    public function setAccess($value) { $this->set("access", $value); }
+    
+    public function save() {
+        if($this->has_changed) {
+            $return = $this->model->get("Pages")->save($this);
+            return $return;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    // @inheritDoc
 	public function checkAccess($flag) {
 		return $this->access & $flag ? true : false;
 	}
-	
 	// @inheritDoc
 	public function isEditable() { return ($this->flags & self::FLAG_IS_EDITABLE ? true : false); }
 	// @inheritDoc

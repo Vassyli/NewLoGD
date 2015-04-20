@@ -21,7 +21,23 @@ class Tableedit extends \LocalmoduleBasis {
 		else {
 			$this->page->block_output();
 			switch($subaction) {
-
+                case "edit":
+                    $form = $this->getEditForm($id);
+                    
+                    if($this->model->get_postvalue("tableedit_submit") == 1) {
+                        $sanitize = $this->getForm()->sanitize($this->model->get_postarray(), true);
+                        $pageitem = $this->model->get("pages")->getById($id);
+                        
+                        foreach($sanitize as $key => $val) {
+                            if($key !== "flags") {
+                                $method = "set".$key;
+                                $pageitem->$method($val);
+                            }
+                        }
+                        
+                        $pageitem->save();
+                    }
+                    break;
 			}
 		}
 	}
@@ -39,7 +55,7 @@ class Tableedit extends \LocalmoduleBasis {
 		else {
 			switch($subaction) {
                 case "edit":
-                    $buffer = $this->getForm($id, "Editieren", $this->getModuleGameUri("edit", $id))->getHtml();
+                    $buffer = $this->getEditForm($id)->getHtml();
                     break;
                 
                 case "drop":
@@ -61,6 +77,10 @@ class Tableedit extends \LocalmoduleBasis {
         $dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
         return $this->model->get("TableFields")->getByTablename($dbtablename);
     }
+    
+    protected function getEditForm($id) {
+        return $this->getForm($id, "Editieren", $this->getModuleGameUri("edit", $id));
+    }
 	
     /**
      * 
@@ -68,23 +88,29 @@ class Tableedit extends \LocalmoduleBasis {
      * @return \FormGenerator
      */
 	protected function getForm($id = NULL, $title = "", $action = "") {
-        $fields = $this->getFields();
-        if(!is_null($id)) {
-            $page = $this->model->get("Pages")->getById($id);
+        if(empty($this->form)) {
+            $fields = $this->getFields();
+            if(!is_null($id)) {
+                $page = $this->model->get("Pages")->getById($id);
+            }
+
+            $formgenerator = new \FormGenerator($title, $action);
+            foreach($fields as $field) {
+                $formgenerator->addInput(
+                    $field->getFieldtype(), 
+                    $field->getDescription(), 
+                    $field->getFieldname(), 
+                    $page->{"get".$field->getFieldname()}(), [
+
+                    ], $field->getProperty("flags", [])
+                );
+            }
+            $formgenerator->addSubmitButton("Bestätigen", "tableedit_submit", 1);
+            $this->form = $formgenerator;
         }
-        
-		$formgenerator = new \FormGenerator($title, $action);
-        foreach($fields as $field) {
-            $formgenerator->addInput(
-                $field->getFieldtype(), 
-                $field->getDescription(), 
-                $field->getFieldname(), 
-                $page->{"get".$field->getFieldname()}(), [
-                    
-                ], $field->getProperty("flags", [])
-            );
+        else {
+            $formgenerator = $this->form;
         }
-        $formgenerator->addSubmitButton("Bestätigen", "tableedit_submit", 1);
         return $formgenerator;
 	}
 	

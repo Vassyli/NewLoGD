@@ -1,33 +1,45 @@
 <?php
+/**
+ * NewLoGD
+ *
+ * @author      Basilius Sauter <basilius.sauter@hispeed.ch>
+ * @copyright   Copyright (c) 2015, Basilius Sauter
+ * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
+ */
 
 namespace Query;
 
+/**
+ * Builds a SELECT database query
+ */
 class Select extends Base implements \Countable {
 	protected $model = NULL;
 	protected $table = "";
 	
-	protected $fragments = array("SELECT" => array(), "JOIN" => array(), "WHERE" => array(), "GROUPBY" => array(), "ORDERBY" => array(), "LIMIT" => array());
+	protected $fragments = [
+        "SELECT" => [], 
+        "JOIN" => [], 
+        "WHERE" => [], 
+        "GROUPBY" => [], 
+        "ORDERBY" => [], 
+        "LIMIT" => []
+    ];
 	
-	protected $is_executed = false;
 	protected $result = NULL;
 	
 	protected $countable_column = "*";
 	
-	public function __construct(\Model $model, $table) {
-		$this->model = $model;
-		$this->table = $table;
-	}
-	
 	public function select($field = NULL, $alias = NULL) {
 		if($field === NULL) {
-			$this->fragments["SELECT"] = array();
+			$this->fragments["SELECT"] = [];
 		}
 		else {
-			array_push($this->fragments["SELECT"], array(
-				"field" => (is_array($field) ? $field[1] : $field),
+			array_push($this->fragments["SELECT"], [
+                "field" => (is_array($field) ? $field[1] : $field),
 				"table" => (is_array($field) ? $field[0] : $this->table),
 				"alias" => $alias,
-			));
+                ]
+            );
 		}
 		
 		return $this;
@@ -43,7 +55,7 @@ class Select extends Base implements \Countable {
 		return $this;
 	}
 	
-	public function innerjoin($left_field, $right_field = NULL, $operator = self::OPERATOR_EQ) {
+	public function innerJoin($left_field, $right_field = NULL, $operator = self::OPERATOR_EQ) {
         if(empty($right_field)) {
             // Magic
             $foreign_table = $left_field;
@@ -59,16 +71,16 @@ class Select extends Base implements \Countable {
             }
         }
         
-		array_push($this->fragments["JOIN"], array(
-			"join-type" => self::JOIN_INNER,
+		\array_push($this->fragments["JOIN"], [
+            "join-type" => self::JOIN_INNER,
 			"left-field" => (is_array($left_field) ? $left_field[1] : $left_field),
-			"left-table" => (is_array($left_field) ? $left_field[0] : $this->table),
+			"left-table" => (is_array($left_field) ? $this->model->addPrefix($left_field[0]) : $this->table),
 			"right-field" => (is_array($right_field) ? $right_field[1] : $right_field),
-			"right-table" => (is_array($right_field) ? $right_field[0] : $this->table),
+			"right-table" => (is_array($right_field) ? $this->model->addPrefix($right_field[0]) : $this->table),
 			"operator" => $operator,
-            "foreign-table" => $foreign_table,
-            "ON" => array(),
-		));
+            "foreign-table" => $this->model->addPrefix($foreign_table),
+            "ON" => [],
+        ]);
 		
 		return $this;
 	}
@@ -76,14 +88,14 @@ class Select extends Base implements \Countable {
     public function on($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
         $lastjoin = count($this->fragments["JOIN"]) - 1;
         if($field === NULL) {
-            $this->fragments["JOIN"][$lastjoin]["ON"] = array();
+            $this->fragments["JOIN"][$lastjoin]["ON"] = [];
         }
         else {
-            array_push($this->fragments["JOIN"][$lastjoin]["ON"], array(
+            \array_push($this->fragments["JOIN"][$lastjoin]["ON"], [
                 "field" => $field,
 				"value" => $value, 
 				"operator" => $operator,
-            ));
+            ]);
         }
         
         return $this;
@@ -91,37 +103,36 @@ class Select extends Base implements \Countable {
 	
 	public function where($field = NULL, $value = "", $operator = self::OPERATOR_EQ) {
 		if($field === NULL) {
-			$this->fragments["WHERE"] = array();
+			$this->fragments["WHERE"] = [];
 		}
 		else {
-			array_push($this->fragments["WHERE"], array(
-				"field" => (is_array($field) ? $field[1] : $field),
-				"table" => (is_array($field) ? $field[0] : $this->table),
+			\array_push($this->fragments["WHERE"], [
+                "field" => (is_array($field) ? $field[1] : $field),
+				"table" => (is_array($field) ? $this->model->addPrefix($field[0]) : $this->table),
 				"value" => $value, 
 				"operator" => $operator,
-			));
+            ]);
 		}
 		
 		return $this;
 	}	
 	
-	public function orderby($field = NULL, $order = parent::ORDER_ASC, $inversion = false) {
+	public function orderBy($field = NULL, $order = parent::ORDER_ASC, $inversion = false) {
 		if($field === NULL) {
-			$this->fragments["ORDERBY"] = array();
+			$this->fragments["ORDERBY"] = [];
 		}
 		else {
-			array_push($this->fragments["ORDERBY"], array(
-				"field" => (is_array($field) ? $field[1] : $field),
-				"table" => (is_array($field) ? $field[0] : $this->table),
+			\array_push($this->fragments["ORDERBY"], ["field" => (is_array($field) ? $field[1] : $field),
+				"table" => (is_array($field) ? $this->model->addPrefix($field[0]) : $this->table),
 				"order" => $order, 
 				"inversion" => $inversion
-			));
+                ]);
 		}
 		return $this;
 	}
 	
-	public function orderby_condition($condition_field, $value, $operator, $true_field, $false_field) {	
-		array_push($this->fragments["ORDERBY"], array(
+	public function orderByCondition($condition_field, $value, $operator, $true_field, $false_field) {	
+		\array_push($this->fragments["ORDERBY"], [
 			"conditional" => true, 
 			"condition-field" => (is_array($condition_field) ? $condition_field[1] : $condition_field),
 			"condition-table" => (is_array($condition_field) ? $condition_field[0] : $this->table),
@@ -129,20 +140,13 @@ class Select extends Base implements \Countable {
 			"operator" => $operator, 
 			"true-field" => $true_field, 
 			"false-field" => $false_field
-		));
+		]);
 		
 		return $this;
 	}
 	
-	private function execute_if_needed() {
-		if($this->is_executed === false) {
-			$this->is_executed = true;
-			$this->result = $this->execute();
-		}
-	}
-	
 	public function fetch() {
-		$this->execute_if_needed();
+		$this->executeIfNeeded();
 		
 		if($this->result[0] == false) {
 			throw new \Exception(vsprintf("DatabaseError [%s,%s]: %s", $this->result[1]->errorInfo()));
@@ -153,41 +157,49 @@ class Select extends Base implements \Countable {
 		}
 	}
 	
-	public function fetchObject($classname, array $arguments = array()) {
-		$this->execute_if_needed();
+	public function fetchObject($classname, array $arguments = []) {
+		$this->executeIfNeeded();
 		
 		if($this->result[0] == false) {
 			throw new \Exception(vsprintf("DatabaseError [%s,%s]: %s", $this->result[1]->errorInfo()));
-			return false;
 		}
 		else {
 			return $this->result[1]->fetchObject($classname, $arguments);
 		}
 	}
 	
-	protected function execute() {
-		$ret = $this->build_query();
+	public function execute() {
+		$ret = $this->buildQuery();
 		if(LOGD_SHOW_DEBUG_SQL) { debug("<b>Query:</b>\n&lt;".$ret[0]."&gt;\n"); }
 		
 		$prepared = $this->model->get_dbh()->prepare($ret[0]);
 		$result = $prepared->execute($ret[1]);
 		
-		return array($result, $prepared);
+		return [$result, $prepared];
 	}
 	
-	protected function build_query() {
+	protected function buildQuery() {
 		$query = "";
-		$args = array();
-		$table = $this->model->addPrefix($this->table);
+		$this->args = array();
 		
-		// SELECT 
-		$query .= "SELECT\n\t";
+		$query .= $this->buildSelectFragment();
+        $query .= $this->buildFromFragment();
+        $query .= $this->buildJoinFragment();
+		$query .= $this->buildWhereFragment();
+		$query .= $this->buildOrderByFragment();
+		
+		return array($query, $this->args);
+	}
+    
+    private function buildSelectFragment() {
+        $query = "";
+        $query .= "SELECT\n\t";
 		if(empty($this->fragments["SELECT"])) {
 			if(empty($this->fragments["JOINS"])) {
 				$query .= "*";
 			}
 			else {
-				$query .= sprintf("`%s`.*", $table);
+				$query .= sprintf("`%s`.*", $this->table);
 			}
 		}
 		else {
@@ -241,12 +253,18 @@ class Select extends Base implements \Countable {
 				$i++;
 			}
 		}
-		
-		// FROM
-		$query .= sprintf("\nFROM `%s`", $table);
-		
-		// JOIN
-		if(!empty($this->fragments["JOIN"])) {
+        return $query;
+    }
+	
+    private function buildFromFragment() {
+        $query = "";
+		$query .= sprintf("\nFROM `%s`", $this->table);
+        return $query;
+    }
+    
+    private function buildJoinFragment() {
+        $query = "";
+        if(!empty($this->fragments["JOIN"])) {
 			foreach($this->fragments["JOIN"] as $clause) {
 				$query .= sprintf("\n%s JOIN %s ON\n\t", $clause["join-type"], $clause["right-table"]);
 				// In principle, there could be more than one on-condition. I will support those if I need them. Later.
@@ -274,14 +292,17 @@ class Select extends Base implements \Countable {
                     else {
                         $fieldvar = ":".$clause["foreign-table"]."_on_field_".$onclause["field"];
                         $query .= sprintf("`%s`.`%s` %s %s", $clause["foreign-table"], $onclause["field"], $onclause["operator"], $fieldvar);
-                        $args[$fieldvar] = $onclause["value"];
+                        $this->args[$fieldvar] = $onclause["value"];
                     }
                 }
 			}
 		}
-		
-		// WHERE
-		if(!empty($this->fragments["WHERE"])) {
+        return $query;
+    }
+    
+    private function buildWhereFragment() {
+        $query = "";
+        if(!empty($this->fragments["WHERE"])) {
 			$query .= "\nWHERE\n\t";
 			
 			$i = 0;
@@ -303,15 +324,18 @@ class Select extends Base implements \Countable {
 				else {
 					$fieldvar = ":".$clause["table"]."_field_".$clause["field"];
 					$query .= sprintf("`%s`.`%s` %s %s", $clause["table"], $clause["field"], $clause["operator"], $fieldvar);
-					$args[$fieldvar] = $clause["value"];
+					$this->args[$fieldvar] = $clause["value"];
 				}
 				
 				$i++;
 			}
 		}
-		
-		// ORDER BY
-		if(!empty($this->fragments["ORDERBY"])) {
+        return $query;
+    }
+    
+    private function buildOrderByFragment() {
+        $query = "";
+        if(!empty($this->fragments["ORDERBY"])) {
 			$query .= "\nORDER BY \n\t";
 			$i = 0;
 			foreach($this->fragments["ORDERBY"] as $clause) {
@@ -363,7 +387,7 @@ class Select extends Base implements \Countable {
 					else {
 						$orderclause = "IF(`%s`.`%s` %s %s, `%s`, `%s`)";
 						$fieldvar = ":conditional_".$clause["condition-table"]."_field_".$clause["condition-field"];
-						$args[$fieldvar] = $clause["condition-value"];
+						$this->args[$fieldvar] = $clause["condition-value"];
 						$query .= sprintf(
 							$orderclause,
 							$clause["condition-table"],
@@ -378,11 +402,10 @@ class Select extends Base implements \Countable {
 				$i++;
 			}
 		}
-		
-		return array($query, $args);
-	}
-	
-	public function set_countable_column($col) {
+        return $query;
+    }
+    
+	public function setCountableColumn($col) {
 		$this->countable_column = $col;
 		return $this;
 	}

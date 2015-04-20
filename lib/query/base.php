@@ -2,7 +2,7 @@
 
 namespace Query;
 
-class Base {
+abstract class Base {
 	const OPERATOR_EQ = "=";
 	const OPERATOR_NEQ = "<>";
 	const OPERATOR_GT = ">";
@@ -15,4 +15,23 @@ class Base {
 	
 	const ORDER_ASC = "ASC";
 	const ORDER_DESC = "DESC";
+    
+    protected $model = NULL;
+	protected $table = "";
+    
+    protected $is_executed = false;
+    
+    public function __construct(\Model $model, $table) {
+		$this->model = $model;
+		$this->table = $this->model->addPrefix($table);;
+	}
+    
+    protected function executeIfNeeded() {
+		if($this->is_executed === false) {
+			$this->is_executed = true;
+			$this->result = $this->execute();
+		}
+	}
+    
+    abstract public function execute();
 }

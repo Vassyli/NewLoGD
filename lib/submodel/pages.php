@@ -108,4 +108,17 @@ class Pages implements SubmodelInterface {
 	protected function get_classname($type) {
 		return sprintf("\Page\%s", filter_var($type, FILTER_CALLBACK, array("options" => "filter_nonalpha")));
 	}
+    
+    public function save(\Page\Base $page) {
+        $query = $this->model->update("pages");
+        $query->addPair("type", $page->getType())
+            ->addPair("action", $page->getAction())
+            ->addPair("title", $page->getTitle())
+            ->addPair("subtitle", $page->getSubtitle())
+            ->addPair("content", $page->getContent())
+            ->addPair("access", $page->getAccess())
+            ->addPair("flags", $page->getFlags())
+            ->where("id", $page->getId());
+        $query->execute();
+    }
 }

@@ -134,6 +134,17 @@ class Model {
 		$query = new \Query\InsertInto($this, $table);
 		return $query;
 	}
+    
+    /**
+	 * Starts an Update-Query for a given table.
+	 *
+	 * @param string $table The Table-Name (without prefix)
+	 * @return \Query\InsertInto An instance of the InsertInto-Querybuilder.
+	 */
+	public function update($table) {
+		$query = new \Query\Update($this, $table);
+		return $query;
+	}
 	
 	/**
 	 * Returns an instance of the requested Submodel
