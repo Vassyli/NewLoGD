@@ -25,14 +25,12 @@ class Tableedit extends \LocalmoduleBasis {
                     $form = $this->getEditForm($id);
                     
                     if($this->model->get_postvalue("tableedit_submit") == 1) {
-                        $sanitize = $this->getForm()->sanitize($this->model->get_postarray(), true);
+                        $sanitize = $form->sanitize($this->model->get_postarray(), true);
                         $pageitem = $this->model->get("pages")->getById($id);
                         
                         foreach($sanitize as $key => $val) {
-                            if($key !== "flags") {
-                                $method = "set".$key;
-                                $pageitem->$method($val);
-                            }
+                            $method = "set".$key;
+                            $pageitem->$method($val);
                         }
                         
                         $pageitem->save();
