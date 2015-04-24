@@ -19,6 +19,7 @@ class TableFieldItem implements \Truemodelitem {
     const FIELD_DEFAULTVALUE = "default_value";
     const FIELD_DESCRIPTION  = "description";
     const FIELD_PROPERTIES   = "properties";
+    const FIELD_OPTIONS      = "options";
     
     public function __construct(\Model $model) {
         $this->model = $model;
@@ -35,6 +36,7 @@ class TableFieldItem implements \Truemodelitem {
             
             // JSON
             case self::FIELD_PROPERTIES:
+            case self::FIELD_OPTIONS:
                 $this->$name = json_decode($value, true);
                 break;
 			
@@ -54,5 +56,9 @@ class TableFieldItem implements \Truemodelitem {
     public function getProperties() { return $this->properties; }
     public function getProperty($key, $default = "") { 
         return isset($this->properties[$key]) ? $this->properties[$key] : $default;
+    }
+    public function getOptions() { return $this->options; }
+    public function getOption($key, $default = "") {
+        return isset($this->options[$key]) ? $this->options[$key] : $default;
     }
 }

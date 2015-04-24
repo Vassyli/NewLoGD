@@ -23,17 +23,29 @@ class Tableedit extends \LocalmoduleBasis {
 			switch($subaction) {
                 case "edit":
                     $form = $this->getEditForm($id);
-                    
-                    if($this->model->get_postvalue("tableedit_submit") == 1) {
-                        $sanitize = $form->sanitize($this->model->get_postarray(), true);
+                    try {
                         $pageitem = $this->model->get("pages")->getById($id);
-                        
-                        foreach($sanitize as $key => $val) {
-                            $method = "set".$key;
-                            $pageitem->$method($val);
+                        $this->error = $pageitem->isEditable() ? "": "noedit";
+                    }
+                    catch(\Exception $e) {
+                        $this->error = "notfound";
+                    }
+                    
+                    
+                    if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
+                        try {
+                            $sanitize = $form->sanitize($this->model->get_postarray(), true);
+
+                            foreach($sanitize as $key => $val) {
+                                $method = "set".$key;
+                                $pageitem->$method($val);
+                            }
+
+                            $pageitem->save();
                         }
-                        
-                        $pageitem->save();
+                        catch(\Exception $e) {
+                            // Exception, do nothing
+                        }
                     }
                     break;
 			}
@@ -53,7 +65,18 @@ class Tableedit extends \LocalmoduleBasis {
 		else {
 			switch($subaction) {
                 case "edit":
-                    $buffer = $this->getEditForm($id)->getHtml();
+                    if(empty($this->error)) {
+                        $buffer = $this->getEditForm($id)->getHtml();
+                    }
+                    elseif($this->error == "notfound") {
+                        $buffer = "The requested page with the id {$id} was not found.";
+                    }
+                    elseif($this->error == "noedit") {
+                        $buffer = "The requested page with the id {$id} is not editable!";
+                    }
+                    else {
+                        $buffer = "An unknown error occured.";
+                    }
                     break;
                 
                 case "drop":
@@ -69,20 +92,26 @@ class Tableedit extends \LocalmoduleBasis {
 	}
     
     /**
+     * 
      * @return \Submodel\TableFields
      */
     protected function getFields() {
         $dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
         return $this->model->get("TableFields")->getByTablename($dbtablename);
     }
-    
+    /**
+     * Gets the generated Edit-Form with the appropriate title and action param
+     * @return \Submodel\FormGenerator
+     */
     protected function getEditForm($id) {
         return $this->getForm($id, "Editieren", $this->getModuleGameUri("edit", $id));
     }
 	
     /**
-     * 
+     * Get a generated Form to edit a table entry or add a new one.
      * @param int $id ID of row which has to be edited.
+     * @param string $title A descriptive form title, seen by the user
+     * @param string $action The action url parameter that the form points to
      * @return \FormGenerator
      */
 	protected function getForm($id = NULL, $title = "", $action = "") {
@@ -113,7 +142,7 @@ class Tableedit extends \LocalmoduleBasis {
 	}
 	
     /**
-     * 
+     * Creates a human readable, generated table of database entries
      * @return \TableGenerator
      */
 	protected function getTable() {

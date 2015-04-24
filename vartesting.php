@@ -19,6 +19,11 @@ $array = [
         0b1000 => "Zugriff auf Charakter-Ebene immer erlaubt",
     ]
 ];
+
+$array = [
+    "restrict-edit" => "isEditable",
+    "restrict-drop" => "isDeletable",
+];
     
 print json_encode($array, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_BIGINT_AS_STRING);
 

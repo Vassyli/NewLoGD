@@ -29,6 +29,7 @@ class TableFields implements SubmodelInterface {
 			$result = $this->model->from("table_fields")
                 ->select("*")
                 ->select(array("tables", "name"))
+                ->select(array("tables", "options"))
                 ->innerjoin("tables")
                 ->on("name", $tablename);
 

@@ -118,7 +118,15 @@ HTML;
         return $return;
     }
 	
-	public function sanitize($values, $set_as_value = false) {
+    /**
+     * Sanitizes all values in $values against the validation boundaries of the corresponding form element 
+     * returns an array containing only _valid_ fields (even if the client sends additional, not existing fields)
+     * 
+     * @param array $values An associative array of the type $elementname => $elementvalue
+     * @return array A sanitized array of the type $elementname => $elementvalue
+     * @throws Exception if an validator fails
+     */
+	public function sanitize($values) {
         $this->errors = 0;
         $this->debug = [];
         $this->values = $values;
@@ -158,135 +166,9 @@ HTML;
             }
         }
 		
-		/*foreach($this->form_elements as $name => $inp) {
-			// Check if its not there
-			if(!isset($values[$name]) and isset($inp["validator"]["required"]) and $inp["validator"]["required"] == true) {
-				$debug .= (sprintf("\t[%s] not set, but it's required\n", $name));
-				$errors++;
-				$this->form_elements[$name]["errors"]["required"] = 1;
-			}
-			elseif(isset($values[$name])) {
-                $this->trimValues($name, $inp);
-				// Trim value
-                if(is_array($values[$name])) {
-                    $values[$name] = array_map("trim", $values[$name]);
-                }
-                else {
-                    $values[$name] = trim($values[$name]);
-                }
-				
-				$errors_before = $errors;
-				
-				// Validation depends always on the field type. For example, integer form fields need another validation/sanitation 
-				//  than varchar fields.
-				switch($inp["type"]) {
-                    case self::TYPE_BITFIELD:
-                        // Check if Bitfields are valid
-                        $maxfield = 0;
-                        $field = 0;
-                        foreach($inp["options"] as $key => $desc) {
-                            $maxfield |= intval($key);
-                        }
-                        
-                        foreach($values[$name] as $val) {
-                            $field |= intval($val);
-                        }
-                        
-                        if($field > $maxfield or $field < 0) {
-                            $debug .= (sprintf("\t[%s] has illegal arguments (max flags: %s, has flags: %s", $name, $maxfield, $field));
-                            $errors++;
-                            $this->form_elements[$name]["errors"]["bitfield"] = 1;
-                        }
-                        else {
-                            $values[$name] = $field;
-                        }
-                        break;
-                    
-					case self::TYPE_SUBMIT:
-                    case self::TYPE_RESET:
-						// Button -  Do nothing, except removing the value from values
-						unset($values[$name]);
-						break;
-						
-					case self::TYPE_PASSWORD:
-					case self::TYPE_LINE:
-					case self::TYPE_EMAIL:
-					default:
-						// Text-Field use similar validators.
-						
-						// Validator-Check for email only
-						if($inp["type"] == self::TYPE_EMAIL) {
-							if(filter_var($values[$name], FILTER_VALIDATE_EMAIL) === false) {
-								$debug .= (sprintf("\t[%s] is not a valid email address\n", $name));
-								$errors++;
-								$this->form_elements[$name]["errors"]["email"] = 1;
-							}
-						}
-						
-						// Check minimum length
-						if(isset($inp["validator"]["min-length"])) {
-							if(mb_strlen($values[$name]) < $inp["validator"]["min-length"]) {
-								$debug .= (sprintf("\t[%s] is not long enough (Is: %s/%s)\n", $name, mb_strlen($values[$name]), $inp["validator"]["min-length"]));
-								$errors++;
-								$this->form_elements[$name]["errors"]["min-length"] = 1;
-							}
-						}
-						
-						// Check maximum length
-						if(isset($inp["validator"]["max-length"])) {
-							if(mb_strlen($values[$name]) > $inp["validator"]["max-length"]) {
-								$debug .= (sprintf("\t[%s] is too long (Is: %s/%s)\n", $name, mb_strlen($values[$name]), $inp["validator"]["max-length"]));
-								$errors++;
-								$this->form_elements[$name]["errors"]["max-length"] = 1;
-							}
-						}
-						
-						// Check maximum byte length
-						if(isset($inp["validator"]["max-bytelength"])) {
-							if(strlen($values[$name]) > $inp["validator"]["max-bytelength"]) {
-								$debug .= (sprintf("\t[%s] has too much bytes (Is: %s/%s)\n", $name, strlen($values[$name]), $inp["validator"]["max-bytelength"]));
-								$errors++;
-								$this->form_elements[$name]["errors"]["max-bytelength"] = 1;
-							}
-						}
-						break;
-				}
-				
-				// Some universal checks
-				
-				// Cross-Check: Check if another field contains the same value
-				if(isset($inp["validator"]["crosscheck"])) {
-					if($values[$name] != $values[$inp["validator"]["crosscheck"]]) {
-						$debug .= (sprintf("\t[%s] does not match [%s]\n", $name, $inp["validator"]["crosscheck"]));
-						$errors++;
-						$this->form_elements[$name]["errors"]["crosscheck"] = 1;
-						$this->form_elements[$inp["validator"]["crosscheck"]]["errors"]["crosscheck"] = 1;
-					}
-				}
-				
-				// Callback-Check: Call a callback function to check the input
-				if(isset($inp["validator"]["callback"])) {
-					$ret = call_user_func($inp["validator"]["callback"][0], $values[$name]);
-					if($ret === false) {
-						$debug .= (sprintf("\t[%s] does not pass callback\n", $name));
-						$errors++;
-						$this->form_elements[$name]["errors"]["callback"] = 1;
-					}
-				}
-				
-				if($errors_before === $errors and $inp["value"] !== NULL and isset($values[$name])) {
-					$this->form_elements[$name]["value"] = $values[$name];
-				}
-			}
-			elseif(isset($inp["default"])) {
-				// It isn't set, but it's not required - that's okay, we do not validate, but set the value to the default value.
-				$values[$name] = $inp["default"];
-			}
-		}*/
-		
 		if($this->errors > 0) {
-			$debug .= (sprintf("\t<b>Total FormErrors:</b> %s.\n", $errors));
-			debug($debug);
+			//$debug .= (sprintf("\t<b>Total FormErrors:</b> %s.\n", $errors));
+			debug(implode("<br />", $this->debug));
 			throw new Exception();
 		}
 		else {
@@ -417,7 +299,7 @@ HTML;
      */
     protected function validateAgainstCrosscheck($field_name, $field_data) {
         if(isset($field_data["validator"]["crosscheck"])) {
-            return ($this->values[$field_name] != $this->values[$field_data["validator"]["crosscheck"]]);
+            return ($this->values[$field_name] == $this->values[$field_data["validator"]["crosscheck"]]);
         }
         else { return true; }
     }
@@ -523,6 +405,12 @@ HTML;
         }
     }
     
+    /**
+     * Checks if a Field is required.
+     * @param string $field_name Fieldname
+     * @param array $field_data Fielddata-Array
+     * @return boolean true if it's required, false if not.
+     */
     protected function isRequired($field_name, $field_data) {
         if(isset($field_data["validator"]["required"]) && $field_data["validator"]["required"] == true) {
             return true;
@@ -532,11 +420,39 @@ HTML;
         }
     }
     
+    /**
+     * Checks if the instance of FormGenerator has a Field named by the given parameter
+     * @param string $field_name Fieldname
+     * @return boolean
+     */
     protected function hasField($field_name) {
         if(isset($this->form_elements[$field_name])) { return true; }
         else { return false; }
     }
 	
+    /**
+     * Adds an input field
+     * 
+     * This function adds any input field supported by self::TYPE_*. The field gets 
+     * identified by $name, which has to be used in order to drop/modify/check an existing
+     * field.
+     * 
+     * The supported (custom) validator types are:
+     *   - required => boolean, true if the field is required (TYPE_ANY)
+     *   - max-bytelength => int, a maximum byte length (TYPEGROUP_VARCHAR), uses strlen to count.
+     *   - max-length => int, a maximum character length (TYPEGROUP_VARCHAR), uses mb_strlen to count.
+     *   - min-length => int, a minimum character length (TYPEGROUP_VARCHAR), uses mb_strlen to count
+     *   - callback => [callback, string], a callback function supported by call_user_func() and a error message.
+     *   - crosscheck => string $name, checks the field if it contains the same as the field given by the argument $name.
+     * 
+     * @param int $type The Type if the field. Use self::TYPE_* constants
+     * @param string $desc A human readable description of the field. Like "First Name"
+     * @param string $name The HTML name identifier of the Field (<input name="...">)
+     * @param string $value A default value. If its set to NULL, the field does not get again filled after an error.
+     * @param array $validator An array of validatortype => validatorargument
+     * @param array $options An array with additional options if the Fieldtype requires it, eg a Bitfield
+     * @return self
+     */
 	public function addInput($type, $desc, $name, $value, array $validator = [], array $options = []) {
 		$this->form_elements[$name] = array(
 			"id" => "id_".md5(microtime().$name),
@@ -547,23 +463,36 @@ HTML;
 			"errors" => array(),
             "options" => $options,
 		);
-	}
-	
+        return $this;
+	}	
+    /**
+     * Adds a text input line (<input type="text">)
+     * @see self::addInput()
+     */
 	public function addLine($desc, $name, $value = "", array $validator = []) {
 		$this->addInput(self::TYPE_LINE, $desc, $name, $value, $validator);
 		return $this;
 	}
-	
+	/**
+     * Adds a password input  line (<input type="password">)
+     * @see self::addInput()
+     */
 	public function addPassword($desc, $name, array $validator = []) {
 		$this->addInput(self::TYPE_PASSWORD, $desc, $name, NULL, $validator);
 		return $this;
 	}
-	
+	/**
+     * Adds an email input line (<input type="email">)
+     * @see self::addInput()
+     */
 	public function addEmail($desc, $name, $value = "", array $validator = []) {
 		$this->addInput(self::TYPE_EMAIL, $desc, $name, $value, $validator);
 		return $this;
 	}
-	
+	/**
+     * Adds a submit button (<button type="submit"></button>)
+     * @see self::addInput()
+     */
 	public function addSubmitButton($desc, $name, $value) {
 		$this->addInput(self::TYPE_SUBMIT, $desc, $name, $value, []);
 	}
