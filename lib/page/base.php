@@ -46,13 +46,13 @@ abstract class Base implements api, \Basicmodelitem {
 		$this->flags = intval($row['flags']);
 		$this->access = intval($row['access']);
 		
-		debug(sprintf(
+		/*debug(sprintf(
 			"<b>Page Flags:</b>\n  [%s] Editable\n  [%s] Deletable\n  [%s] No parse\n  [%s] Keep HTML",
 			($this->isEditable()?"X":" "),
 			($this->isDeletable()?"X":" "),
 			($this->useParser()?" ":"X"),
 			($this->keepHtml()?"X":" ")
-		));
+		));*/
 	}
 	
 	// @inheritDoc

@@ -12,7 +12,7 @@ define("LOGD_SCRIPT_START", microtime(true));
 
 // development config
 define("LOGD_SHOW_DEBUG", true);
-define("LOGD_SHOW_DEBUG_SQL", true);
+define("LOGD_SHOW_DEBUG_SQL", false);
 
 // some php configuration
 define("LOGD_ENCODING", "utf-8");

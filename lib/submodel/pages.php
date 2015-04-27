@@ -39,7 +39,7 @@ class Pages implements SubmodelInterface {
 			$page = NULL;
 			
 			if($row === false) {
-				throw new Exception(sprintf("Page(id=%i) was not found in database.", $id));
+				throw new \Exception(sprintf("Page(id=%i) was not found in database.", $id));
 			}
 			else {
 				$classname = $this->get_classname($row["type"]);
@@ -119,6 +119,12 @@ class Pages implements SubmodelInterface {
             ->addPair("access", $page->getAccess())
             ->addPair("flags", $page->getFlags())
             ->where("id", $page->getId());
+        $query->execute();
+    }
+    
+    public function dropById($id) {
+        $query = $this->model->delete("pages")
+            ->where("id", $id);
         $query->execute();
     }
 }

@@ -21,36 +21,57 @@ class Tableedit extends \LocalmoduleBasis {
 		else {
 			$this->page->block_output();
 			switch($subaction) {
-                case "edit":
-                    $form = $this->getEditForm($id);
-                    try {
-                        $pageitem = $this->model->get("pages")->getById($id);
-                        $this->error = $pageitem->isEditable() ? "": "noedit";
-                    }
-                    catch(\Exception $e) {
-                        $this->error = "notfound";
-                    }
-                    
-                    
-                    if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
-                        try {
-                            $sanitize = $form->sanitize($this->model->get_postarray(), true);
-
-                            foreach($sanitize as $key => $val) {
-                                $method = "set".$key;
-                                $pageitem->$method($val);
-                            }
-
-                            $pageitem->save();
-                        }
-                        catch(\Exception $e) {
-                            // Exception, do nothing
-                        }
-                    }
-                    break;
+                case "edit": $this->executeEdit($id); break;     
+                case "drop": $this->executeDrop($id); break;
 			}
 		}
 	}
+    
+    protected function executeEdit($id) {
+        $form = $this->getEditForm($id);
+        try {
+            $pageitem = $this->model->get("pages")->getById($id);
+            $this->error = $pageitem->isEditable() ? "": "noedit";
+        }
+        catch(\Exception $e) {
+            $this->error = "notfound";
+        }
+
+
+        if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
+            try {
+                $sanitize = $form->sanitize($this->model->get_postarray(), true);
+
+                foreach($sanitize as $key => $val) {
+                    $method = "set".$key;
+                    $pageitem->$method($val);
+                }
+
+                $pageitem->save();
+            } catch(\Exception $e) {
+                // Exception, do nothing
+            }
+        }
+    }
+    
+    protected function executeDrop($id) {
+        try {
+            $pageitem = $this->model->get("pages")->getById($id);
+            $this->error = $pageitem->isDeletable() ? "": "nodrop";
+        }
+        catch(\Exception $e) {
+            $this->error = "notfound";
+        }
+        
+        if(empty($this->error)) {
+            try {
+                $ret = $this->model->get("pages")->dropById($id);
+                $this->error = $ret > 0 ? "" : "notdropped";
+            } catch (Exception $e) {
+                // 
+            }
+        }
+    }
 	
 	public function output() {
 		$arguments = $this->page->getArguments();
@@ -61,8 +82,7 @@ class Tableedit extends \LocalmoduleBasis {
 		if(empty($arguments[0])) {
 			// Empty Argument - Show a table of all items.
 			$buffer = $this->getTable()->getHtml();
-		}
-		else {
+		} else {
 			switch($subaction) {
                 case "edit":
                     if(empty($this->error)) {
@@ -80,6 +100,23 @@ class Tableedit extends \LocalmoduleBasis {
                     break;
                 
                 case "drop":
+                    if(empty($this->error)) {
+                        $buffer = "The entry was successfully deleted.";
+                    }
+                    elseif($this->error == "notfound") {
+                        $buffer = "The requested page with the id {$id} was not found.";
+                    }
+                    elseif($this->error == "nodrop") {
+                        $buffer = "The requested page with the id {$id} is not deletable!";
+                    }
+                    elseif($this->error == "notdropped") {
+                        $buffer = "Database query was successfull, but nothing was deleted.";
+                    }
+                    else {
+                        $buffer = "An unknown error occured.";
+                    }
+                    
+                    $buffer .= $this->getTable()->getHtml();
                     break;
                 
                 case "new":

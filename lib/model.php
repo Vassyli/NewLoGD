@@ -139,10 +139,21 @@ class Model {
 	 * Starts an Update-Query for a given table.
 	 *
 	 * @param string $table The Table-Name (without prefix)
-	 * @return \Query\InsertInto An instance of the InsertInto-Querybuilder.
+	 * @return \Query\Update An instance of the Update-Querybuilder.
 	 */
 	public function update($table) {
 		$query = new \Query\Update($this, $table);
+		return $query;
+	}
+    
+    /**
+	 * Starts a Delete-Query for a given table.
+	 *
+	 * @param string $table The Table-Name (without prefix)
+	 * @return \Query\Delete An instance of the Delete-Querybuilder.
+	 */
+	public function delete($table) {
+		$query = new \Query\Delete($this, $table);
 		return $query;
 	}
 	
