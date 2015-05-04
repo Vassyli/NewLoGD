@@ -1,4 +1,11 @@
 <?php
+/**
+ * NewLoGD
+ *
+ * @author      Basilius Sauter <basilius.sauter@hispeed.ch>
+ * @copyright   Copyright (c) 2015, Basilius Sauter
+ * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
+ */
 
 namespace Navigation;
 
@@ -40,5 +47,6 @@ class Item implements \Truemodelitem, ItemAPI {
 	public function getId()       {return $this->id;}
 	public function getParentid() {return $this->parentid;}
 	public function getAction()   {return $this->action;}
+    public function getParsedAction() { return get_gameuri($this->getAction()); }
 	public function getTitle()    {return $this->title;}
 }

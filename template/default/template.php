@@ -51,7 +51,7 @@
 							foreach($v["childs"] as $l=>$w):
 								// Actual Nav-Points
 						?>
-							<div class="nav-item nav-link"><a href="<?=get_gameuri($w["item"]->getAction()) ?>"><?=$w["item"]->getTitle()?></a></div>
+							<div class="nav-item nav-link"><a href="<?=$w["item"]->getParsedAction(); ?>"><?=$w["item"]->getTitle()?></a></div>
 						<?php
 							endforeach;
 						endforeach;

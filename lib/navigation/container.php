@@ -1,4 +1,11 @@
 <?php
+/**
+ * NewLoGD
+ *
+ * @author      Basilius Sauter <basilius.sauter@hispeed.ch>
+ * @copyright   Copyright (c) 2015, Basilius Sauter
+ * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
+ */
 
 namespace Navigation;
 
@@ -21,6 +28,7 @@ class Container implements \IteratorAggregate {
 		);
 	*/
 	protected $navs = array();
+    protected $lastCustomKey = 0;
 	
 	public function __construct() {
 		$this->navs = array(
@@ -28,7 +36,7 @@ class Container implements \IteratorAggregate {
 		);
 	}
 	
-	public function add_bulk($rows) {
+	public function addBulk($rows) {
 		foreach($rows as $item) {
 			// Actual Link without an action
 			if($item->getParentid() === NULL and $item->getAction() !== NULL) {
@@ -56,6 +64,30 @@ class Container implements \IteratorAggregate {
 			}
 		}
 	}
+    
+    public function addCustomItem($title, $action = NULL, $parent = NULL) {
+        if(empty($action)) {
+            $item = new CustomItem($title, $action, NULL);
+            $this->lastCustomKey = $item->getId();
+            
+            $this->navs[$this->lastCustomKey] = [
+                "item" => $item,
+                "childs" => []
+            ];
+            
+            return $item->getId();
+        }
+        else {
+            $id = ($parent === NULL ? $this->lastCustomKey : $parent);
+            $item = new CustomItem($title, $action, $id);
+                
+            $this->navs[$id]["childs"][$item->getId()] = [
+                "item" => $item,
+            ];
+            
+            return $item->getId();
+        }
+    }
 	
 	public function getIterator() {
         return new \ArrayIterator($this->navs);

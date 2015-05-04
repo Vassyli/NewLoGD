@@ -19,10 +19,11 @@ class Tableedit extends \LocalmoduleBasis {
 		if(empty($arguments[0])) {
 		}
 		else {
-			$this->page->block_output();
+			$this->page->blockOutput();
 			switch($subaction) {
                 case "edit": $this->executeEdit($id); break;     
                 case "drop": $this->executeDrop($id); break;
+                case "new": $this->executeNew(); break;
 			}
 		}
 	}
@@ -54,6 +55,27 @@ class Tableedit extends \LocalmoduleBasis {
         }
     }
     
+    protected function executeNew() {
+        $form = $this->getNewForm();
+
+        if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
+            try {
+                $sanitize = $form->sanitize($this->model->get_postarray(), true);
+                $this->model->get("pages")->create(
+                    $sanitize["type"],
+                    $sanitize["action"],
+                    $sanitize["title"],
+                    $sanitize["subtitle"],
+                    $sanitize["content"],
+                    $sanitize["access"]
+                );
+                $this->error = "newlycreated";
+            } catch(\Exception $e) {
+                $this->error = "error";
+            }
+        }
+    }
+    
     protected function executeDrop($id) {
         try {
             $pageitem = $this->model->get("pages")->getById($id);
@@ -69,6 +91,25 @@ class Tableedit extends \LocalmoduleBasis {
                 $this->error = $ret > 0 ? "" : "notdropped";
             } catch (Exception $e) {
                 // 
+            }
+        }
+    }
+    
+    public function navigationHook(\Navigation\Container $navigation) {
+        $arguments = $this->page->getArguments();
+        $subaction = isset($arguments[1]) ? $arguments[1] : "";
+        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
+        
+        if(empty($arguments[0])) {
+            $navid = $navigation->addCustomItem("Editor");
+            $navigation->addCustomItem("Neu", $this->getModuleGameUri("new"), $navid);
+        } else {
+            $navid = $navigation->addCustomItem("Editor");
+            $navigation->addCustomItem("Zurück zur Übersicht", $this->getPageGameUri(), $navid);
+            
+            switch($subaction) {
+                case "new":
+                    break;
             }
         }
     }
@@ -120,7 +161,16 @@ class Tableedit extends \LocalmoduleBasis {
                     break;
                 
                 case "new":
-                    $buffer = $this->getForm($id, "Neu", $this->getModuleGameUri("new"))->getHtml();
+                    if(empty($this->error)) {
+                        $buffer = $this->getNewForm()->getHtml();    
+                    }
+                    elseif($this->error == "error") {
+                        $buffer = "An unknown error occured";
+                    }
+                    elseif($this->error == "newlycreated") {
+                        $buffer = "The page was successfully created.";
+                        $buffer .= $this->getTable()->getHtml();
+                    }
                     break;
 			}
 		}
@@ -143,6 +193,10 @@ class Tableedit extends \LocalmoduleBasis {
     protected function getEditForm($id) {
         return $this->getForm($id, "Editieren", $this->getModuleGameUri("edit", $id));
     }
+    
+    protected function getNewForm() {
+        return $this->getForm(NULL, "Neu", $this->getModuleGameUri("new"));
+    }
 	
     /**
      * Get a generated Form to edit a table entry or add a new one.
@@ -164,9 +218,9 @@ class Tableedit extends \LocalmoduleBasis {
                     $field->getFieldtype(), 
                     $field->getDescription(), 
                     $field->getFieldname(), 
-                    $page->{"get".$field->getFieldname()}(), [
-
-                    ], $field->getProperty("flags", [])
+                    (!is_null($id) ? $page->{"get".$field->getFieldname()}() : ""), 
+                    [], 
+                    $field->getProperty("flags", [])
                 );
             }
             $formgenerator->addSubmitButton("Bestätigen", "tableedit_submit", 1);

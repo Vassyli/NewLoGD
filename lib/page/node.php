@@ -18,7 +18,7 @@ class Node extends Base {
 	
 	public function initiate() {	
 		$this->parser = new \Parser();
-		$this->load_localmodules();
+		$this->loadLocalmodules();
 	}
 	
 	public function execute() {
@@ -32,7 +32,7 @@ class Node extends Base {
 	
 	public function output() {
 		$arguments = $this->getArguments();
-		$maincontent = $this->get_parsed_content();
+		$maincontent = $this->getParsedContent();
 		
 		$modulecontent = "";
 		
@@ -49,7 +49,15 @@ class Node extends Base {
 	public function loadNavigation() {
 		if($this->navigation === NULL) {
 			$this->navigation = new Navigation\Container();
-			$this->navigation->add_bulk($this->model->get("Navigations")->getby_page_id($this->getId()));
+			$this->navigation->addBulk($this->model->get("Navigations")->getby_page_id($this->getId()));
+            
+            // Navigational Hook
+            foreach($this->modules as $module) {
+                // Execute module only if first argument is empty or equals the module
+                if(empty($arguments[0]) || $arguments[0] == $module->getClass()) {
+                    $module->navigationHook($this->navigation);
+                }
+            }
 		}
 	}
 	
@@ -57,11 +65,11 @@ class Node extends Base {
 		return $this->navigation;
 	}
 	
-	protected function load_localmodules() {
+	protected function loadLocalmodules() {
 		$this->modules = $this->model->get("Localmodules")->getby_page_id($this->getId());
 	}
 	
-	public function get_parsed_content() {
+	public function getParsedContent() {
 		if($this->block_output === false) {
 			$content = $this->getContent();
 			
@@ -80,11 +88,11 @@ class Node extends Base {
 		}
 	}
 	
-	public function block_output() {
+	public function blockOutput() {
 		$this->block_output = true;
 	}
 	
-	public function unblock_output() {
+	public function unblockOutput() {
 		$this->block_output = false;
 	}
 }

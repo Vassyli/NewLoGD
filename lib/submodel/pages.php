@@ -15,11 +15,8 @@ class Pages implements SubmodelInterface {
     public function all() {
         $query = $this->model->from("pages");
         $instances = array();
-        while($row = $query->fetch()) {
+        while($row = $query->fetch()) {     
             $classname = $this->get_classname($row["type"]);
-            if(!class_exists($classname)) {
-                $classname = $this->get_classname($row["node"]);
-            }
             
             $page = new $classname($this->model, $row);
             array_push($instances, $page);
@@ -73,12 +70,10 @@ class Pages implements SubmodelInterface {
 			}
 			else {
 				$classname = $this->get_classname($row["type"]);
-				
+                
 				try {
-					if(class_exists($classname)) {
-						$page = new $classname($this->model, $row);
-						$this->set_lazy($page);
-					}
+					$page = new $classname($this->model, $row);
+					$this->set_lazy($page);
 				}
 				catch(LogicException $e) {
 					// Lalelu..
@@ -106,8 +101,29 @@ class Pages implements SubmodelInterface {
     
 	
 	protected function get_classname($type) {
-		return sprintf("\Page\%s", filter_var($type, FILTER_CALLBACK, array("options" => "filter_nonalpha")));
+        try {
+            $classname = "\\Page\\".filter_var($type, FILTER_CALLBACK, array("options" => "filter_nonalpha"));
+            if(class_exists($classname)) {
+                return $classname;
+            }
+            else {
+                return "\\Page\\Node";
+            }
+        } catch (LogicException $ex) {
+            return "\\Page\\Node";
+        } catch(Exception $ex) {
+            return "\\Page\\Node";
+        } finally {
+            return "\\Page\\Node";
+        }
 	}
+    
+    public function create($type, $action, $title, $subtitle, $content, $access, $flags = 3) {
+        $query = $this->model->insertInto("pages")
+            ->addFields("type", "action", "title", "subtitle", "content", "access", "flags")
+            ->addValues($type, $action, $title, $subtitle, $content, $access, $flags);
+        $query->execute();
+    }
     
     public function save(\Page\Base $page) {
         $query = $this->model->update("pages");
