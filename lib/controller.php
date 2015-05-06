@@ -54,6 +54,7 @@ class Controller {
 		
 		// If the page has no output, it should redirect to somewhere.
 		if($page->hasOutput() === false) {
+            ob_end_flush();
 			die("Page has no output, should have redirect. Script was stopped in controller.");
 		}
 	}

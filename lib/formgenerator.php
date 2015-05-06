@@ -15,11 +15,17 @@ class FormGenerator extends Datatypes {
     protected $errors = 0;
     protected $debug = "";
     protected $values = [];
+    
+    protected $model = NULL;
 	
 	public function __construct($formtitle, $action) {
 		$this->action = $action;
 		$this->formtitle = $formtitle;
 	}
+    
+    public function setModel(\Model $model) {
+        $this->model = $model;
+    }
 	
 	public function getHtml() {
 		$fields = "\n";
@@ -43,6 +49,12 @@ class FormGenerator extends Datatypes {
             }
             elseif($inp["type"] & self::TYPE_BITFIELD) {
                 $fields.= $this->generateBitfieldLayout($name, $inp);
+            }
+            elseif($inp["type"] & self::TYPE_FOREIGN) {
+                $fields.= $this->generateForeignLayout($name, $inp);
+            }
+            elseif($inp["type"] & self::TYPE_INTRANGE) {
+                $fields.= $this->generateIntRangeLayout($name, $inp);
             }
 
 			$fields.= "    </div>\n";
@@ -94,10 +106,30 @@ HTML;
         return $return;
     }
     
+    protected function generateIntRangeLayout($name, $info) {
+        $esc_name = HTMLSpecialchars($name);
+        $description = HTMLSpecialchars($info["description"]);
+        $value = $info["value"]===NULL?"value=\"0\"":"value=\"".intval($info["value"])."\"";
+        $required = empty($info["validator"]["required"])?"":" required";
+        var_dump($info);
+        $min = intval($info["options"]["range"]["min"]);
+        $max = intval($info["options"]["range"]["max"]);
+        $steps = intval($info["options"]["range"]["steps"]);
+        
+        $return = <<<HTML
+        <label for="{$info["id"]}">{$description}</label>
+        <div class="form-input">
+            <input class="range-input" type="range" id="{$info["id"]}" name="{$esc_name}"{$value}{$required} min="{$min}" max="{$max}" steps="{$steps}">
+            <output class="range-output" for="{$info["id"]}"></output>
+        </div>\n
+HTML;
+        return $return;
+    }
+    
     protected function generateBitfieldLayout($name, $info) {
         $description = HTMLSpecialchars($info["description"]);
         $checkboxes = "";
-        foreach($info["options"] as $key => $desc) {
+        foreach($info["options"]["flags"] as $key => $desc) {
             $checkboxes .= '<label><input type="checkbox" name="' 
                 .HTMLSpecialchars($name)
                 .'[]" value="'
@@ -117,6 +149,52 @@ HTML;
 HTML;
         return $return;
     }
+    
+    protected function generateForeignLayout($name, $info) {
+        $description = HTMLSpecialchars($info["description"]);
+        $options = empty($info["validator"]["nullifempty"]) ? "" : (
+            $info["value"] == NULL ? "<option selected value=\"\">NULL</option>" : "<option value=\"\">NULL</option>"
+        );
+        $name_esc = HTMLSpecialchars($name);
+        
+        if(!is_null($this->model) and isset($info["options"]["foreign"])) {
+            $res = $this->model->get($info["options"]["foreign"]["table"])->all();
+            foreach($res as $row) {
+                if(isset($info["options"]["foreign"]["limit"])) {
+                    $limit_method = $info["options"]["foreign"]["limit"];
+                    // Continue loop if its not parantable
+                    if($row->$limit_method() == false) {
+                        continue;
+                    }
+                }
+                
+                $value_method = "get".$info["options"]["foreign"]["key"];
+                $value = HTMLSpecialchars($row->$value_method());
+                $desc = "";
+
+                foreach($info["options"]["foreign"]["display"] as $d) {
+                    $m = "get".$d;
+                    $v = HTMLSpecialchars($row->$m());
+                    $desc .= $v." - ";
+                }
+                $desc = substr($desc, 0, -3);
+                if($value == $info["value"]) {
+                    $options .= "<option selected value=\"{$value}\">{$desc}</option>";
+                }
+                else {
+                    $options .= "<option value=\"{$value}\">{$desc}</option>";
+                }
+            }
+        }
+        
+        $return = <<<HTML
+        <div class="label">{$description}</div>
+        <div class="form-input form-bitfield"><select name="{$name_esc}">
+            {$options}
+        </select></div>\n
+HTML;
+        return $return;
+    }
 	
     /**
      * Sanitizes all values in $values against the validation boundaries of the corresponding form element 
@@ -133,19 +211,20 @@ HTML;
         $sanitized_values = [];
         
         foreach($this->form_elements as $field_name => $field_data) {
-            if(isset($this->values[$field_name])) {
+            if(array_key_exists($field_name, $this->values)) {
                 // Clean values up: Trim, convert to int/float...
                 $this->cleanupValue($field_name, $field_data);         
                 $has_error = $this->validateValue($field_name, $field_data);
                 
-                if($has_error && $field_data["value"] !== NULL && isset($this->values[$field_name])) {
+                if($has_error && $field_data["value"] !== NULL && array_key_exists($field_name, $this->values)) {
                     // If the value is incorret, we assign the faulty value to the form_data, except
                     //  if the value is explicit set to NULL (for example, passwords should not get 
                     //  printed in a HTML document).
 					$this->form_elements[$field_name]["value"] = $this->values[$field_name];
 				}
                 
-                if(!$has_error && isset($this->values[$field_name])) {
+                
+                if(!$has_error && array_key_exists($field_name, $this->values)) {
                     $sanitized_values[$field_name] = $this->values[$field_name];
                     
                     if($field_data["value"] !== NULL) {
@@ -206,6 +285,10 @@ HTML;
                 $this->validateBitfield($field_name, $field_data);
                 break;
             
+            case self::TYPE_FOREIGN:
+                $this->validateForeignField($field_name, $field_data);
+                break;
+            
             case self::TYPE_PASSWORD:
             case self::TYPE_EMAIL:
             case self::TYPE_LINE:
@@ -239,7 +322,7 @@ HTML;
         // Check if Bitfields are valid
         $maxfield = 0;
         $field = 0;
-        foreach($field_data["options"] as $key => $desc) {
+        foreach($field_data["options"]["flags"] as $key => $desc) {
             $maxfield |= intval($key);
         }
 
@@ -254,6 +337,32 @@ HTML;
         }
         else {
             $this->values[$field_name] = $field;
+        }
+    }
+    
+    /**
+     * Validates a Foreign-Key-Field.
+     * @param string $field_name Fieldname
+     * @param array $field_data Fielddata-Array
+     */
+    protected function validateForeignField($field_name, $field_data) {
+        $this->validateNullIfEmpty($field_name, $field_data);
+        
+        if(isset($field_data["options"]["foreign"]["check"]) && $this->values[$field_name] != NULL) {
+            $m = $field_data["options"]["foreign"]["check"];
+            $res = $this->model->get($field_data["options"]["foreign"]["table"])->$m($this->values[$field_name]);
+            if($res === false) {
+                $this->addError($field_name, "email", sprintf(
+                    "\t[%s] is not a valid foreign key\n", $field_name));
+            }
+        }
+        
+        if(isset($field_data["options"]["foreign"]["limit"]) && $this->values[$field_name] != NULL && $res !== false) {
+            $m = $field_data["options"]["foreign"]["limit"];
+            if($res->$m() === false) {
+                $this->addError($field_name, "email", sprintf(
+                    "\t[%s] is not a valid foreign key\n", $field_name));
+            }
         }
     }
     
@@ -288,6 +397,15 @@ HTML;
             $this->addError($field_name, "min-length", sprintf(
                 "\t[%s] has too much bytes (Is: %s/%s)\n", 
                 $field_name, strlen($this->values[$field_name]), $field_data["validator"]["max-bytelength"]));
+        }
+    }
+    
+    /**
+     * 
+     */
+    protected function validateNullIfEmpty($field_name, $field_data) {
+        if(!empty($field_data["validator"]["nullifempty"])) {
+            $this->values[$field_name] = empty($this->values[$field_name]) ? NULL : $this->values[$field_name];
         }
     }
     

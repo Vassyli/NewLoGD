@@ -6,6 +6,7 @@ class Tableedit extends \LocalmoduleBasis {
 	protected $model;
 	
 	private $form = NULL;
+    private $dbtablename = "";
 	
 	public function __construct(\Model $model, array $row, $page = NULL) {
 		parent::__construct($model, $row, $page);
@@ -15,6 +16,9 @@ class Tableedit extends \LocalmoduleBasis {
 		$arguments = $this->page->getArguments();
         $subaction = isset($arguments[1]) ? $arguments[1] : "";
         $id = isset($arguments[2]) ? intval($arguments[2]) : "";
+        
+        // Prepare the Name for the Database/Database-Model (which sould be the same..)
+        $this->dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
 		
 		if(empty($arguments[0])) {
 		}
@@ -31,7 +35,7 @@ class Tableedit extends \LocalmoduleBasis {
     protected function executeEdit($id) {
         $form = $this->getEditForm($id);
         try {
-            $pageitem = $this->model->get("pages")->getById($id);
+            $pageitem = $this->model->get($this->dbtablename)->getById($id);
             $this->error = $pageitem->isEditable() ? "": "noedit";
         }
         catch(\Exception $e) {
@@ -61,14 +65,7 @@ class Tableedit extends \LocalmoduleBasis {
         if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
             try {
                 $sanitize = $form->sanitize($this->model->get_postarray(), true);
-                $this->model->get("pages")->create(
-                    $sanitize["type"],
-                    $sanitize["action"],
-                    $sanitize["title"],
-                    $sanitize["subtitle"],
-                    $sanitize["content"],
-                    $sanitize["access"]
-                );
+                $this->model->get($this->dbtablename)->create($sanitize);
                 $this->error = "newlycreated";
             } catch(\Exception $e) {
                 $this->error = "error";
@@ -78,8 +75,8 @@ class Tableedit extends \LocalmoduleBasis {
     
     protected function executeDrop($id) {
         try {
-            $pageitem = $this->model->get("pages")->getById($id);
-            $this->error = $pageitem->isDeletable() ? "": "nodrop";
+            $pageitem = $this->model->get($this->dbtablename)->getById($id);
+            $this->error = ($pageitem === false) ? "notfound" : ($pageitem->isDeletable() ? "": "nodrop");
         }
         catch(\Exception $e) {
             $this->error = "notfound";
@@ -87,7 +84,7 @@ class Tableedit extends \LocalmoduleBasis {
         
         if(empty($this->error)) {
             try {
-                $ret = $this->model->get("pages")->dropById($id);
+                $ret = $this->model->get($this->dbtablename)->dropById($id);
                 $this->error = $ret > 0 ? "" : "notdropped";
             } catch (Exception $e) {
                 // 
@@ -183,8 +180,9 @@ class Tableedit extends \LocalmoduleBasis {
      * @return \Submodel\TableFields
      */
     protected function getFields() {
-        $dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
-        return $this->model->get("TableFields")->getByTablename($dbtablename);
+        //$dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
+        $fields = $this->model->get("TableFields")->getByTablename($this->dbtablename);
+        return $fields;
     }
     /**
      * Gets the generated Edit-Form with the appropriate title and action param
@@ -209,18 +207,19 @@ class Tableedit extends \LocalmoduleBasis {
         if(empty($this->form)) {
             $fields = $this->getFields();
             if(!is_null($id)) {
-                $page = $this->model->get("Pages")->getById($id);
+                $page = $this->model->get($this->dbtablename)->getById($id);
             }
 
             $formgenerator = new \FormGenerator($title, $action);
+            $formgenerator->setModel($this->model);
             foreach($fields as $field) {
                 $formgenerator->addInput(
                     $field->getFieldtype(), 
                     $field->getDescription(), 
                     $field->getFieldname(), 
-                    (!is_null($id) ? $page->{"get".$field->getFieldname()}() : ""), 
-                    [], 
-                    $field->getProperty("flags", [])
+                    (!is_null($id) ? $page->{"get".$field->getFieldname()}() : $field->getDefaultValue()), 
+                    $field->getProperty("validator", []),
+                    $field->getProperty("options", [])
                 );
             }
             $formgenerator->addSubmitButton("Bestätigen", "tableedit_submit", 1);
@@ -238,7 +237,7 @@ class Tableedit extends \LocalmoduleBasis {
      */
 	protected function getTable() {
         $fields = $this->getFields();
-        $data = $this->model->get("Pages")->all();
+        $data = $this->model->get($this->dbtablename)->all();
         
 		$table = new \TableGenerator();
         $url_e = $this->getModuleGameUri("edit", "%s");

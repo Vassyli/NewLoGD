@@ -2,7 +2,7 @@
 
 namespace Submodel;
 
-class Navigations implements SubmodelInterface {
+class Navigations implements SubmodelInterface, EditableSubmodel {
 	use \lazy;
 	
 	private $model;
@@ -12,8 +12,27 @@ class Navigations implements SubmodelInterface {
 		$this->set_lazy_keys();
 		$this->set_lazyset_keys(array("page_id"));
 	}
+    
+    public function getById($id) {
+		if($this->has_lazy("id", $id) === false) {
+			$query = $this->model->from("navigations")
+				->where("id", $id);
+            
+            if(count($query) > 0) {
+				$row = $query->fetchObject("\Navigation\Item", array($this->model));
+				$this->set_lazy($row);
+				return $row;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return $this->get_lazy("id", $id);
+		}
+	}
 	
-	public function getby_page_id($page_id) {
+	public function getByPageId($page_id) {
 		if($this->has_lazyset("page_id")) {
 			$navs = $this->get_lazyset("page_id");
 			return array();
@@ -31,4 +50,50 @@ class Navigations implements SubmodelInterface {
 			return $instances;
 		}
 	}
+    
+    public function all() {
+        $query = $this->model->from("navigations");
+        
+        $instances = array();
+        
+        while($row = $query->fetchObject("\Navigation\Item", array($this->model))) {
+            array_push($instances, $row);
+            $this->set_lazy($row);
+        }
+        
+        return $instances;
+    }
+    
+    public function create(array $sanitize) {
+        $query = $this->model->insertInto("navigations")
+            ->addFields("parentid", "page_id", "action", "title", "sort", "flags")
+            ->addValues(
+                $sanitize["parentid"], 
+                $sanitize["page_id"], 
+                $sanitize["action"], 
+                $sanitize["title"], 
+                $sanitize["sort"], 
+                3
+            );
+        $result = $query->execute();
+        // var_dump($result, $sanitize);
+    }
+    
+    public function save(\Navigation\Item $item) {
+        $query = $this->model->update("Navigations");
+        $query->addPair("parentid", $item->getParentid())
+            ->addPair("page_id", $item->getPage_Id())
+            ->addPair("action", $item->getAction())
+            ->addPair("title", $item->getTitle())
+            ->addPair("sort", $item->getSort())
+            ->where("id", $item->getId());
+        $query->execute();
+    }
+    
+    public function dropById($id) {
+        $query = $this->model->delete("Navigations")
+            ->where("id", $id);
+        $query->execute();
+        return $query->getAffectedRows();
+    }
 }

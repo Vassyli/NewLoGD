@@ -51,7 +51,7 @@ trait lazy {
 				// Check if there is already an instance of this object
 				if($this->has_lazy("id", $instances->getId())) {
 					debug("LazyLoading: Get from Memory Storage");
-					$otherinstance = $this->get_lazy("id", $instance->getId());
+					$otherinstance = $this->get_lazy("id", $instances->getId());
 					array_push($this->lazyset[$set_key], $otherinstance);
 					return $otherinstance;
 				}

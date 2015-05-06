@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 09. Apr 2015 um 16:06
+-- Erstellungszeit: 06. Mai 2015 um 09:05
 -- Server Version: 5.6.20
 -- PHP-Version: 5.5.15
 
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `created-on` datetime NOT NULL,
   `locked` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '0',
   `adminflags` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
 --
 -- Daten für Tabelle `accounts`
@@ -64,14 +64,15 @@ CREATE TABLE IF NOT EXISTS `localmodules` (
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `description` text COLLATE utf8_bin NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- Daten für Tabelle `localmodules`
 --
 
 INSERT INTO `localmodules` (`id`, `class`, `name`, `description`, `active`) VALUES
-(1, 'registration', 'Registration', 'This module provides a registration form to create an account.', 1);
+(1, 'registration', 'Registration', 'This module provides a registration form to create an account.', 1),
+(2, 'tableedit', 'Tabellen-Editor', 'Fügt für eine angegebene Tabelle einen Editor ein.', 1);
 
 -- --------------------------------------------------------
 
@@ -85,25 +86,32 @@ CREATE TABLE IF NOT EXISTS `navigations` (
   `page_id` bigint(20) unsigned NOT NULL,
   `action` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `title` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `sort` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=12 ;
+  `sort` int(11) NOT NULL DEFAULT '0',
+  `flags` int(11) NOT NULL DEFAULT '3'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=40 ;
 
 --
 -- Daten für Tabelle `navigations`
 --
 
-INSERT INTO `navigations` (`id`, `parentid`, `page_id`, `action`, `title`, `sort`) VALUES
-(1, 2, 1, 'about', 'Über NewLoGD', 0),
-(2, NULL, 1, NULL, 'Neu hier?', 0),
-(3, 2, 1, 'about_license', 'GNU AGPL 3', 0),
-(4, NULL, 2, 'main', 'Zurück zur Hauptseite', 0),
-(5, NULL, 2, NULL, 'Neu hier?', 0),
-(6, 5, 2, 'about_license', 'GNU AGPL 3', 0),
-(7, NULL, 3, 'main', 'Zurück zur Hauptseite', 0),
-(8, NULL, 3, NULL, 'Neu hier?', 0),
-(9, 8, 3, 'about', 'Über NewLoGD', 0),
-(10, 2, 1, 'register', 'Registrieren', -10),
-(11, NULL, 4, 'main', 'Zurück zur Hauptseite', 0);
+INSERT INTO `navigations` (`id`, `parentid`, `page_id`, `action`, `title`, `sort`, `flags`) VALUES
+(1, 2, 1, 'about', 'Über NewLoGD', 0, 3),
+(2, NULL, 1, NULL, 'Neu hier?', 0, 3),
+(3, 2, 1, 'about_license', 'GNU AGPL 3', 0, 3),
+(4, NULL, 2, 'main', 'Zurück zur Hauptseite', 0, 3),
+(5, NULL, 2, NULL, 'Neu hier?', 0, 3),
+(6, 5, 2, 'about_license', 'GNU AGPL 3', 0, 3),
+(7, NULL, 3, 'main', 'Zurück zur Hauptseite', 0, 3),
+(8, NULL, 3, NULL, 'Neu hier?', 0, 3),
+(9, 8, 3, 'about', 'Über NewLoGD', 0, 3),
+(10, 2, 1, 'register', 'Registrieren', -10, 3),
+(11, NULL, 4, 'main', 'Zurück zur Hauptseite', 0, 3),
+(12, NULL, 6, NULL, 'Administration', 20, 3),
+(13, 12, 6, 'edit_pages', 'Seiten-Editor', 0, 3),
+(14, NULL, 9, 'ucp', 'Zurück zur Benutzerzentrale', -10, 3),
+(15, NULL, 12, 'ucp', 'Zurück zur Benutzerzentrale', -10, 3),
+(16, 12, 6, 'edit_navs', 'Navigations-Editor', 0, 3),
+(24, NULL, 1, NULL, 'Testosteron', 0, 3);
 
 -- --------------------------------------------------------
 
@@ -120,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `content` text COLLATE utf8_bin NOT NULL,
   `flags` bigint(1) unsigned NOT NULL DEFAULT '3',
   `access` tinyint(4) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
 
 --
 -- Daten für Tabelle `pages`
@@ -133,7 +141,9 @@ INSERT INTO `pages` (`id`, `type`, `action`, `title`, `subtitle`, `content`, `fl
 (4, 'node', 'register', 'Registrierung', '', 'Du kommst in einen kaum beleuchteten Raum. Nur das Podest in der Mitte wird von der Decke her beleuchtet. Auf dem Podest befindet sich ein kleiner Handspiegel. Interessierst nimmst du ihn in die Hand. Das Gesicht eines kauzigen Zauberers mit grauem, langem Bart erscheint. Er fragt dich verschiedene Fragen...\r\n\r\nDu erstellst mit der Registrierung einen Charakter in dieser Welt. Das bedeutet, dass du dem Charakter einen Namen geben musst. Der Name sollte idealerweise ein realistischer Name sein (Niemand heisst [Cola] zum Vornamen, oder [XxX Coolguy XxX]...), sollte aber auch nicht dein eigener sein (schliesslich spielst du dich hier nicht selbst). Wir bitten dich ebenfalls, keine anzüglichen Namen zu wählen oder Namen berühmter/berüchtigter Personen.\r\n\r\nDie E-Mailadresse muss existieren. Wir werden an diese eine E-Mail schicken, der ein Bestätigungslink beiliegt. Diese URL musst du aufrufen zum zu bestätigen, dass die Adresse tatsächlich existiert - erst dann wird der Account freigeschalten. Dein Passwort ist frei wählbar, sollte aber in Kombination mit dieser E-Mailadresse einzigartig sein. Wir speichern in der Datenbank ausschliesslich einen sogenannten versalzenen Hash deines Passworts. Falls jemand drittes Zugriff auf die Datenbank bekommen sollte, kann er daraus dein Passwort nicht rekonstruieren.', 1, 1),
 (5, 'login', 'login', '', '', '', 256, 1),
 (6, 'node', 'ucp', 'Benutzer-Zentrale', '', 'Hier ist die Benutzerzentrale.', 1, 2),
-(7, 'logout', 'logout', '', '', '', 256, 2);
+(7, 'logout', 'logout', '', '', '', 256, 2),
+(9, 'node', 'edit_pages', 'Seiten-Editor', '', 'Das hier ist der Editor für Seiten.', 1, 2),
+(12, 'node', 'edit_navs', 'Navigations-Editor', '', 'Das hier ist der Editor für die Navigation', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -152,7 +162,62 @@ CREATE TABLE IF NOT EXISTS `pages_localmodules_xref` (
 --
 
 INSERT INTO `pages_localmodules_xref` (`localmodule_id`, `page_id`, `config`) VALUES
-(1, 4, '{"name_fieldname":"Name des Benutzerkontos","password1_fieldname":"Dein Passwort","password2_fieldname":"Dein Passwort (bestätigen)","email1_fieldname":"Deine E-Mailadresse","email2_fieldname":"Deine E-Mailadresse (bestätigen)","submitbutton_name":"Registrierung bestätigen"}');
+(1, 4, '{"name_fieldname":"Name des Benutzerkontos","password1_fieldname":"Dein Passwort","password2_fieldname":"Dein Passwort (bestätigen)","email1_fieldname":"Deine E-Mailadresse","email2_fieldname":"Deine E-Mailadresse (bestätigen)","submitbutton_name":"Registrierung bestätigen"}'),
+(2, 9, '{"table-to-edit":"pages"}'),
+(2, 12, '{"table-to-edit":"navigations"}');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tables`
+--
+
+CREATE TABLE IF NOT EXISTS `tables` (
+`id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `options` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- Daten für Tabelle `tables`
+--
+
+INSERT INTO `tables` (`id`, `name`, `options`) VALUES
+(1, 'pages', '{"restrict-edit":"isEditable","restrict-drop":"isDeletable"}'),
+(2, 'navigations', '{"restrict-edit":"isEditable","restrict-drop":"isDeletable"}');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `table_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `table_fields` (
+`id` bigint(20) unsigned NOT NULL,
+  `tables_id` bigint(20) unsigned NOT NULL,
+  `fieldname` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `fieldtype` int(11) NOT NULL DEFAULT '1',
+  `default_value` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_bin NOT NULL,
+  `properties` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+--
+-- Daten für Tabelle `table_fields`
+--
+
+INSERT INTO `table_fields` (`id`, `tables_id`, `fieldname`, `fieldtype`, `default_value`, `description`, `properties`) VALUES
+(2, 1, 'type', 1, 'node', 'Page-Typus', '{}'),
+(4, 1, 'action', 1, NULL, 'Aktions-Name', '{}'),
+(5, 1, 'title', 1, NULL, 'Seitentitel', '{}'),
+(6, 1, 'subtitle', 1, NULL, 'Untertitel der Seite', '{}'),
+(7, 1, 'content', 128, NULL, 'Seiten-Inhalt', '{}'),
+(8, 1, 'access', 134217728, '4', 'Zugriffsberechtigung', '{"options" : {"flags":{"1":"Anonymer Zugriff erlaubt","2":"Zugriff auf Account-Level erlaubt","4":"Zugriff auf Charakter-Ebene erlaubt, sofern Navigation möglich","8":"Zugriff auf Charakter-Ebene immer erlaubt"}}}'),
+(9, 2, 'parentid', 67108864, NULL, 'Eltern-Navpunkt', '{"options" : {"foreign":{"table":"navigations","key":"id","check":"getById","limit":"isParentable","display":["id","title"]}},"validator":{"nullifempty":true}}'),
+(10, 2, 'page_id', 67108864, NULL, 'Zugehörige Seite', '{"options" : {"foreign":{"table":"pages","key":"id","check":"getById","display":["id","action","title"]}},"validator":{"nullifempty":false}}'),
+(12, 2, 'action', 67108864, NULL, 'Ziel-Seite', '{"options" : {"foreign":{"table":"pages","key":"action","check":"getByAction","display":["id","action","title"]}},"validator":{"nullifempty":true}}'),
+(13, 2, 'title', 1, NULL, 'Titel des Navigation-Items', '{}'),
+(15, 2, 'sort', 256, '0', 'Sortier-Gewicht', '{"options":{"range":{"min":-1000,"max":1000,"steps":1}}}');
 
 --
 -- Indexes for dumped tables
@@ -180,7 +245,7 @@ ALTER TABLE `localmodules`
 -- Indexes for table `navigations`
 --
 ALTER TABLE `navigations`
- ADD PRIMARY KEY (`id`), ADD KEY `page_id` (`page_id`), ADD KEY `parentid` (`parentid`);
+ ADD PRIMARY KEY (`id`), ADD KEY `page_id` (`page_id`), ADD KEY `parentid` (`parentid`), ADD KEY `action` (`action`);
 
 --
 -- Indexes for table `pages`
@@ -195,6 +260,18 @@ ALTER TABLE `pages_localmodules_xref`
  ADD PRIMARY KEY (`localmodule_id`,`page_id`), ADD KEY `pages_localmodules_xref_pages_fk` (`page_id`);
 
 --
+-- Indexes for table `tables`
+--
+ALTER TABLE `tables`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `table_fields`
+--
+ALTER TABLE `table_fields`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `key-table_id-fieldname` (`tables_id`,`fieldname`), ADD KEY `table_id` (`tables_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -202,7 +279,7 @@ ALTER TABLE `pages_localmodules_xref`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `characters`
 --
@@ -212,17 +289,27 @@ MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `localmodules`
 --
 ALTER TABLE `localmodules`
-MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `navigations`
 --
 ALTER TABLE `navigations`
-MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=40;
 --
 -- AUTO_INCREMENT for table `pages`
 --
 ALTER TABLE `pages`
-MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT for table `tables`
+--
+ALTER TABLE `tables`
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `table_fields`
+--
+ALTER TABLE `table_fields`
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- Constraints der exportierten Tabellen
 --
@@ -237,6 +324,7 @@ ADD CONSTRAINT `characters_accounts_fk` FOREIGN KEY (`account_id`) REFERENCES `a
 -- Constraints der Tabelle `navigations`
 --
 ALTER TABLE `navigations`
+ADD CONSTRAINT `fk-action` FOREIGN KEY (`action`) REFERENCES `pages` (`action`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `navigations_navigations_fk` FOREIGN KEY (`parentid`) REFERENCES `navigations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `navigations_pages_fk` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -246,3 +334,9 @@ ADD CONSTRAINT `navigations_pages_fk` FOREIGN KEY (`page_id`) REFERENCES `pages`
 ALTER TABLE `pages_localmodules_xref`
 ADD CONSTRAINT `pages_localmodules_xref_localmodules_fk` FOREIGN KEY (`localmodule_id`) REFERENCES `localmodules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `pages_localmodules_xref_pages_fk` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `table_fields`
+--
+ALTER TABLE `table_fields`
+ADD CONSTRAINT `fk-table_fields-tables` FOREIGN KEY (`tables_id`) REFERENCES `tables` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;

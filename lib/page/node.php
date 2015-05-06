@@ -49,7 +49,7 @@ class Node extends Base {
 	public function loadNavigation() {
 		if($this->navigation === NULL) {
 			$this->navigation = new Navigation\Container();
-			$this->navigation->addBulk($this->model->get("Navigations")->getby_page_id($this->getId()));
+			$this->navigation->addBulk($this->model->get("Navigations")->getByPageId($this->getId()));
             
             // Navigational Hook
             foreach($this->modules as $module) {
@@ -66,7 +66,7 @@ class Node extends Base {
 	}
 	
 	protected function loadLocalmodules() {
-		$this->modules = $this->model->get("Localmodules")->getby_page_id($this->getId());
+		$this->modules = $this->model->get("Localmodules")->getByPageId($this->getId());
 	}
 	
 	public function getParsedContent() {

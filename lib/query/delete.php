@@ -53,8 +53,9 @@ class Delete extends Base {
 			$prepared = $this->model->get_dbh()->prepare($ret[0]);
 			
 			$result = $prepared->execute($ret[1]);
+            $this->affected_rows = $prepared->rowCount();
 			
-			return $result == true ? $prepared->rowCount() : false;
+			return $result == true ? $this->affected_rows : false;
 		}
 	}
     
@@ -93,5 +94,9 @@ class Delete extends Base {
             debug("One of your update queries does not have any WHERE clauses!");
         }
         return $query;
+    }
+    
+    public function getAffectedRows() {
+        return $this->affected_rows;
     }
 }

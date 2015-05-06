@@ -2,7 +2,7 @@
 
 namespace Submodel;
 
-class Pages implements SubmodelInterface {
+class Pages implements SubmodelInterface, EditableSubmodel {
 	use \lazy;
 	
 	private $model;
@@ -11,20 +11,6 @@ class Pages implements SubmodelInterface {
 		$this->model = $model;
 		$this->set_lazy_keys(array("id", "action"));
 	}
-    
-    public function all() {
-        $query = $this->model->from("pages");
-        $instances = array();
-        while($row = $query->fetch()) {     
-            $classname = $this->get_classname($row["type"]);
-            
-            $page = new $classname($this->model, $row);
-            array_push($instances, $page);
-            $this->set_lazy($page);
-        }
-        
-        return $instances;
-    }
 	
 	public function getById($id) {
 		if($this->has_lazy("id", $id) === false) {
@@ -113,15 +99,35 @@ class Pages implements SubmodelInterface {
             return "\\Page\\Node";
         } catch(Exception $ex) {
             return "\\Page\\Node";
-        } finally {
-            return "\\Page\\Node";
         }
 	}
     
-    public function create($type, $action, $title, $subtitle, $content, $access, $flags = 3) {
+    public function all() {
+        $query = $this->model->from("pages");
+        $instances = array();
+        while($row = $query->fetch()) {     
+            $classname = $this->get_classname($row["type"]);
+            
+            $page = new $classname($this->model, $row);
+            array_push($instances, $page);
+            $this->set_lazy($page);
+        }
+        
+        return $instances;
+    }
+    
+    public function create(array $sanitize) {
         $query = $this->model->insertInto("pages")
             ->addFields("type", "action", "title", "subtitle", "content", "access", "flags")
-            ->addValues($type, $action, $title, $subtitle, $content, $access, $flags);
+            ->addValues(
+                $sanitize["type"], 
+                $sanitize["action"], 
+                $sanitize["title"], 
+                $sanitize["subtitle"], 
+                $sanitize["content"], 
+                $sanitize["access"], 
+                3
+            );
         $query->execute();
     }
     

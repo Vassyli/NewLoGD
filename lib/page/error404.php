@@ -39,6 +39,7 @@ class Error404 implements api, errorapi, \Modelitem {
 	}
 	
 	public function getFlags() {return 48;}
+    public function getAccess() { return 15; }
 	public function checkAccess($flag) {
 		return $this->access & $flag ? true : false;
 	}

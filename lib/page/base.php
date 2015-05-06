@@ -114,5 +114,5 @@ abstract class Base implements api, \Basicmodelitem {
 	// @inheritDoc
 	public function keepHtml() { return ($this->flags & self::FLAG_KEEP_HTML ? true : false); }
 	// @inheritDoc
-	public function hasOutput() {return ($this->flags & self::FLAG_HAS_NO_OUTPUT ? false : true); }
+	public function hasOutput() { return ($this->flags & self::FLAG_HAS_NO_OUTPUT ? false : true); }
 }

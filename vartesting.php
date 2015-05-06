@@ -2,27 +2,23 @@
 
 header("Content-type: text/plain; charset=utf-8");
 
-/*$array = array(
-	"name_fieldname" => "Name des Benutzerkontos",
-	"password1_fieldname" => "Dein Passwort",
-	"password2_fieldname" => "Dein Passwort (bestätigen)",
-	"email1_fieldname" => "Deine E-Mailadresse",
-	"email2_fieldname" => "Deine E-Mailadresse (bestätigen)",
-	"submitbutton_name" => "Registrierung bestätigen",
-);*/
-
 $array = [
-    "enum" => [
-        0b0001 => "Anonymer Zugriff erlaubt",
-        0b0010 => "Zugriff auf Account-Level erlaubt",
-        0b0100 => "Zugriff auf Charakter-Ebene erlaubt, sofern Navigation möglich",
-        0b1000 => "Zugriff auf Charakter-Ebene immer erlaubt",
+    "options" => [
+        "range" => [
+            "min" => -1000,
+            "max" => 1000,
+        ]
     ]
-];
-
-$array = [
-    "restrict-edit" => "isEditable",
-    "restrict-drop" => "isDeletable",
+    /*"foreign" => [
+        "table" => "navigations",
+        "key" => "id",
+        "method" => "getId",
+        "display" => ["id", "title"],
+    ],
+    "validator" => [
+        "nullifempty" => true,
+        
+    ]*/
 ];
     
 print json_encode($array, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_BIGINT_AS_STRING);

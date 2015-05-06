@@ -22,8 +22,8 @@ class TableFields implements SubmodelInterface {
 	
 	public function getByTablename($tablename) {
 		if($this->has_lazyset("name")) {
-			$navs = $this->get_lazyset("name");
-			return array();
+			$fields = $this->get_lazyset("name");
+			return $fields;
 		}
 		else {
 			$result = $this->model->from("table_fields")
@@ -31,7 +31,8 @@ class TableFields implements SubmodelInterface {
                 ->select(array("tables", "name"))
                 ->select(array("tables", "options"))
                 ->innerjoin("tables")
-                ->on("name", $tablename);
+                ->on("name", $tablename)
+                ->orderBy("id");
 
 			$instances = array();
 		

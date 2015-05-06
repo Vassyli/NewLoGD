@@ -30,7 +30,8 @@ a {
 a:hover { text-decoration: underline; }
 
 input:not([type="submit"]),
-textarea {
+textarea,
+select {
 	border: 1px solid black;
 	padding: 0.2em 0.5em;
 	color: #101010;
@@ -256,6 +257,34 @@ fieldset legend {
     text-align: left;
     max-width: 1em !important;
     margin-right: 1em;
+}
+
+output.range-output { 
+  position: absolute;
+  background-image: linear-gradient(top, #444444, #999999);
+  width: 40px; 
+  height: 30px; 
+  text-align: center; 
+  color: white; 
+  border-radius: 10px; 
+  display: inline-block; 
+  font: bold 15px/30px Georgia;
+  bottom: 175%;
+  left: 0;
+  margin-left: -1%;
+}
+output.range-output:after { 
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 10px solid #999999;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  margin-top: -1px;
 }
 
 

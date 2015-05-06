@@ -7,9 +7,15 @@
 		<!-- Ressources -->
 		<link rel="stylesheet" type="text/css" href="<?=$this->getTemplateUribasepath() ?>normalize.css" media="screen">
 		<link rel="stylesheet" type="text/css" href="<?=$this->getTemplateUribasepath() ?>css/<?=$this->getCssFilename() ?>" media="screen">
+        
+        <!-- External ressources -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        
+        <!-- JavaScript -->
+        <script src="<?=$this->getTemplateUribasepath() ?>js/script.js"></script>
 		
 		<!-- Title -->
-		<title></title>
+		<title>NewLoGD - <?=$this->getPage()->getTitle(); ?></title>
 	</head>
 	<!-- Displayed Content -->
 	<body>

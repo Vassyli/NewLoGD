@@ -13,7 +13,7 @@ class Localmodules implements SubmodelInterface {
 		$this->set_lazyset_keys(array("page_id"));
 	}
 	
-	public function getby_page_id($page_id) {
+	public function getByPageId($page_id) {
 		if($this->has_lazyset("page_id")) {
 			$navs = $this->get_lazyset("page_id");
 			return array();
