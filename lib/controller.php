@@ -38,7 +38,7 @@ class Controller {
 		}
 		
 		// Load the page given by action and initialize it properly.
-		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
+		$page = $this->model->get("Pages")->getbyAction($this->model->get_res_action());
 		
 		// Check if user actually has access
         $page = $this->checkAccess($page);

@@ -40,7 +40,7 @@ class Pages implements SubmodelInterface, EditableSubmodel {
 		}
 	}
 	
-	public function getby_action($action) {
+	public function getbyAction($action) {
 		//if(!isset($this->lazy["action"][$action])) {
 		if($this->has_lazy("action", $action) === false) {
 			$query = $this->model->from("pages")

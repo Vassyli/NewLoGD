@@ -34,7 +34,7 @@ class View {
 	 */
 	public function output() {		
 		// Get Page-Instance
-		$page = $this->model->get("Pages")->getby_action($this->model->get_res_action());
+		$page = $this->model->get("Pages")->getbyAction($this->model->get_res_action());
 		
 		// Start output handler only if the Page has output
 		if($page->hasOutput()) {
