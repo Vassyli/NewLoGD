@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 06. Mai 2015 um 09:05
+-- Erstellungszeit: 08. Mai 2015 um 12:20
 -- Server Version: 5.6.20
 -- PHP-Version: 5.5.15
 
@@ -22,13 +22,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `accounts` (
 `id` bigint(20) unsigned NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `password` varchar(255) COLLATE utf8_bin NOT NULL,
+  `name` varchar(191) CHARACTER SET utf8mb4 NOT NULL,
+  `email` varchar(191) CHARACTER SET utf8mb4 NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `created-on` datetime NOT NULL,
-  `locked` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '0',
+  `locked` varchar(255) COLLATE utf8mb4_bin NOT NULL DEFAULT '0',
   `adminflags` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=2 ;
 
 --
 -- Daten für Tabelle `accounts`
@@ -46,11 +46,11 @@ INSERT INTO `accounts` (`id`, `name`, `email`, `password`, `created-on`, `locked
 CREATE TABLE IF NOT EXISTS `characters` (
 `id` bigint(20) unsigned NOT NULL,
   `account_id` bigint(20) unsigned DEFAULT NULL,
-  `name` varchar(50) COLLATE utf8_bin NOT NULL,
-  `prefix` varchar(50) COLLATE utf8_bin NOT NULL,
-  `suffix` varchar(50) COLLATE utf8_bin NOT NULL,
-  `displayname` varchar(550) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+  `name` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+  `prefix` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+  `suffix` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+  `displayname` varchar(550) COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -60,11 +60,11 @@ CREATE TABLE IF NOT EXISTS `characters` (
 
 CREATE TABLE IF NOT EXISTS `localmodules` (
 `id` bigint(20) unsigned NOT NULL,
-  `class` varchar(63) CHARACTER SET utf8 NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `description` text COLLATE utf8_bin NOT NULL,
+  `class` varchar(63) CHARACTER SET utf8mb4 NOT NULL,
+  `name` varchar(191) CHARACTER SET utf8mb4 NOT NULL,
+  `description` text COLLATE utf8mb4_bin NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=3 ;
 
 --
 -- Daten für Tabelle `localmodules`
@@ -84,11 +84,11 @@ CREATE TABLE IF NOT EXISTS `navigations` (
 `id` bigint(20) unsigned NOT NULL,
   `parentid` bigint(20) unsigned DEFAULT NULL,
   `page_id` bigint(20) unsigned NOT NULL,
-  `action` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `action` varchar(191) COLLATE utf8mb4_bin DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `sort` int(11) NOT NULL DEFAULT '0',
   `flags` int(11) NOT NULL DEFAULT '3'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=40 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=25 ;
 
 --
 -- Daten für Tabelle `navigations`
@@ -104,7 +104,7 @@ INSERT INTO `navigations` (`id`, `parentid`, `page_id`, `action`, `title`, `sort
 (7, NULL, 3, 'main', 'Zurück zur Hauptseite', 0, 3),
 (8, NULL, 3, NULL, 'Neu hier?', 0, 3),
 (9, 8, 3, 'about', 'Über NewLoGD', 0, 3),
-(10, 2, 1, 'register', 'Registrieren', -10, 3),
+(10, 2, 1, 'register', 'Registrieren', -11, 3),
 (11, NULL, 4, 'main', 'Zurück zur Hauptseite', 0, 3),
 (12, NULL, 6, NULL, 'Administration', 20, 3),
 (13, 12, 6, 'edit_pages', 'Seiten-Editor', 0, 3),
@@ -121,14 +121,14 @@ INSERT INTO `navigations` (`id`, `parentid`, `page_id`, `action`, `title`, `sort
 
 CREATE TABLE IF NOT EXISTS `pages` (
 `id` bigint(20) unsigned NOT NULL,
-  `type` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `action` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `title` varchar(255) COLLATE utf8_bin NOT NULL,
-  `subtitle` varchar(255) COLLATE utf8_bin NOT NULL,
-  `content` text COLLATE utf8_bin NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+  `action` varchar(191) COLLATE utf8mb4_bin NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `subtitle` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `content` text COLLATE utf8mb4_bin NOT NULL,
   `flags` bigint(1) unsigned NOT NULL DEFAULT '3',
   `access` tinyint(4) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=13 ;
 
 --
 -- Daten für Tabelle `pages`
@@ -154,8 +154,8 @@ INSERT INTO `pages` (`id`, `type`, `action`, `title`, `subtitle`, `content`, `fl
 CREATE TABLE IF NOT EXISTS `pages_localmodules_xref` (
   `localmodule_id` bigint(20) unsigned NOT NULL,
   `page_id` bigint(20) unsigned NOT NULL,
-  `config` text COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `config` text COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Daten für Tabelle `pages_localmodules_xref`
@@ -174,9 +174,9 @@ INSERT INTO `pages_localmodules_xref` (`localmodule_id`, `page_id`, `config`) VA
 
 CREATE TABLE IF NOT EXISTS `tables` (
 `id` bigint(20) unsigned NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `options` text COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+  `name` varchar(191) CHARACTER SET utf8mb4 NOT NULL,
+  `options` text COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=3 ;
 
 --
 -- Daten für Tabelle `tables`
@@ -195,12 +195,12 @@ INSERT INTO `tables` (`id`, `name`, `options`) VALUES
 CREATE TABLE IF NOT EXISTS `table_fields` (
 `id` bigint(20) unsigned NOT NULL,
   `tables_id` bigint(20) unsigned NOT NULL,
-  `fieldname` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `fieldname` varchar(191) CHARACTER SET utf8mb4 NOT NULL,
   `fieldtype` int(11) NOT NULL DEFAULT '1',
-  `default_value` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8_bin NOT NULL,
-  `properties` text COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+  `default_value` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `properties` text COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=16 ;
 
 --
 -- Daten für Tabelle `table_fields`
@@ -227,13 +227,13 @@ INSERT INTO `table_fields` (`id`, `tables_id`, `fieldname`, `fieldtype`, `defaul
 -- Indexes for table `accounts`
 --
 ALTER TABLE `accounts`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `email` (`email`), ADD UNIQUE KEY `name` (`name`);
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `characters`
 --
 ALTER TABLE `characters`
- ADD PRIMARY KEY (`id`), ADD KEY `account_id` (`account_id`,`name`);
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`), ADD KEY `account_id` (`account_id`,`name`);
 
 --
 -- Indexes for table `localmodules`
@@ -294,7 +294,7 @@ MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `navigations`
 --
 ALTER TABLE `navigations`
-MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=40;
+MODIFY `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `pages`
 --

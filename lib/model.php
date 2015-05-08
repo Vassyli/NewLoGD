@@ -77,7 +77,7 @@ class Model {
 	 * @param string $pass Password of the User
 	 */
 	protected function connect($host, $name, $user, $pass) {
-		$dsn = sprintf("mysql:dbname=%s;host=%s;charset=utf8", $name, $host);
+		$dsn = sprintf("mysql:dbname=%s;host=%s;charset=utf8mb4", $name, $host);
 		try {
 			$this->dbh = new PDO($dsn, $user, $pass);
 		}
