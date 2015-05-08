@@ -253,9 +253,10 @@ class Tableedit extends \LocalmoduleBasis {
             $table->addCol(
                 $row->getFieldname(), 
                 $row->getDescription(), 
-                array(
+                [
                     "type" => $row->getFieldtype(),
-                )
+                    "nullifempty" => empty($row->getProperty("validator", [])["nullifempty"]) ? false : true
+                ]
             );
         }
           

@@ -111,7 +111,6 @@ HTML;
         $description = HTMLSpecialchars($info["description"]);
         $value = $info["value"]===NULL?"value=\"0\"":"value=\"".intval($info["value"])."\"";
         $required = empty($info["validator"]["required"])?"":" required";
-        var_dump($info);
         $min = intval($info["options"]["range"]["min"]);
         $max = intval($info["options"]["range"]["max"]);
         $steps = intval($info["options"]["range"]["steps"]);

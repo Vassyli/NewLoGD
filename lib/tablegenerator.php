@@ -43,6 +43,9 @@ class TableGenerator extends Datatypes {
                     
                     if(!is_numeric($field)) {           
                         $content = htmlspecialchars($row->$methodname());
+                        if(empty($content) and $col["nullifempty"] == true) {
+                            $content = "<i class=\"isnull\">NULL</i>";
+                        }
                         // Use later the property of $col to check fieldtype
                         if(mb_strlen($content) > 255) {
                             $content = mb_substr($content, 0, 255)."[...]";
@@ -101,6 +104,7 @@ class TableGenerator extends Datatypes {
             "custom-variables" => isset($options["custom-variables"]) ? $options["custom-variables"] : [],
             "custom-check" => isset($options["custom-check"]) ? $options["custom-check"] : [],
             "custom-alternate" => isset($options["custom-alternate"]) ? $options["custom-alternate"] : [],
+            "nullifempty" => empty($options["nullifempty"]) ? false : true,
         ];
 		return $this;
 	}
