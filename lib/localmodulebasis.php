@@ -53,6 +53,11 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
      */
 	public function getDescription() {return $this->description;}
     /**
+     * Default implementation of getPageconfigForm(): Return NULL
+     * @return NULL
+     */
+    public function getPageconfigForm() { return NULL; }
+    /**
      * Decodes the json-encoded page-config and stores it in the instance
      * @param string json-encoded config string
      */
@@ -73,7 +78,11 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
             return $default;
         }
 	}
-    // empty default implementation
+    /**
+     * Gets called from a page after the inialization of the Navigation in order
+     * to manipulate it.
+     * @param Navigation\Container $navigation The prepared and filled Navigation Container
+     */
     public function navigationHook(Navigation\Container $navigation) {} 
     /**
      * Returns an url which leads to the module namespace of the page.

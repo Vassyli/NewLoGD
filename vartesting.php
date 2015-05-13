@@ -20,9 +20,13 @@ $array = [
         
     ]*/
 ];
-    
-print json_encode($array, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_BIGINT_AS_STRING);
 
+function test(){ return ["A", "B", "C"]; }
+list($a, $b, $c) = test();
+var_dump($a, $b, $c);
+
+print "\n";
+print json_encode($array, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_BIGINT_AS_STRING);
 print "\n";
 
 $unsafe = "Hel lö12

@@ -50,7 +50,7 @@ class Delete extends Base {
 		if($this->is_executed === false) {
 			$ret = $this->buildQuery();
 			if(!LOGD_SHOW_DEBUG_SQL) { debug("<b>Query:</b>\n&lt;".$ret[0]."&gt;\n"); }
-			$prepared = $this->model->get_dbh()->prepare($ret[0]);
+			$prepared = $this->model->getDbh()->prepare($ret[0]);
 			
 			$result = $prepared->execute($ret[1]);
             $this->affected_rows = $prepared->rowCount();

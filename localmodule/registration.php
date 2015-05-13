@@ -22,10 +22,10 @@ class Registration extends \LocalmoduleBasis {
 	public function execute() {		
 		$this->form_state = 0;
 		
-		if($this->model->get_postvalue("register_submit") == 1) {
+		if($this->model->getPostvalue("register_submit") == 1) {
 			// There was something posted - sanitize it!
 			try {
-				$sanitize = $this->get_form()->sanitize($this->model->get_postarray(), true);
+				$sanitize = $this->get_form()->sanitize($this->model->getPostarray(), true);
 				$this->form_state = -1;
 				
 				$this->model->get("Accounts")->create($sanitize["name"], $sanitize["password1"], $sanitize["email1"]);

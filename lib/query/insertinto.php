@@ -56,12 +56,12 @@ class InsertInto extends Base {
 			$ret = $this->buildQuery();
 			if(LOGD_SHOW_DEBUG_SQL) { debug("<b>Query:</b>\n&lt;".$ret[0]."&gt;\n"); }
 			
-			$prepared = $this->model->get_dbh()->prepare($ret[0]);
+			$prepared = $this->model->getDbh()->prepare($ret[0]);
 			
 			// Execute for every value-Set
 			foreach($ret[1] as $valueset) {
 				$result = $prepared->execute($valueset);
-				array_push($this->insertid, $this->model->get_dbh()->lastInsertId());
+				array_push($this->insertid, $this->model->getDbh()->lastInsertId());
 			}
 			
 			return array($this->insertid);

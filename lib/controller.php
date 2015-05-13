@@ -38,13 +38,13 @@ class Controller {
 		}
 		
 		// Load the page given by action and initialize it properly.
-		$page = $this->model->get("Pages")->getbyAction($this->model->get_res_action());
+		$page = $this->model->get("Pages")->getbyAction($this->model->getRessourceAction());
 		
 		// Check if user actually has access
         $page = $this->checkAccess($page);
 		
 		$page->initiate();
-		$page->set_arguments($this->model->get_res_arguments());
+		$page->set_arguments($this->model->getRessourceArguments());
 		
 		// Execute the page-code.
 		$page->execute();
@@ -65,7 +65,7 @@ class Controller {
 				// Anonymous Access ok
 			}
 			else {
-				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
+				$page = $this->model->get("Pages")->get_403page($this->model->getRessourceAction());
 			}
 		}
 		else {
@@ -73,7 +73,7 @@ class Controller {
 				// Account Access ok
 			}
 			else {
-				$page = $this->model->get("Pages")->get_403page($this->model->get_res_action());
+				$page = $this->model->get("Pages")->get_403page($this->model->getRessourceAction());
 			}
 		}
         

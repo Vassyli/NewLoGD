@@ -29,4 +29,9 @@ interface LocalmoduleAPI {
      * @param Navigation\Container instance of navigation container
      */
     public function navigationHook(Navigation\Container $navigation);
+    /**
+     * Get the pageconfig-Formular for this module
+     * @return \FormGenerator instance of the settings
+     */
+    public function getPageconfigForm();
 }

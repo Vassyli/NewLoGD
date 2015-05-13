@@ -46,7 +46,7 @@ class Model {
 		$this->post = $post;
 		
 		// Parse the query string from $_GET['qs']
-		$this->parse_qs();
+		$this->parseQuerystring();
 		
 		// Get db informations
 		Include LOGD_DBCONFIG;
@@ -102,9 +102,9 @@ class Model {
 	/**
 	 * Returns the DB handler
 	 *
-	 * @return PDO The active DB Handler
+	 * @return \PDO The active DB Handler
 	 */
-	public function get_dbh() {
+	public function getDbh() {
 		return $this->dbh;
 	}
 	
@@ -165,24 +165,23 @@ class Model {
 	 * @throws Exception if the requested Submodel does not implement the interface Submodel
 	 */
 	public function get($submodel) {
-		$submodel = strtolower($submodel);
-		$submodel = "Submodel\\{$submodel}";
-		if(!isset($this->submodels[$submodel])) {
-			if(in_array("Submodel\SubmodelInterface", class_implements($submodel))) {
-				$this->submodels[$submodel] = new $submodel($this);
+		$submodel_name = "Submodel\\".strtolower($submodel);
+		if(!isset($this->submodels[$submodel_name])) {
+			if(in_array("Submodel\SubmodelInterface", class_implements($submodel_name))) {
+				$this->submodels[$submodel_name] = new $submodel_name($this);
 			}
 			else {
 				throw new Exception("The requested Submodel does not implement the Submodel interface.");
 			}
 		}
 	
-		return $this->submodels[$submodel];
+		return $this->submodels[$submodel_name];
 	}
 	
-        /**
-         * Parses the query-string contained in $_GET['qs'] (and in $this->get['qs'])
-         */
-	private function parse_qs() {
+    /**
+     * Parses the query-string contained in $_GET['qs'] (and in $this->get['qs'])
+     */
+	private function parseQuerystring() {
 		$parts = explode("/", $this->get['qs']);
 		$this->res_action = array_shift($parts);
 		
@@ -195,31 +194,31 @@ class Model {
 		}
 	}
 	
-        /**
-         * Returns the action of the requested ressource
-         * 
-         * @return string Returns the requested action
-         */
-	public function get_res_action() {
+    /**
+     * Returns the action of the requested ressource
+     * 
+     * @return string Returns the requested action
+     */
+	public function getRessourceAction() {
 		return $this->res_action;
 	}
 	
-        /**
-         * Returns additional arguments of the requested ressource
-         * 
-         * @return array Returns additional Arguments
-         */
-	public function get_res_arguments() {
+    /**
+     * Returns additional arguments of the requested ressource
+     * 
+     * @return array Returns additional Arguments
+     */
+	public function getRessourceArguments() {
 		return $this->res_arguments;
 	}
 	
-        /**
-         * Returns a POST-Value given by it's argument
-         * 
-         * @param string $key The requested key
-         * @return string The value which belongs to $key
-         */
-	public function get_postvalue($key) {
+    /**
+     * Returns a POST-Value given by it's argument
+     * 
+     * @param string $key The requested key
+     * @return string The value which belongs to $key
+     */
+	public function getPostvalue($key) {
 		if(!empty($this->post[$key])) {
 			return $this->post[$key];
 		}
@@ -228,12 +227,12 @@ class Model {
 		}
 	}
 	
-        /*
-         * Returns an array of all POST values
-         * 
-         * @return array POST-values
-         */
-	public function get_postarray() {
+    /*
+     * Returns an array of all POST values
+     * 
+     * @return array POST-values
+     */
+	public function getPostarray() {
 		return $this->post;
 	}
 }

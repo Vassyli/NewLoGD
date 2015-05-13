@@ -4,9 +4,9 @@ namespace page;
 
 use \Navigation;
 
-class Node extends Base {
+class Node extends Base implements \hasModules {
 	protected $parser = NULL;
-	protected $modules = array();
+	protected $modules = [];
 	
 	protected $navigation = NULL;
 	
@@ -68,6 +68,26 @@ class Node extends Base {
 	protected function loadLocalmodules() {
 		$this->modules = $this->model->get("Localmodules")->getByPageId($this->getId());
 	}
+    
+    /**
+     * Returns an array of \FormGenerator.
+     * @return array array of \FormGenerator
+     */
+    public function getLocalmodulesForm() {
+        if(empty($this->modules)) {
+            return [];
+        }
+        
+        $return = [];
+        foreach($this->modules as $module) {
+            $config_form = $module->getPageconfigForm();
+            if($config_form !== NULL) {
+                array_push($return, $config_form);
+            }
+        }
+        
+        return $return;
+    }
 	
 	public function getParsedContent() {
 		if($this->block_output === false) {

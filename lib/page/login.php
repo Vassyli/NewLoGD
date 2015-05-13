@@ -21,9 +21,9 @@ class Login extends Base {
 	public function initiate() {}
 	
 	public function execute() {
-		$acc = $this->model->get("Accounts")->getby_email($this->model->get_postvalue("email"));
+		$acc = $this->model->get("Accounts")->getby_email($this->model->getPostvalue("email"));
 		
-		if($acc !== false and $acc->verifyPassword($this->model->get_postvalue("password"))) {
+		if($acc !== false and $acc->verifyPassword($this->model->getPostvalue("password"))) {
 			$this->login_valid = 1;
 		}
 		else {

@@ -10,15 +10,13 @@ class Tableedit extends \LocalmoduleBasis {
 	
 	public function __construct(\Model $model, array $row, $page = NULL) {
 		parent::__construct($model, $row, $page);
-	}
-	
-	public function execute() {		
-		$arguments = $this->page->getArguments();
-        $subaction = isset($arguments[1]) ? $arguments[1] : "";
-        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
         
         // Prepare the Name for the Database/Database-Model (which sould be the same..)
         $this->dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
+	}
+	
+	public function execute() {		
+        list($arguments, $subaction, $id) = $this->getURLParams();
 		
 		if(empty($arguments[0])) {
 		}
@@ -43,9 +41,9 @@ class Tableedit extends \LocalmoduleBasis {
         }
 
 
-        if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
+        if($this->model->getPostvalue("tableedit_submit") == 1 && empty($this->error)) {
             try {
-                $sanitize = $form->sanitize($this->model->get_postarray(), true);
+                $sanitize = $form->sanitize($this->model->getPostarray(), true);
 
                 foreach($sanitize as $key => $val) {
                     $method = "set".$key;
@@ -62,9 +60,9 @@ class Tableedit extends \LocalmoduleBasis {
     protected function executeNew() {
         $form = $this->getNewForm();
 
-        if($this->model->get_postvalue("tableedit_submit") == 1 && empty($this->error)) {
+        if($this->model->getPostvalue("tableedit_submit") == 1 && empty($this->error)) {
             try {
-                $sanitize = $form->sanitize($this->model->get_postarray(), true);
+                $sanitize = $form->sanitize($this->model->getPostarray(), true);
                 $this->model->get($this->dbtablename)->create($sanitize);
                 $this->error = "newlycreated";
             } catch(\Exception $e) {
@@ -93,9 +91,7 @@ class Tableedit extends \LocalmoduleBasis {
     }
     
     public function navigationHook(\Navigation\Container $navigation) {
-        $arguments = $this->page->getArguments();
-        $subaction = isset($arguments[1]) ? $arguments[1] : "";
-        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
+        list($arguments, $subaction, $id) = $this->getURLParams();
         
         if(empty($arguments[0])) {
             $navid = $navigation->addCustomItem("Editor");
@@ -112,9 +108,7 @@ class Tableedit extends \LocalmoduleBasis {
     }
 	
 	public function output() {
-		$arguments = $this->page->getArguments();
-        $subaction = isset($arguments[1]) ? $arguments[1] : "";
-        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
+        list($arguments, $subaction, $id) = $this->getURLParams();
 		$buffer = "";
 		
 		if(empty($arguments[0])) {
@@ -125,6 +119,7 @@ class Tableedit extends \LocalmoduleBasis {
                 case "edit":
                     if(empty($this->error)) {
                         $buffer = $this->getEditForm($id)->getHtml();
+                        $buffer.= $this->addModuleForms($id);
                     }
                     elseif($this->error == "notfound") {
                         $buffer = "The requested page with the id {$id} was not found.";
@@ -159,7 +154,8 @@ class Tableedit extends \LocalmoduleBasis {
                 
                 case "new":
                     if(empty($this->error)) {
-                        $buffer = $this->getNewForm()->getHtml();    
+                        $buffer = $this->getNewForm()->getHtml();
+                        $buffer.= $this->addModuleForms($id);    
                     }
                     elseif($this->error == "error") {
                         $buffer = "An unknown error occured";
@@ -174,6 +170,34 @@ class Tableedit extends \LocalmoduleBasis {
 		
 		return $buffer;
 	}
+    
+    protected function addModuleForms($id) {
+        if($id === NULL) {
+            return "";
+        }
+        
+        $dbitem = $this->model->get($this->dbtablename)->getById($id);
+        $buffer = "";
+
+        if(in_array("hasModules", class_implements($dbitem))) {
+            $forms = $dbitem->getLocalmodulesForm();
+            foreach($forms as $form) {
+                $buffer .= $form->getHtml();
+            }
+        }
+        
+        return $buffer;
+    }
+    
+    /**
+     * 
+     */
+    protected function getURLParams() {
+        $arguments = $this->page->getArguments();
+        $subaction = isset($arguments[1]) ? $arguments[1] : "";
+        $id = isset($arguments[2]) ? intval($arguments[2]) : "";
+        return [$arguments, $subaction, $id];
+    }
     
     /**
      * 
@@ -191,7 +215,10 @@ class Tableedit extends \LocalmoduleBasis {
     protected function getEditForm($id) {
         return $this->getForm($id, "Editieren", $this->getModuleGameUri("edit", $id));
     }
-    
+    /**
+     * Gets the generated New-Entry-Form with the appropriate title and action param
+     * @return \Submodel\FormGenerator
+     */
     protected function getNewForm() {
         return $this->getForm(NULL, "Neu", $this->getModuleGameUri("new"));
     }
@@ -263,4 +290,11 @@ class Tableedit extends \LocalmoduleBasis {
         $table->addRows($data);
         return $table;
 	}
+    
+    public function getPageconfigForm() {
+        $formgenerator = new \FormGenerator($this->getName(), "");
+        $formgenerator->addLine("Which Table to Edit", "table-to-edit", $this->getPageconfigField("table-to-edit"));
+        $formgenerator->addSubmitButton("Submit", "module_tableedit", 1);
+        return $formgenerator;
+    }
 }
