@@ -116,4 +116,15 @@ class Registration extends \LocalmoduleBasis {
 		}
 		return $this->form;
 	}
+    
+    public function getPageconfigForm($action) {
+        $formgenerator = new \FormGenerator($this->getName(), $action);
+        $formgenerator->addLine("Registration form title", "form-title", $this->getPageconfigField("form-title", "Registrierungs-Formular"));
+        $formgenerator->addSubmitButton("Submit", "module", $this->getClass());
+        return $formgenerator;
+    }
+    
+    public function savePageconfig($values) {
+        print("Saved Pageconfig");
+    }
 }

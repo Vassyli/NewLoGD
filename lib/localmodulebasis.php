@@ -56,7 +56,7 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
      * Default implementation of getPageconfigForm(): Return NULL
      * @return NULL
      */
-    public function getPageconfigForm() { return NULL; }
+    public function getPageconfigForm($action) { return NULL; }
     /**
      * Decodes the json-encoded page-config and stores it in the instance
      * @param string json-encoded config string

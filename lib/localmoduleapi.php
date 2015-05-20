@@ -33,5 +33,5 @@ interface LocalmoduleAPI {
      * Get the pageconfig-Formular for this module
      * @return \FormGenerator instance of the settings
      */
-    public function getPageconfigForm();
+    public function getPageconfigForm($action);
 }

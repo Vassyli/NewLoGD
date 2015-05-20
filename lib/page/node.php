@@ -7,6 +7,7 @@ use \Navigation;
 class Node extends Base implements \hasModules {
 	protected $parser = NULL;
 	protected $modules = [];
+    protected $module_loaded = false;
 	
 	protected $navigation = NULL;
 	
@@ -66,21 +67,26 @@ class Node extends Base implements \hasModules {
 	}
 	
 	protected function loadLocalmodules() {
-		$this->modules = $this->model->get("Localmodules")->getByPageId($this->getId());
+        if($this->module_loaded == false) {
+            $this->modules = $this->model->get("Localmodules")->getByPageId($this->getId());
+            $this->module_loaded = true;
+        }
 	}
     
     /**
      * Returns an array of \FormGenerator.
      * @return array array of \FormGenerator
      */
-    public function getLocalmodulesForm() {
+    public function getLocalmodulesForm($action) {
+        $this->loadLocalmodules();
+
         if(empty($this->modules)) {
             return [];
         }
         
         $return = [];
         foreach($this->modules as $module) {
-            $config_form = $module->getPageconfigForm();
+            $config_form = $module->getPageconfigForm($action);
             if($config_form !== NULL) {
                 array_push($return, $config_form);
             }
