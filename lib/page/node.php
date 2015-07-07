@@ -72,6 +72,17 @@ class Node extends Base implements \hasModules {
             $this->module_loaded = true;
         }
 	}
+	
+	public function getLocalmodule($module) {
+		$this->loadLocalmodules();
+		
+		foreach($this->modules as $mod) {
+			if($mod->getClass() == $module) {
+				return $mod;
+			}
+		}
+		return NULL;
+	}
     
     /**
      * Returns an array of \FormGenerator.

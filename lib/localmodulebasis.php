@@ -19,6 +19,9 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
     /** @var array containts module-specific configuration per page */
     protected $pageconfig;
 	
+	/** @var True if database relevant info have changed */
+	protected $has_changed = false;
+	
 	public function __construct(\Model $model, array $row,  \page\api $page = NULL) {
 		$this->model = $model;
 		$this->page = $page;
@@ -29,7 +32,7 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
 		$this->description = $row['description'];
 		$this->active = (bool)$row['active'];
 		
-		$this->setPageconfig($row['pageconfig']);
+		$this->decodePageconfig($row['pageconfig']);
 	}
 	
     /**
@@ -52,6 +55,10 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
      * @return string Description of the module
      */
 	public function getDescription() {return $this->description;}
+	
+	public function getEncodedPageconfig() { return $this->pageconfig_json; }
+	public function getPageId() { return $this->page->getId(); }
+	public function getLocalmoduleId() { return $this->id;}
     /**
      * Default implementation of getPageconfigForm(): Return NULL
      * @return NULL
@@ -61,9 +68,36 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
      * Decodes the json-encoded page-config and stores it in the instance
      * @param string json-encoded config string
      */
-	protected function setPageconfig($pageconfig) {
+	protected function decodePageconfig($pageconfig) {
 		$this->pageconfig = json_decode($pageconfig, true);
+		$this->pageconfig_json = $pageconfig;
 	}
+	
+	/**
+     * Takes a new array with values and saves it.
+     * @param array config string
+     */
+	public function setPageconfig($pageconfig) {
+		$this->has_changed = true;
+		$this->pageconfig = $pageconfig;
+		$this->pageconfig_json = json_encode($pageconfig);
+	}
+	
+	public function set($key, $value) {
+        $this->has_changed = true;
+        $this->$key = $value;
+    }
+    
+    public function save() {
+        if($this->has_changed) {
+            $return = $this->model->get("localmodules")->saveInstance($this);
+            return $return;
+        }
+        else {
+            return 0;
+        }
+    }
+	
     /**
      * Returns a value from the page config
      * @param string $key

@@ -32,4 +32,20 @@ class Localmodules implements SubmodelInterface {
 
         return $set;
 	}
+	
+	public function saveInstance(\LocalmoduleBasis $module) {
+		$query = $this->model->update("pages_localmodules_xref");
+		$query->addPair("config", $module->getEncodedPageconfig())
+			->where("localmodule_id", $module->getLocalmoduleId())
+			->where("page_id", $module->getPageId());
+        /*$query->addPair("type", $page->getType())
+            ->addPair("action", $page->getAction())
+            ->addPair("title", $page->getTitle())
+            ->addPair("subtitle", $page->getSubtitle())
+            ->addPair("content", $page->getContent())
+            ->addPair("access", $page->getAccess())
+            ->addPair("flags", $page->getFlags())
+            ->where("id", $page->getId());*/
+        $query->execute();
+	}
 }

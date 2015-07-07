@@ -542,10 +542,19 @@ HTML;
      * @param string $field_name Fieldname
      * @return boolean
      */
-    protected function hasField($field_name) {
+    public function hasField($field_name) {
         if(isset($this->form_elements[$field_name])) { return true; }
         else { return false; }
     }
+	
+	public function getField($field_name) {
+		if($this->hasField($field_name)) {
+			return $this->form_elements[$field_name];
+		}
+		else {
+			return NULL;
+		}
+	}
 	
     /**
      * Adds an input field

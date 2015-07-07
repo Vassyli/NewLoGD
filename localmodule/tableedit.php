@@ -54,9 +54,21 @@ class Tableedit extends \LocalmoduleBasis {
             } catch(\Exception $e) {
                 // Exception, do nothing
             }
-            
-            // Module-Specific Edits
         }
+		
+		// Module-Specific Edits
+		$module = $this->model->getPostvalue("module");
+		if($module && empty($this->error)) {
+			$form = $this->getModuleFormByModulename($id, $module);
+			if(!empty($form)) {
+				$sanitize = $form->sanitize($this->model->getPostarray(), true);
+				
+				// Get reference to module
+				$module = $this->model->get($this->dbtablename)->getById($id)->getLocalmodule($module);
+				$module->setPageconfig($sanitize);
+				$module->save();
+			}
+		}
     }
     
     protected function executeNew() {
@@ -176,19 +188,43 @@ class Tableedit extends \LocalmoduleBasis {
         if($id === NULL) {
             return "";
         }
+
+		$buffer = "";
+		
+		$forms = $this->getModuleForms($id);
+		foreach($forms as $form) {
+			$buffer .= $form->getHtml();
+		}
         
-        $dbitem = $this->model->get($this->dbtablename)->getById($id);
+        return $buffer;
+    }
+	
+	protected function getModuleFormByModulename($id, $modulename = NULL) {
+		if(empty($modulename)) {
+			return NULL;
+		}
+		
+		$forms = $this->getModuleForms($id);
+		foreach($forms as $form) {
+			if($form->getField("module")["value"]) {
+				return $form;
+			}
+		}
+		
+		return NULL;
+	}
+	
+	protected function getModuleForms($id) {
+		$dbitem = $this->model->get($this->dbtablename)->getById($id);
         $buffer = "";
 
         if(in_array("hasModules", class_implements($dbitem))) {
             $forms = $dbitem->getLocalmodulesForm($this->getModuleGameUri("edit", $id, "modules"));
-            foreach($forms as $form) {
-                $buffer .= $form->getHtml();
-            }
-        }
-        
-        return $buffer;
-    }
+			return $forms;
+		}
+		
+		return [];
+	}
     
     /**
      * 
@@ -299,11 +335,7 @@ class Tableedit extends \LocalmoduleBasis {
     public function getPageconfigForm($action) {
         $formgenerator = new \FormGenerator($this->getName(), $action);
         $formgenerator->addLine("Which Table to Edit", "table-to-edit", $this->getPageconfigField("table-to-edit"));
-        $formgenerator->addSubmitButton("Submit", "module_tableedit", 1);
+        $formgenerator->addSubmitButton("Submit", "module", $this->getClass());
         return $formgenerator;
-    }
-    
-    public function savePageconfig($values) {
-        print("Saved Pageconfig");
     }
 }

@@ -123,8 +123,4 @@ class Registration extends \LocalmoduleBasis {
         $formgenerator->addSubmitButton("Submit", "module", $this->getClass());
         return $formgenerator;
     }
-    
-    public function savePageconfig($values) {
-        print("Saved Pageconfig");
-    }
 }
