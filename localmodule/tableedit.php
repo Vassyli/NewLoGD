@@ -15,6 +15,9 @@ class Tableedit extends \LocalmoduleBasis {
         $this->dbtablename = filter_var($this->getPageconfigField("table-to-edit"), FILTER_CALLBACK, array("options" => "filter_word"));
 	}
 	
+    //
+    //  CONTROLLER
+    //
 	public function execute() {		
         list($arguments, $subaction, $id, $module) = $this->getURLParams();
 		
@@ -31,8 +34,8 @@ class Tableedit extends \LocalmoduleBasis {
 	}
     
     protected function executeEdit($id) {
-        $form = $this->getEditForm($id);
         try {
+            $form = $this->getEditForm($id);
             $pageitem = $this->model->get($this->dbtablename)->getById($id);
             $this->error = $pageitem->isEditable() ? "": "noedit";
         }
@@ -104,6 +107,9 @@ class Tableedit extends \LocalmoduleBasis {
         }
     }
     
+    //
+    //  NAVIGATION
+    //
     public function navigationHook(\Navigation\Container $navigation) {
         list($arguments, $subaction, $id) = $this->getURLParams();
         
@@ -121,6 +127,9 @@ class Tableedit extends \LocalmoduleBasis {
         }
     }
 	
+    //
+    //  VIEW
+    //
 	public function output() {
         list($arguments, $subaction, $id) = $this->getURLParams();
 		$buffer = "";
@@ -129,61 +138,86 @@ class Tableedit extends \LocalmoduleBasis {
 			// Empty Argument - Show a table of all items.
 			$buffer = $this->getTable()->getHtml();
 		} else {
+            if(empty($this->error)) {
+                $this->error = "";
+            }
+        
 			switch($subaction) {
-                case "edit":
-                    if(empty($this->error)) {
-                        $buffer = $this->getEditForm($id)->getHtml();
-                        $buffer.= $this->addModuleForms($id);
-                    }
-                    elseif($this->error == "notfound") {
-                        $buffer = "The requested page with the id {$id} was not found.";
-                    }
-                    elseif($this->error == "noedit") {
-                        $buffer = "The requested page with the id {$id} is not editable!";
-                    }
-                    else {
-                        $buffer = "An unknown error occured.";
-                    }
-                    break;
-                
-                case "drop":
-                    if(empty($this->error)) {
-                        $buffer = "The entry was successfully deleted.";
-                    }
-                    elseif($this->error == "notfound") {
-                        $buffer = "The requested page with the id {$id} was not found.";
-                    }
-                    elseif($this->error == "nodrop") {
-                        $buffer = "The requested page with the id {$id} is not deletable!";
-                    }
-                    elseif($this->error == "notdropped") {
-                        $buffer = "Database query was successfull, but nothing was deleted.";
-                    }
-                    else {
-                        $buffer = "An unknown error occured.";
-                    }
-                    
-                    $buffer .= $this->getTable()->getHtml();
-                    break;
-                
-                case "new":
-                    if(empty($this->error)) {
-                        $buffer = $this->getNewForm()->getHtml();
-                    }
-                    elseif($this->error == "error") {
-                        $buffer = "An unknown error occured";
-                    }
-                    elseif($this->error == "newlycreated") {
-                        $buffer = "The page was successfully created.";
-                        $buffer .= $this->getTable()->getHtml();
-                    }
-                    break;
+                case "edit": $buffer = $this->outputEdit($id); break;
+                case "drop": $buffer = $this->outputDrop($id); break;
+                case "new": $buffer = $this->outputNew(); break;
 			}
 		}
 		
 		return $buffer;
 	}
     
+    protected function outputEdit($id) {  
+        switch($this->error) {
+            case "":
+                $buffer = $this->getEditForm($id)->getHtml();
+                $buffer.= $this->addModuleForms($id);
+                break;
+            case "notfound":
+                $buffer = "The requested page with the id {$id} was not found.";
+                $buffer.= $this->getTable()->getHtml();
+                break;
+            case "noedit":
+                $buffer = "The requested page with the id {$id} is not editable!";
+                break;
+            default:
+                $buffer = "An unknown error occured.";
+                $buffer.= $this->getTable()->getHtml();
+                break;
+        }
+        
+        return $buffer;
+    }
+    
+    protected function outputDrop($id) {
+        switch($this->error) {
+            case "":
+                $buffer = "The entry was successfully deleted.";
+                break;
+            case "notfound":
+                $buffer = "The requested page with the id {$id} was not found.";
+                break;
+            case "nodrop":
+                $buffer = "The requested page with the id {$id} is not deletable!";
+                break;
+            case "notdropped":
+                $buffer = "Database query was successfull, but nothing was deleted.";
+                break;
+            default:
+                $buffer = "An unknown error occured.";
+                break;
+        }
+        $buffer .= $this->getTable()->getHtml();
+        return $buffer;
+    }
+    
+    protected function outputNew() {
+        switch($this->error) {
+            case "":
+                $buffer = $this->getNewForm()->getHtml();
+                break;
+            case "error":
+                $buffer = "An unknown error occured";
+                break;
+            case "newlycreated":
+                $buffer = "The page was successfully created.";
+                        $buffer .= $this->getTable()->getHtml();
+                break;
+            default:
+                $buffer = "An unknown error occured.";
+                break;
+        }
+        return $buffer;
+    }
+    
+    //
+    //  HELPER FUNCTIONS
+    //
     protected function addModuleForms($id) {
         if($id === NULL) {
             return "";
@@ -216,7 +250,6 @@ class Tableedit extends \LocalmoduleBasis {
 	
 	protected function getModuleForms($id) {
 		$dbitem = $this->model->get($this->dbtablename)->getById($id);
-        $buffer = "";
 
         if(in_array("hasModules", class_implements($dbitem))) {
             $forms = $dbitem->getLocalmodulesForm($this->getModuleGameUri("edit", $id, "modules"));

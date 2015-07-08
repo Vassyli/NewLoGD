@@ -14,6 +14,14 @@ class Registration extends \LocalmoduleBasis {
 	
 	private $form = NULL;
 	private $form_state = 0;
+    
+    const DEF_REGISTER_FORM = "Ein neues Benutzerkonto erstellen";
+    const DEF_REGISTER_NAME = "Name";
+    const DEF_REGISTER_PASS1 = "Passwort";
+    const DEF_REGISTER_PASS2 = "Passwort (wiederhohlen)";
+    const DEF_REGISTER_MAIL1 = "Email";
+    const DEF_REGISTER_MAIL2 = "Email (wiederhohlen)";
+    const DEF_REGISTER_SUBMIT = "Registrierung abschliessen";
 	
 	public function __construct(\Model $model, array $row, $page = NULL) {
 		parent::__construct($model, $row, $page);
@@ -54,9 +62,9 @@ class Registration extends \LocalmoduleBasis {
 	
 	protected function get_form() {
 		if($this->form === NULL) {
-			$this->form = new \FormGenerator("Registrierungs-Formular", get_gameuri($this->page->getAction()));
+			$this->form = new \FormGenerator($this->getPageconfigField("form-title", self::DEF_REGISTER_FORM), get_gameuri($this->page->getAction()));
 			$this->form->addLine(
-					$this->getPageconfigField("name_fieldname"), 
+					$this->getPageconfigField("name_fieldname", self::DEF_REGISTER_NAME), 
 					"name", 
 					"", 
 					array(
@@ -67,7 +75,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->addPassword(
-					$this->getPageconfigField("password1_fieldname"), 
+					$this->getPageconfigField("password1_fieldname", self::DEF_REGISTER_PASS1), 
 					"password1",
 					array(
 						"min-length" => 8,
@@ -78,7 +86,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->addPassword(
-					$this->getPageconfigField("password2_fieldname"), 
+					$this->getPageconfigField("password2_fieldname", self::DEF_REGISTER_PASS2), 
 					"password2",
 					array(
 						"min-length" => 8,
@@ -88,7 +96,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->addEmail(
-					$this->getPageconfigField("email1_fieldname"),
+					$this->getPageconfigField("email1_fieldname", self::DEF_REGISTER_MAIL1),
 					"email1",
 					"",
 					array(
@@ -99,7 +107,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->addEmail(
-					$this->getPageconfigField("email2_fieldname"),
+					$this->getPageconfigField("email2_fieldname", self::DEF_REGISTER_MAIL2),
 					"email2",
 					"",
 					array(
@@ -108,7 +116,7 @@ class Registration extends \LocalmoduleBasis {
 					)
 				)
 				->addSubmitButton(
-					$this->getPageconfigField("submitbutton_name"),
+					$this->getPageconfigField("submitbutton_name", self::DEF_REGISTER_SUBMIT),
 					"register_submit",
 					"1"
 				)
@@ -119,8 +127,14 @@ class Registration extends \LocalmoduleBasis {
     
     public function getPageconfigForm($action) {
         $formgenerator = new \FormGenerator($this->getName(), $action);
-        $formgenerator->addLine("Registration form title", "form-title", $this->getPageconfigField("form-title", "Registrierungs-Formular"));
-        $formgenerator->addSubmitButton("Submit", "module", $this->getClass());
+        $formgenerator->addLine("Formular-Titel", "form-title", $this->getPageconfigField("form-title", self::DEF_REGISTER_FORM))
+            ->addLine("Formular-Text für den Namen", "name_fieldname", $this->getPageconfigField("name_fieldname", self::DEF_REGISTER_NAME))
+            ->addLine("Formular-Text für das Passwort", "password1_fieldname", $this->getPageconfigField("password1_fieldname", self::DEF_REGISTER_PASS1))
+            ->addLine("Formular-Text für die Passwort-Wiederhohlung", "password2_fieldname", $this->getPageconfigField("password2_fieldname", self::DEF_REGISTER_PASS2))
+            ->addLine("Formular-Text für die E-Mailadresse", "email1_fieldname", $this->getPageconfigField("email1_fieldname", self::DEF_REGISTER_MAIL1))
+            ->addLine("Formular-Text für die E-Mail-Wiederhohlung", "email2_fieldname", $this->getPageconfigField("email2_fieldname", self::DEF_REGISTER_MAIL2))
+            ->addLine("Formular-Text für die Bestätigung", "submitbutton_name", $this->getPageconfigField("submitbutton_name", self::DEF_REGISTER_SUBMIT))
+            ->addSubmitButton("Submit", "module", $this->getClass());
         return $formgenerator;
     }
 }
