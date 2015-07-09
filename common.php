@@ -81,13 +81,15 @@ function debug($string) {
  * Returns the absolute URL of a given $action
  *
  * @param string $action The action for which a url has to be generated
+ * @deprecated
  */
 function get_gameuri($action, array $arguments = array()) {
-	$uri = sprintf("%s/%s", LOGD_URI_ABS, $action);
+	$uri = new GameURI($action, $arguments);
+	return $uri->getParsedURI();
+	/*$uri = sprintf("%s/%s", LOGD_URI_ABS, $action);
     if(!empty($arguments)) {
         foreach($arguments as $arg) {
             $uri .= "/".$arg;
         }
-    }
-    return $uri;
+    }*/
 }
