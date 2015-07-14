@@ -157,33 +157,51 @@ HTML;
         $name_esc = HTMLSpecialchars($name);
         
         if(!is_null($this->model) and isset($info["options"]["foreign"])) {
-            $res = $this->model->get($info["options"]["foreign"]["table"])->all();
-            foreach($res as $row) {
-                if(isset($info["options"]["foreign"]["limit"])) {
-                    $limit_method = $info["options"]["foreign"]["limit"];
-                    // Continue loop if its not parantable
-                    if($row->$limit_method() == false) {
-                        continue;
-                    }
-                }
-                
-                $value_method = "get".$info["options"]["foreign"]["key"];
-                $value = HTMLSpecialchars($row->$value_method());
-                $desc = "";
+			if(!isset($info["options"]["foreign"]["list"])) {
+				$res = $this->model->get($info["options"]["foreign"]["table"])->all();
+				foreach($res as $row) {
+					if(isset($info["options"]["foreign"]["limit"])) {
+						$limit_method = $info["options"]["foreign"]["limit"];
+						// Continue loop if its not parantable
+						if($row->$limit_method() == false) {
+							continue;
+						}
+					}
+					
+					$value_method = "get".$info["options"]["foreign"]["key"];
+					$value = HTMLSpecialchars($row->$value_method());
+					$desc = "";
 
-                foreach($info["options"]["foreign"]["display"] as $d) {
-                    $m = "get".$d;
-                    $v = HTMLSpecialchars($row->$m());
-                    $desc .= $v." - ";
-                }
-                $desc = substr($desc, 0, -3);
-                if($value == $info["value"]) {
-                    $options .= "<option selected value=\"{$value}\">{$desc}</option>";
-                }
-                else {
-                    $options .= "<option value=\"{$value}\">{$desc}</option>";
-                }
-            }
+					foreach($info["options"]["foreign"]["display"] as $d) {
+						$m = "get".$d;
+						$v = HTMLSpecialchars($row->$m());
+						$desc .= $v." - ";
+					}
+					$desc = substr($desc, 0, -3);
+					if($value == $info["value"]) {
+						$options .= "<option selected value=\"{$value}\">{$desc}</option>";
+					}
+					else {
+						$options .= "<option value=\"{$value}\">{$desc}</option>";
+					}
+				}
+			}
+			else {
+				if(is_null($info["options"]["foreign"]["list"])) {
+					$options .= "<option selected value=\"0\">NULL</option>";
+				}
+				else {
+					foreach($info["options"]["foreign"]["list"] as $row) {
+						$value = $row[$info["options"]["foreign"]["key"]];
+						$desc = "";
+						foreach($info["options"]["foreign"]["display"] as $d) {
+							$desc.= $row[$d] . " - ";
+						}
+						$desc = substr($desc, 0, -3);
+						$options .= "<option selected value=\"{$value}\">{$desc}</option>";
+					}
+				}
+			}
         }
         
         $return = <<<HTML
@@ -590,7 +608,14 @@ HTML;
             "options" => $options,
 		);
         return $this;
-	}	
+	}
+	/**
+	 *
+	 */
+	public function addForeign($desc, $name, $value = NULL, array $validator = [], array $options = []) {
+		$this->addInput(self::TYPE_FOREIGN, $desc, $name, $value, $validator, $options);
+		return $this;
+	}
     /**
      * Adds a text input line (<input type="text">)
      * @see self::addInput()
@@ -621,5 +646,6 @@ HTML;
      */
 	public function addSubmitButton($desc, $name, $value) {
 		$this->addInput(self::TYPE_SUBMIT, $desc, $name, $value, []);
+		return $this;
 	}
 }
