@@ -73,6 +73,20 @@ class Pages implements SubmodelInterface, EditableSubmodel {
 		}
 	}
 	
+	public function getUnassignedModulesByPageid($page_id) {
+		// SELECT * FROM localmodules a LEFT JOIN pages_localmodules_xref b ON a.id = b.localmodule_id and b.page_id = 4 WHERE b.localmodule_id is null
+		$result = $this->model->from("localmodules")
+			->select("*")
+			->leftjoin("id", ["pages_localmodules_xref", "localmodule_id"])
+			->on(["pages_localmodules_xref", "page_id"], $page_id)
+			->where(["pages_localmodules_xref" , "localmodule_id"], NULL,  \Query\Select::OPERATOR_IS);
+		$set = [];
+		while($row = $result->fetch()) {
+			\array_push($set, $row);
+		}
+		return $set;
+	}
+	
 	public function get_403page($action) {
 		if($this->has_lazy("id", -403)) {
 			$page = $this->get_lazy("id", -403);

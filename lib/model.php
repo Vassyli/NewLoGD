@@ -30,6 +30,9 @@ class Model {
 	/** @var array A list of loaded submodels (modelname => \Submodel $submodel) */
 	private $submodels = array();
 	
+	/** @var string A basic content type used to request (html or json) */
+	public $contenttype = "html";
+	
 	/** @var string An internal identifier for the DB-Type MySQL */
 	const DB_MYSQL = "mysql";
 	
@@ -192,6 +195,9 @@ class Model {
 		if(count($parts) > 0) {
 			$this->res_arguments = $parts;
 		}
+		
+		$this->contenttype = empty($this->get['type']) ? "html" : $this->get['type'];
+		define("LOGD_CONTENTTYPE", $this->contenttype);
 	}
 	
     /**
