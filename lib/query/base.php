@@ -19,7 +19,6 @@ abstract class Base {
 	
 	const JOIN_INNER = "INNER";
 	const JOIN_OUTER = "OUTER";
-	const JOIN_LEFT = "LEFT";
 	
 	const ORDER_ASC = "ASC";
 	const ORDER_DESC = "DESC";

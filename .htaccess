@@ -7,9 +7,4 @@ RewriteRule ^/$ main [R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^json/(.*)$ main.php?type=json&qs=$1 
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !json
-RewriteRule ^(.*)$ main.php?type=html&qs=$1 
+RewriteRule ^(.*)$ main.php?qs=$1 [L]

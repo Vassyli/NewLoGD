@@ -36,19 +36,6 @@ class View {
 		// Get Page-Instance
 		$page = $this->model->get("Pages")->getbyAction($this->model->getRessourceAction());
 		
-		if($this->model->contenttype == "json") {
-			$buffer = $this->outputJSON($page);
-		}
-		else {
-			$buffer = $this->outputHTML($page);
-		}
-		
-		// Print rendered content and exit.
-		print $buffer;
-		exit;
-	}
-	
-	protected function outputHTML($page) {
 		// Start output handler only if the Page has output
 		if($page->hasOutput()) {
 			// Get template handler
@@ -73,54 +60,9 @@ class View {
 			header("Content-type: text/html; charset=utf-8");
 		}
 		else $buffer = "";
-		return $buffer;
-	}
-	
-	protected function outputJSON($page) {
-		ob_end_clean();
-		$loggedin = $this->model->get("Session")->is_loggedin();
-		$json = [
-			"title" => $page->getTitle(),
-			"copyright" => LOGD_COPYRIGHT,
-			"loggedin" => $loggedin,
-			"account" => $loggedin ? $this->getAccountInfo() : false,
-			"login" => $loggedin ? false : $this->getLoginInfo(),
-			"logout" => $loggedin ? $this->getLogoutInfo() : false,
-		];
 		
-		// Send a few headers if needed
-		if($page instanceof errorapi) {
-			http_response_code($page->get_errorcode());
-		}
-		header("Content-type: application/json; charset=utf-8");
-		return json_encode($json, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-	}
-	
-	protected function getAccountInfo() {
-		return [
-			'id' => $this->$model->get("Accounts")->get_active()->getId(),
-		];
-	}
-	
-	protected function getLoginInfo() {
-		return [
-			"form" => [
-				"uri" => (new GameURI("login")),
-				"method" => "post",
-				"fields" => [
-					"email" => ["label" => "E-Mail", "type" => "email"],
-					"password" => ["label" => "Passwort", "type" => "password"],
-					"submit" => ["label" => "Einloggen", "type" => "submit"],
-				],
-			],
-			"registration" => ["title" => "Registrieren", "uri" => (new GameURI("register"))],
-			"forgotten" => ["title" => "Passwort vergessen?", "uri" => (new GameURI("pw_forgotten"))],
-		];
-	}
-	
-	protected function getLogoutInfo() {
-		return [
-			"title" => "Ausloggen", "uri" => (new GameURI("logout")),
-		];
+		// Print rendered content and exit.
+		print $buffer;
+		exit;
 	}
 }

@@ -45,48 +45,43 @@ class Select extends Base implements \Countable {
 		return $this;
 	}
 	
-	public function join($type, $left_field = NULL, $right_field = NULL, $operator = self::OPERATOR_EQ) {
-		if($type === NULL) {
+	public function join($field1 = NULL, $field2 = NULL) {
+		if($field1 === NULL) {
 			$this->fragments["JOIN"] = array();
 		}
 		else {
-			if(empty($right_field)) {
-				// Magic
-				$foreign_table = $left_field;
-				$right_field = array($foreign_table, "id"); 
-				$left_field = "{$foreign_table}_id";
-			}
-			else {
-				if(is_array($left_field) && !is_array($right_field)) {
-					$foreign_table = $left_field[0];
-				}
-				elseif(!is_array($left_field) && is_array($right_field)) {
-					$foreign_table = $right_field[0];
-				}
-			}
-			
-			\array_push($this->fragments["JOIN"], [
-				"join-type" => $type,
-				"left-field" => (is_array($left_field) ? $left_field[1] : $left_field),
-				"left-table" => (is_array($left_field) ? $this->model->addPrefix($left_field[0]) : $this->table),
-				"right-field" => (is_array($right_field) ? $right_field[1] : $right_field),
-				"right-table" => (is_array($right_field) ? $this->model->addPrefix($right_field[0]) : $this->table),
-				"operator" => $operator,
-				"foreign-table" => $this->model->addPrefix($foreign_table),
-				"ON" => [],
-			]);
 		}
 		
 		return $this;
 	}
 	
 	public function innerJoin($left_field, $right_field = NULL, $operator = self::OPERATOR_EQ) {
-		$this->join(self::JOIN_INNER, $left_field, $right_field, $operator);
-		return $this;
-	}
-	
-	public function leftJoin($left_field, $right_field = NULL, $operator = self::OPERATOR_EQ) {
-		$this->join(self::JOIN_LEFT, $left_field, $right_field, $operator);
+        if(empty($right_field)) {
+            // Magic
+            $foreign_table = $left_field;
+            $right_field = array($foreign_table, "id"); 
+            $left_field = "{$foreign_table}_id";
+        }
+        else {
+            if(is_array($left_field) && !is_array($right_field)) {
+                $foreign_table = $left_field[0];
+            }
+            elseif(!is_array($left_field) && is_array($right_field)) {
+                $foreign_table = $right_field[0];
+            }
+        }
+        
+		\array_push($this->fragments["JOIN"], [
+            "join-type" => self::JOIN_INNER,
+			"left-field" => (is_array($left_field) ? $left_field[1] : $left_field),
+			"left-table" => (is_array($left_field) ? $this->model->addPrefix($left_field[0]) : $this->table),
+			"right-field" => (is_array($right_field) ? $right_field[1] : $right_field),
+			"right-table" => (is_array($right_field) ? $this->model->addPrefix($right_field[0]) : $this->table),
+			"operator" => $operator,
+            "foreign-table" => $this->model->addPrefix($foreign_table),
+            "ON" => [],
+        ]);
+		
 		return $this;
 	}
     
@@ -271,7 +266,7 @@ class Select extends Base implements \Countable {
         $query = "";
         if(!empty($this->fragments["JOIN"])) {
 			foreach($this->fragments["JOIN"] as $clause) {
-				$query .= sprintf("\n%s JOIN `%s` ON\n\t", $clause["join-type"], $clause["right-table"]);
+				$query .= sprintf("\n%s JOIN %s ON\n\t", $clause["join-type"], $clause["right-table"]);
 				// In principle, there could be more than one on-condition. I will support those if I need them. Later.
 				$query .= sprintf(
 					"`%s`.`%s` %s `%s`.`%s`",
@@ -283,15 +278,6 @@ class Select extends Base implements \Countable {
                 // Additional ON-Clauses
                 foreach($clause["ON"] as $onclause) {
                     $query .= " AND\n\t";
-					
-					if(is_array($onclause["field"])) {
-						$table = $onclause["field"][0];
-						$field = $onclause["field"][1];
-					}
-					else {
-						$table = $clause["foreign-table"];
-						$field = $onclause["field"];
-					}
                     
                     if(is_null($onclause["value"])) {
                         if($onclause["operator"] == self::OPERATOR_EQ) {
@@ -301,11 +287,11 @@ class Select extends Base implements \Countable {
                             $onclause["operator"] = self::OPERATOR_ISNOT;
                         }
 
-                        $query .= sprintf("`%s`.`%s` %s NULL", $table, $field, $onclause["operator"]);
+                        $query .= sprintf("`%s`.`%s` %s NULL", $clause["foreign-table"], $onclause["field"], $onclause["operator"]);
                     }
                     else {
-                        $fieldvar = ":".$table."_on_field_".$field;
-                        $query .= sprintf("`%s`.`%s` %s %s", $table, $field, $onclause["operator"], $fieldvar);
+                        $fieldvar = ":".$clause["foreign-table"]."_on_field_".$onclause["field"];
+                        $query .= sprintf("`%s`.`%s` %s %s", $clause["foreign-table"], $onclause["field"], $onclause["operator"], $fieldvar);
                         $this->args[$fieldvar] = $onclause["value"];
                     }
                 }

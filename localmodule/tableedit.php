@@ -119,6 +119,11 @@ class Tableedit extends \LocalmoduleBasis {
         } else {
             $navid = $navigation->addCustomItem("Editor");
             $navigation->addCustomItem("Zurück zur Übersicht", $this->getPageGameUri(), $navid);
+            
+            switch($subaction) {
+                case "new":
+                    break;
+            }
         }
     }
 	
@@ -151,7 +156,6 @@ class Tableedit extends \LocalmoduleBasis {
         switch($this->error) {
             case "":
                 $buffer = $this->getEditForm($id)->getHtml();
-				$buffer.= $this->addLocalmoduleInstallationForm($id);
                 $buffer.= $this->addModuleForms($id);
                 break;
             case "notfound":
@@ -214,9 +218,6 @@ class Tableedit extends \LocalmoduleBasis {
     //
     //  HELPER FUNCTIONS
     //
-	/**
-	 *
-	 */
     protected function addModuleForms($id) {
         if($id === NULL) {
             return "";
@@ -232,9 +233,6 @@ class Tableedit extends \LocalmoduleBasis {
         return $buffer;
     }
 	
-	/**
-	 *
-	 */
 	protected function getModuleFormByModulename($id, $modulename = NULL) {
 		if(empty($modulename)) {
 			return NULL;
@@ -250,9 +248,6 @@ class Tableedit extends \LocalmoduleBasis {
 		return NULL;
 	}
 	
-	/**
-	 *
-	 */
 	protected function getModuleForms($id) {
 		$dbitem = $this->model->get($this->dbtablename)->getById($id);
 
@@ -301,34 +296,6 @@ class Tableedit extends \LocalmoduleBasis {
     protected function getNewForm() {
         return $this->getForm(NULL, "Neu", $this->getModuleGameUri("new"));
     }
-	
-	/**
-	 *
-	 */
-	protected function addLocalmoduleInstallationForm($id) {
-		// Return if not "moduleable"
-		$dbitem = $this->model->get($this->dbtablename)->getById($id);
-		if(!in_array("hasModules", class_implements($dbitem))) {
-			return "";
-		}
-		
-		$title = "Seiten-Module";
-		$action = $this->getModuleGameURI("addmodule", $id);
-		$ret = "";
-		// First, get a Dropdown-Menu with all uninstalled modules
-		// Get all unassigned modules
-		$unassigned = $this->model->get($this->dbtablename)->getUnassignedModulesByPageid($id);
-		if(count($unassigned) == 0) {
-			$unassigned = NULL;
-		}
-		$moduleform = new \FormGenerator($title, $action);
-		$moduleform->setModel($this->model);
-		$moduleform->addForeign("Module to install", "install", NULL, [], ["foreign" => ["list" => $unassigned, "key" => "id", "display" => ["class", "name"]]])
-			->addSubmitButton("Add", "tableedit_addmodule", 1);
-		$ret .= $moduleform->getHtml();
-		// Now, print a table with all installed modules
-		return $ret;
-	}
 	
     /**
      * Get a generated Form to edit a table entry or add a new one.

@@ -124,10 +124,7 @@ abstract class LocalmoduleBasis implements \LocalmoduleAPI, \Basicmodelitem {
      * @return string the url string.
      */
     final protected function getModuleGameUri() {
-		return (new GameURI($this->page->getAction()))
-			->setModule($this->getClass())
-			->addArgument(func_get_args())
-			->getParsedURI();
+        return get_gameuri($this->page->getAction(), array_merge(array($this->getClass()), func_get_args()));
     }
     final protected function getPageGameUri() {
         return get_gameuri($this->page->getAction(), func_get_args());

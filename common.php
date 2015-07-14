@@ -12,7 +12,7 @@ define("LOGD_SCRIPT_START", microtime(true));
 
 // development config
 define("LOGD_SHOW_DEBUG", true);
-define("LOGD_SHOW_DEBUG_SQL", true);
+define("LOGD_SHOW_DEBUG_SQL", false);
 
 // some php configuration
 define("LOGD_ENCODING", "utf-8");
@@ -81,15 +81,13 @@ function debug($string) {
  * Returns the absolute URL of a given $action
  *
  * @param string $action The action for which a url has to be generated
- * @deprecated
  */
 function get_gameuri($action, array $arguments = array()) {
-	$uri = new GameURI($action, $arguments);
-	return $uri->getParsedURI();
-	/*$uri = sprintf("%s/%s", LOGD_URI_ABS, $action);
+	$uri = sprintf("%s/%s", LOGD_URI_ABS, $action);
     if(!empty($arguments)) {
         foreach($arguments as $arg) {
             $uri .= "/".$arg;
         }
-    }*/
+    }
+    return $uri;
 }
