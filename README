@@ -45,5 +45,5 @@ For running this game, you will need:
 1. Create a new table
 2. Import the .sql file including the values
 3. Edit the file dbconfig.php with the connection informations
-4. Enjoy. Default login is Admin/CHANGEME
+4. Enjoy. Default login is admin@localhost/CHANGEME
 5. Tada - you have now successfully installed NewLoGD.
