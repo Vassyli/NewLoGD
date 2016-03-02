@@ -1,15 +1,14 @@
 <?php
-/**
- * NewLoGD
- *
- * @author      Basilius Sauter <basilius.sauter@hispeed.ch>
- * @copyright   Copyright (c) 2015, Basilius Sauter
- * @licence     https://www.gnu.org/licenses/agpl-3.0.html GNU Affero GPL 3.0
- */
+/*
+	index.php
+	
+	This file is the main entry point to the application and should 
+	never me modified. Controlling the application should be done 
+	through API calls via Routing and Controllers.
+*/
 
-header("Content-type: text/plain; charset=utf-8");
+// Bootstrapping for the app
+$app = require "bootstrap/app.php";
 
-$path = dirname($_SERVER['PHP_SELF']);
-$redirect = $path."/main";
-
-header("Location: ".$redirect);
+// This runs the application and exits the application.
+$app->run();

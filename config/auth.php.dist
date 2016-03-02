@@ -1,0 +1,25 @@
+<?php
+/**
+ * authentification configuration file
+ *
+ * @package Config
+ */
+
+return [
+	"facebook" => [
+		"enabled" => false,
+		"hybridauth" => "Facebook",
+		"id" => "",
+		"secret" => "",
+		"scope" => "public_profile email",
+	],
+	
+	"google" => [
+		"enabled" => false,
+		"hybridauth" => "Google",
+		"id" => "",
+		"secret" => "",
+		"hybridauth" => "Google",
+		"scope" => "profile email",
+	],
+];

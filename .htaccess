@@ -1,15 +1,8 @@
 RewriteEngine on
 
-RewriteRule ^\.htaccess$ - [F]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-RewriteRule ^index\.php$ main [R=301,L]
-RewriteRule ^/$ main [R=301,L]
-
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^json/(.*)$ main.php?type=json&qs=$1 
-
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !json
-RewriteRule ^(.*)$ main.php?type=html&qs=$1 
+RewriteRule ^(.+)$ index.php?path=/$1 [L]

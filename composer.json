@@ -1,0 +1,20 @@
+{
+	"autoload": {
+        "psr-4": {
+			"NewLoGD\\": "src/", 
+			"App\\": "app/",
+			"Database\\": "database/"
+		}
+    },
+	
+    "require":{
+		"doctrine/orm": "2.5.*"
+    },
+	
+	"require-dev": {
+		"phpdocumentor/graphviz" : "1.0.*",
+        "phpdocumentor/phpdocumentor": "dev-master"
+    },
+	
+	"minimum-stability": "dev"
+}

@@ -1,0 +1,15 @@
+<?php
+/**
+ * app configuration file
+ *
+ * @package Config
+ */
+
+
+return [
+	// Change to a random string
+	"id" => "defaultvalue",
+	
+	// Do not change
+	"version" => "0.0.1-dev",
+];
