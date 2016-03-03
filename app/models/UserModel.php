@@ -1,6 +1,10 @@
 <?php
 /**
  * app/models/UserModel.php - User Management Model
+ * 
+ * @author Basilius Sauter
+ * @package App
+ * @subpackage Http/Models
  */
 
 namespace App\Models;

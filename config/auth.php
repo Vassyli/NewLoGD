@@ -8,7 +8,10 @@
 return [
 	"facebook" => [
 		"enabled" => true,
-		"hybridauth" => "Facebook",
+        "text" => [
+            "name" => "Facebook",
+            "logintext" => "Login via your Facebook account",
+        ],
 		"id" => "829434160511879",
 		"secret" => "a9390952075060d7d1cfcf1ac21cf222",
 		"scope" => "public_profile email",
@@ -16,7 +19,10 @@ return [
 	
 	"google" => [
 		"enabled" => true,
-		"hybridauth" => "Google",
+        "text" => [
+            "name" => "Google",
+            "logintext" => "Login via your Google account",
+        ],
 		"id" => "224689782474-knlr3vesj32280eutpen4o7fbu59gj1k.apps.googleusercontent.com",
 		"secret" => "wfmeRhIIWk3oPKrMSzwcdJet",
 		"hybridauth" => "Google",

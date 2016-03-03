@@ -91,46 +91,6 @@ class Application {
     public static function setAuth(Auth $auth) { self::$auth = $auth; }
 	
 	/**
-	 * Initializes Session
-	 */
-	protected function initSession() {		
-		// Initialize Authentification
-		self::$auth = new Auth(self::$config);
-        
-        // Create User-Account if needed
-        $userid = Session::get("userid");
-        /*if($userid === NULL) {
-            $profile = Session::get("auth.profile");
-            $users = UserModel::_findByEmail(Session::get($profile["email"]));
-
-            if(count($users) == 0) {
-                // First login - Create User
-                $user = UserModel::_create(
-                    $profile["name"], 
-                    $profile["email"], 
-                    Session::get("auth.provider"), 
-                    $profile["providerid"]
-                );
-                self::$entityManager->persist($user);
-                self::$entityManager->flush();
-                $userid = $user->getId();
-            }
-            else {
-                // Email has already been found
-                if($users[0]->getSocialauth_Provider() == Session::get("auth.provider") &&
-                    $users[0]->getSocialauth_Id() == $profile["providerid"]) 
-                {
-                    // same socialauth user
-                    
-                }
-                else {
-                    // not the same
-                }
-            }
-        }*/
-	}
-	
-	/**
 	 * Calls the appropriate controller for the requested path
 	 * @param HttpResponse $response Http Response obect
 	 * @param array $found_route found route
@@ -145,9 +105,15 @@ class Application {
 			}
 			elseif(is_string($found_route["call"])) {
 				$call = explode("@", $found_route["call"]);
-				$controllerclass = "\\App\\Http\\Controllers\\".$call[0];
+                $controllerclass = "\\App\\Http\\Controllers\\".$call[0];
 				$controller = new $controllerclass($this, $response);
-				$controller->call($call[1], $arguments);
+                
+                if($controller->checkAccess()) {
+                    $controller->call($call[1], $arguments);
+                }
+                else {
+                    $response->forbidden("You are not authorized to access this route.");
+                }
 				//$return = $controller->{$call[1]}();
 			}
 		}

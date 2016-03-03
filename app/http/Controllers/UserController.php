@@ -2,7 +2,9 @@
 /**
  * app/http/controllers/UserController.php
  *
- * Controller for user management
+ * @author Basilius Sauter
+ * @package App
+ * @subpackage Http/Controllers
  */
 
 namespace App\Http\Controllers;
@@ -13,6 +15,8 @@ use App\Models\UserModel as User;
  * Controller for user management
  */
 class UserController extends Controller {
+    protected $allow_anonymous = false;
+            
 	/**
 	 * Returns all Users
 	 * @return array Array of Users

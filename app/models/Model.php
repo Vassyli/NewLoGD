@@ -53,7 +53,7 @@ abstract class Model {
 	 * Only shows columns of a given entry that are in self::$public
 	 * @return array filtered entry
 	 */
-	protected static function getPublicFields($entry) {
+	public static function getPublicFields($entry) {
 		$e = [];
 		foreach(get_called_class()::$public as $field) {
 			$method = "get".$field;
@@ -83,7 +83,7 @@ abstract class Model {
 	 * @return mixed Found entry with filtered fields
 	 */
 	public static function find(int $id) {
-		$entry = $this->_find($id);
+		$entry = self::_find($id);
 		return ($entry === NULL) ? NULL : self::getPublicFields($entry);
     }
     

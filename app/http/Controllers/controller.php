@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use NewLoGD\Application;
+use NewLoGD\Auth;
 use NewLoGD\HttpResponse;
 
 /**
@@ -24,6 +25,8 @@ class Controller {
 	protected $app = NULL;
 	/** @var HttpResponse reference to httpresponse object */
 	protected $response = NULL;
+    
+    protected $allow_anonymous = true;
 	
 	/**
 	 * Constructor
@@ -55,6 +58,10 @@ class Controller {
 		else {
 			$answer = call_user_func_array([$this, $callback], $args);
 		}
+        
+        if($this->response->isFinalized()) {
+            return false;
+        }
 		
 		// Answer is an array
 		if(is_array($answer)) {
@@ -96,4 +103,12 @@ class Controller {
 	public function test() {
 		return "Hello World.";
 	}
+    
+    public function checkAccess() : bool {
+        if(Auth::getLoginState() == Auth::OFFLINE) {
+            return $this->allow_anonymous;
+        }
+        
+        return true;
+    }
 }

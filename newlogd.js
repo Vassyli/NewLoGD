@@ -41,14 +41,16 @@ function App_Reload() {
 function App_Run(answer) {
 	console.log("[App] Run App, load data");
 	console.log(answer);
+    
+    App_Run_Basic(answer);
 	
 	if("loginstate" in answer && answer["loginstate"] > 0) {
 		// User is online
-		App_Run_Loggedin(answer);
+		App_Run_Online(answer);
 	}
 	else {
 		// User is not online
-		App_Run_Basic(answer);
+        App_Run_Offline(answer);
 	}
 }
 
@@ -56,32 +58,47 @@ function App_Logout() {
     $.get("./logout").done(App_Reload());
 }
 
-function App_Run_Loggedin(answer) {
+function App_Run_Online(answer) {
     $("#offline").hide();
     $("#online").show();
-    $("#logininfo").html(
-        "You are loggedin via <span id=\"socialprovider\">" 
-        + answer["auth.provider"]
-        + "</span>. In order to logout, click "
-        + "<a onClick=\"App_Logout()\">here.</a>"
-    );
+    $("#logininfo a").click(function() {
+        App_Logout();
+    });
+    $("#user_name").text(answer["activeuser"]["name"]);
 }
 
-function App_Run_Basic(answer) {
+function App_Run_Offline(answer) {
     $("#online").hide();
     $("#offline").show();
-	$("#logintitle").html("Hallo Welt");
+    
+    // Social Logins
+	$.get("./auth").done(function(a){
+        $("#sociallogin .socialbutton").remove();
+        var key;
+        for(key in a) {
+			console.log("[App][Social] Add login provider " + a[key]["name"]);  
+            $("#sociallogin").prepend(createSocialbutton(key, a[key]));
+        }
+	});
+};
+
+function App_Run_Basic(answer) {
+	$("#title").html(answer["gametitle"]);
 	$("#version").html(answer["version"]);
 	
 	console.log("[App] Number of Session Hits: " + answer["pagehits"]);
-	
-	// Social Logins
-	$.get("./auth").done(function(a){
-		for(var i = 0; i < a.length; i++) {
-			console.log("[App][Social] Add login provider " + a[i]);
-			$("#sociallogin").append('<div class="socialbutton"><a onClick="App_Authorize_Start(\'' + a[i] + '\')">' + a[i] + '</a></div>');
-		}
-	});
+}
+
+function createSocialbutton(provider, providerdata) {
+    var button = $("<div><a></a></div>");
+    $("a", button).text(providerdata["name"]);
+    
+    button.addClass("socialbutton").addClass(provider);
+    button.click(function() {
+        App_Authorize_Start(provider)
+    });
+    
+    return button;
 }
 
 function App_Authorize_Start(provider) {

@@ -22,7 +22,10 @@ class AuthController extends Controller {
 		$realauths = [];
 		foreach($authconf as $key => $auth) {
 			if(isset(\NewLoGD\PROVIDER[$key]) and !empty($auth["enabled"])) {
-				$realauths[] = $key;
+				$realauths[$key] = [
+                    "name" => $auth["text"]["name"],
+                    "logintext" => $auth["text"]["logintext"]
+                ];
 			}
 		}
 		return $realauths;

@@ -82,8 +82,16 @@ $app->addRoute(A\GET, "/logout", function() {
     return "Session dropped";
 });
 
-$app->addRoute(A\GET, "/user", "UserController@all");
-$app->addRoute(A\GET, "/user/{id}", "UserController@getUser");
+$app->addRouteGroup("/user", [
+    [A\GET, "", "UserController@all"],
+    [A\GET, "/{id}", "UserController@getUser"],
+]);
+
+$app->addRouteGroup("/character", [
+    [A\GET, "", "CharacterController@all"],
+    [A\GET, "/current", "CharacterController@getCurrentCharacter"],
+    [A\GET, "/{id}", "CharacterController@getCharacter"],
+]);
 
 $app->addRouteGroup("/auth", [
 	[A\GET, "", "AuthController@all"],

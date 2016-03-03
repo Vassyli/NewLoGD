@@ -15,7 +15,6 @@ return [
     "password" => "hsenheff",
     "host" => "localhost",
     "driver" => "pdo_mysql",
-    //"url" => "mysql://newlogd:PyqwrANnfyVeh3ep@127.0.0.1/newlogd"
 	
     // SQlite 
     /*

@@ -8,7 +8,10 @@
 return [
 	"facebook" => [
 		"enabled" => false,
-		"hybridauth" => "Facebook",
+		"text" => [
+            "name" => "Facebook",
+            "logintext" => "Login via your Facebook account",
+        ],
 		"id" => "",
 		"secret" => "",
 		"scope" => "public_profile email",
@@ -16,7 +19,10 @@ return [
 	
 	"google" => [
 		"enabled" => false,
-		"hybridauth" => "Google",
+		"text" => [
+            "name" => "Facebook",
+            "logintext" => "Login via your Facebook account",
+        ],
 		"id" => "",
 		"secret" => "",
 		"hybridauth" => "Google",

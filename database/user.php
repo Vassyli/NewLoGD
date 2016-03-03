@@ -8,6 +8,8 @@
 
 namespace Database;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * ORM for User-Table
  * @Entity
@@ -17,32 +19,41 @@ class User implements \JsonSerializable {
 	/**
 	 * @Id @Column(type="integer") @GeneratedValue
 	 */
-	protected $id;
-	
-	/**
-	 * @Key @Column(type="string")
-	 */
-	protected $name;
-	
-	/**
-	 * @Column(type="string", nullable=True)
-	 */
-	protected $password;
+	private $id;
 	
 	/**
 	 * @Column(type="string")
 	 */
-	protected $email;
+	private $name;
 	
 	/**
 	 * @Column(type="string", nullable=True)
 	 */
-	protected $socialauth_type;
+	private $password;
+	
+	/**
+	 * @Column(type="string")
+	 */
+	private $email;
 	
 	/**
 	 * @Column(type="string", nullable=True)
 	 */
-	protected $socialauth_id;
+	private $socialauth_type;
+	
+	/**
+	 * @Column(type="string", nullable=True)
+	 */
+	private $socialauth_id;
+    
+    /**
+     * @OneToMany(targetEntity="Character", mappedBy="owner")
+     */
+    private $characters;
+    
+    public function __construct() {
+        $this->characters = new ArrayCollection();
+    }
 	
 	public function getId() { return $this->id; }
 	
@@ -60,6 +71,8 @@ class User implements \JsonSerializable {
 	
 	public function getSocialauth_id() { return $this->socialauth_id; }
 	public function setSocialauth_id($socialauth_id) { $this->socialauth_id = $socialauth_id; }
+    
+    public function getCharacters() { return $this->characters; }
     
     public function jsonSerialize() {
         return [

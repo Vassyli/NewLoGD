@@ -5,24 +5,30 @@
 		
 		<script src="newlogd.js"></script>
 		
-		<link rel="stylesheet" type="text/css" href="newlogd.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="newlogd_gen.css" media="screen">
 		
 		<title>NewLoGD</title>
 	</head>
 	<body>
 		<div id="main">
-            <div id="offline">
-                <div id="login">
-                    <h1 id="logintitle">NewLoGD</h1>
-                    <div id="version">(version)</div>
-                    <div id="sociallogin">
-                        <br class="break">
-                    </div>
-                </div>
+            <div id="head">
+                <h1 id="title">(Gametitle)</h1>
+                <div id="version">(version)</div>
             </div>
             
-            <div id="online">
-                <div id="logininfo">Test</div>
+            <div id="body">
+                <div id="offline">
+                    <div id="login">
+                        <div id="loginmessage">Login with the social login of your choice:</div>
+                        <div id="sociallogin">
+                            <br class="break">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="online">
+                    <div id="logininfo">Hi, <span id="user_name"></span>. <a>Logout</a></div>
+                </div>
             </div>
 		</div>
         
