@@ -34,11 +34,15 @@ function App_Init() {
 	var ajax_Run = $.get("./").done(App_Run);
 }
 
+function App_Reload() {
+    var ajax_Run = $.get("./").done(App_Run);
+}
+
 function App_Run(answer) {
 	console.log("[App] Run App, load data");
 	console.log(answer);
 	
-	if("loggedin" in answer && answer["loggedin"] == true) {
+	if("loginstate" in answer && answer["loginstate"] > 0) {
 		// User is online
 		App_Run_Loggedin(answer);
 	}
@@ -48,7 +52,24 @@ function App_Run(answer) {
 	}
 }
 
+function App_Logout() {
+    $.get("./logout").done(App_Reload());
+}
+
+function App_Run_Loggedin(answer) {
+    $("#offline").hide();
+    $("#online").show();
+    $("#logininfo").html(
+        "You are loggedin via <span id=\"socialprovider\">" 
+        + answer["auth.provider"]
+        + "</span>. In order to logout, click "
+        + "<a onClick=\"App_Logout()\">here.</a>"
+    );
+}
+
 function App_Run_Basic(answer) {
+    $("#online").hide();
+    $("#offline").show();
 	$("#logintitle").html("Hallo Welt");
 	$("#version").html(answer["version"]);
 	
@@ -97,7 +118,14 @@ function getUrlParams(query) {
 	return urlParams
 }
 
+$body = $("body");
+
 $(document).ready(function() {
 	console.log("[App] Document DOM is ready");
 	App_Init();
+});
+
+$(document).on({
+    ajaxStart: function() { $body.addClass("loading");    },
+     ajaxStop: function() { $body.removeClass("loading"); }    
 });

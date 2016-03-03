@@ -46,7 +46,7 @@ class AuthMiddleware implements MiddlewareHead {
      */
     public function findUser(array $users, array $profile) {
         foreach($users as $user) {
-            if($user->getSocialauth_Provider() == Session::get("auth.provider") 
+            if($user->getSocialauth_Type() == Session::get("auth.provider") 
                     and $user->getSocialauth_Id() == $profile["providerid"]) {
                 return $user->getId();
             }
@@ -84,7 +84,7 @@ class AuthMiddleware implements MiddlewareHead {
         elseif(empty($userid)) {
             // Only userid is empty => user is at the login proceure
             
-            $users = UserModel::_findByEmail(Session::get($profile["email"]));
+            $users = UserModel::_findByEmail($profile["email"]);
             
             if(count($users) == 0) {
                 $userid = $this->createUser($profile);

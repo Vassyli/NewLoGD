@@ -1,0 +1,38 @@
+/* 
+    Created on : 02.03.2016, 23:39:03
+    Author     : Basilius Sauter
+*/
+
+$fontStack: Calibri, Helvetica, sans-serif;
+$primaryTint: #111;
+$primaryLighten1: 20%;
+
+body {
+    font: 80% $fontStack;
+    color: $primaryTint;
+    
+    #offline {
+        position: absolute;
+        width: 33%; min-width: 200px;
+        height: 33%; min-height: 200px;
+        top: 33%;
+        left: 33%;
+        overflow: hidden;
+        padding: 1em;
+        padding-bottom: 2em;
+        
+        border: 1px solid lighten($primaryTint, $primaryLighten1);
+        border-radius: 0.5em;
+        
+        #logintitle {
+            margin: 0 auto;
+            font-size: 160%;
+            font-weight: bold;
+        }
+        
+        #version {
+            margin-top: -0.5em;
+            color: lighten($primaryTint, $primaryLighten1);
+        }
+    }
+}

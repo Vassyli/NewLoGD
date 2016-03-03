@@ -17,7 +17,7 @@ class UserModel extends Model {
 	
 	public static function _findByEmail($value) {
 		$qb = Application::getEntityManager()->createQueryBuilder();
-        $qb->select("u.id")
+        $qb->select("u")
             ->from(self::ormName(), "u")
             ->where("u.email = :email");
         $query = $qb->getQuery();

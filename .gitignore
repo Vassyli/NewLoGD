@@ -1,12 +1,10 @@
-test.php
-
-config/*.php
+dbconfig.php
+app/*.php
 vendor/
 output/
 docs/
 
 pdo.sqlite
-composer.lock
 
 #################
 ## NetBeans

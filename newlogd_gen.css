@@ -1,0 +1,29 @@
+/* 
+    Created on : 02.03.2016, 23:39:03
+    Author     : Basilius Sauter
+*/
+body {
+  font: 80% Calibri, Helvetica, sans-serif;
+  color: #111; }
+  body #offline {
+    position: absolute;
+    width: 33%;
+    min-width: 200px;
+    height: 33%;
+    min-height: 200px;
+    top: 33%;
+    left: 33%;
+    overflow: hidden;
+    padding: 1em;
+    padding-bottom: 2em;
+    border: 1px solid #444444;
+    border-radius: 0.5em; }
+    body #offline #logintitle {
+      margin: 0 auto;
+      font-size: 160%;
+      font-weight: bold; }
+    body #offline #version {
+      margin-top: -0.5em;
+      color: #444444; }
+
+/*# sourceMappingURL=newlogd_gen.css.map */
