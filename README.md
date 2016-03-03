@@ -1,49 +1,34 @@
-#############################################################################
-##  PROJECT:           NewLoGD
-##  VERSION:           dev
-##  AUTHOR:            Basilius Sauter <basilius.sauter@hispeed.ch>
-##  LICENCE:           GNU Affero GPL 3 (see file LICENCE for details)
-#############################################################################
+General
+=======
 
-    NewLoGD, a Browsergame based in PHP and MySQL
-    Copyright (C) 2015  Basilius Sauter
+NewLoGD is browsergame engine written in PHP. It is going to be a rewrite of LoGD 0.9.7+jt ext GER using modern programming patterns and strong frameworks to ease the creation of Plugins.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+## Requirements
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+For running this game, you'll need:
+- A webserver with support for PHP
+- PHP 7.0.0 or higher
+- A SQL backend (in theory any backend supported by Doctrine)
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-#
-#   PREFACE
-#
+## Installation
 
-BE CAREFULE - This code is under early development and is NOT meant for production runs.
-There is so far no implemented user right management, meaning that every registered user 
-can access the administrative modules!
+1. Download the files
+2. Go to the ./config folder and rename all *.php.dist files to *.php
+3. Open ./config/db.php and add your database credentials
+4. Open ./config/auth.php and add the app-id and app-secret for facebook or google (or both!) and change the key "enabled" to true.
+5. Run the following commands:
+```
+$ composer install
+$ vendor/bin/doctrine orm:schema-tool:create
+```
+6. Open a browser and call index.html to try everything out.
 
-#
-#   REQUIREMENTS
-#
+Aim
+===
 
-For running this game, you will need:
-	- A webserver with PHP support
-	- PHP 5.5 or higher
-	- A running MySQL server (MySQL 5.6.20 works, earlier versions probably as well)
+The aim of this project (for version 1.0) is to have feature-parity with LoGD 0.9.7+jt ext GER by combining a headless API with a HTML/JS client to talk to that API.
 
-#
-#   INSTALLATION
-#
+Design Philosophy
+=================
 
-1. Create a new table
-2. Import the .sql file including the values
-3. Edit the file dbconfig.php with the connection informations
-4. Enjoy. Default login is Admin/CHANGEME
-5. Tada - you have now successfully installed NewLoGD.
+NewLoGD implements a MVC-like pattern: A controller connected to a route executes Code and delivers an answer either as plain text or as a JSON encoded array ready to be used by Javascript. Models are providing abstraction from the database and are built on top of Doctrine's ORM.
