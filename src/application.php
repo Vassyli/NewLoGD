@@ -35,14 +35,14 @@ class Application {
 	use Routes;
     use Middleware;
 	
-	/** @var array The request method (App\GET, App\POST, App\PUT or App\DELETE) */
+	/** @var int The request method (App\GET, App\POST, App\PUT or App\DELETE) */
 	protected $request_method = 0;
 	
 	/** @var Config Reference to the configuration class */
 	protected static $config = NULL;
 	/** @var EntityManager Reference to the Doctrine entity manager */
 	protected static $entityManager = NULL;
-	/** @var EntityManager Reference to Auth */
+	/** @var Auth Reference to Auth */
 	protected static $auth = NULL;
 	
 	/**
@@ -64,6 +64,10 @@ class Application {
 			case "DELETE": $this->request_method = App\DELETE; break;
 		}
 	}
+    
+    public function getRequestMethod() {
+        return $this->request_method;
+    }
 	
 	/**
 	 * Returns a reference to the configuratio manager or the requested variable

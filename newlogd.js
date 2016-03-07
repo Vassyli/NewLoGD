@@ -31,11 +31,35 @@ function App_Init() {
 	}
 	
 	// Normal page run
+    
+    // Menu creation
+    submenu = $(".submenu");
+    //$("ul", submenu).hide()
+    submenu.mouseenter(function(submenu) {
+        $("ul", submenu["currentTarget"]).show();
+        console.log(submenu);
+    }).mouseleave(function(submenu) {
+        $("ul", submenu["currentTarget"]).hide();
+        console.log(submenu);
+    })
+    
+    // Add "closeable"
+    closables = $(".closable");
+    closables.prepend("<div class='closebutton'><a>Close</a></div><br class='clear'>");
+    closables.click(function() {
+        $(".col-center > div").hide();
+        $("#sceneview").show();
+    })
+    
+    // Display either Offline or Online version
 	var ajax_Run = $.get("./").done(App_Run);
 }
 
 function App_Reload() {
-    var ajax_Run = $.get("./").done(App_Run);
+    console.log("[App] Reload");
+    $.get("./").done(function(a) {
+        App_Run(a);
+    });
 }
 
 function App_Run(answer) {
@@ -55,7 +79,9 @@ function App_Run(answer) {
 }
 
 function App_Logout() {
-    $.get("./logout").done(App_Reload());
+    $.get("./logout").done(function() {
+        App_Reload();
+    });
 }
 
 function App_Run_Online(answer) {
@@ -65,6 +91,57 @@ function App_Run_Online(answer) {
         App_Logout();
     });
     $("#user_name").text(answer["activeuser"]["name"]);
+    
+    character_createMenu();
+}
+
+function character_createMenu() {
+    $("#charactermenu_view").click(function() {
+       $.get("./character").done(function(a) {
+          character_showSelection("view", a); 
+       });
+       $("#charactermenu ul").hide();
+    });
+    
+    $("#charactermenu_create").click(function() {
+       $.get("./character").done(function(a) {
+          character_showSelection("create", a); 
+       });
+       $("#charactermenu ul").hide();
+    });
+}
+
+function character_showSelection(what, characters) {
+    var row;
+    $("#online .col-center > div").hide();
+    
+    var charselection = $("#characterselection");
+    
+    $(".enclosement *", charselection).remove();
+    
+    if(what == "view") {
+        charselection.show();
+
+        for(row in characters) {
+            character_addSelectionEntry($(".enclosement", charselection), characters[row]);
+        }
+    }
+    else if(what == "create") {
+    }
+}
+
+function character_addSelectionEntry(charselection, character) {
+    console.log("[Chars] Add Character", character);
+    entry = $("<div class='charentry'>\n\
+        <div class='charname'></div>\n\
+        <div class='charimage'></div>\n\
+        <ul class='charinfo'><li></li></ul>\n\
+    </div>");
+    
+    // Fill with data
+    $(".charname", entry).html(character["name"]);
+    
+    charselection.append(entry);
 }
 
 function App_Run_Offline(answer) {

@@ -18,16 +18,41 @@
             
             <div id="body">
                 <div id="offline">
-                    <div id="login">
-                        <div id="loginmessage">Login with the social login of your choice:</div>
-                        <div id="sociallogin">
-                            <br class="break">
+                    <div class="col-third col-left">
+                        &nbsp;
+                    </div>
+                    <div class="col-third col-center">
+                        <div id="login">
+                            <div id="loginmessage">Login with the social login of your choice:</div>
+                            <div id="sociallogin">
+                                <br class="clear">
+                            </div>
                         </div>
                     </div>
+                    <div class="col-third col-right">
+                        &nbsp;
+                    </div>
+                    <br class="clear">
                 </div>
 
                 <div id="online">
-                    <div id="logininfo">Hi, <span id="user_name"></span>. <a>Logout</a></div>
+                    <div id="toolbar">
+                        <div id="charactermenu" class="icon submenu button"><a>Characters</a><ul>
+                                <li><a id="charactermenu_view">View</a></li>
+                                <li><a id="charactermenu_create">Create</a></li>
+                        </ul></div>
+                        <div id="mailmenu" class="icon"><a>Mail</a></div>
+                        <div id="logininfo">Hi, <span id="user_name"></span>. <a>Logout</a></div>
+                        <br class="clear">
+                    </div>
+                    <div class="col-third col-left">&nbsp;</div>
+                    <div class="col-third col-center">&nbsp;
+                        <div id="sceneview" class="main">Szene</div>
+                        <div id="characterselection" class="main closable">
+                            <div class="enclosement"></div>
+                        </div>
+                    </div>
+                    <div class="col-third col-right">&nbsp;</div>
                 </div>
             </div>
 		</div>

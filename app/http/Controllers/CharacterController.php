@@ -9,7 +9,11 @@
 
 namespace App\Http\Controllers;
 
+use NewLoGD\Application as App;
 use NewLoGD\Auth;
+use NewLoGD\Form;
+use NewLoGD\i18n;
+
 use App\Models\CharacterModel as Character;
 use App\Models\UserModel as User;
 
@@ -49,4 +53,17 @@ class CharacterController extends Controller {
             return false;
         }
 	}
+    
+    public function getCreateForm() {
+        $form = new Form($this->app->getPath());
+        $form->title(i18n::_("formtitle", "character"));
+        
+        if($this->app->getRequestMethod() == App\POST) {
+            
+        }
+        
+        $form->varchar("name", i18n::_("name", "character"));
+        
+        return $form;
+    }
 }

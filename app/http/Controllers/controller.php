@@ -92,6 +92,12 @@ class Controller {
 				$this->response->json($answer);
 			}
 		}
+        elseif(is_object($answer) and $answer instanceof \JsonSerializable) {
+            $this->response->jsonFromObject($answer);
+        }
+        elseif(is_object($answer)) {
+            $this->response->plain((string)$answer);
+        }
 		else {
 			$this->response->plain($answer);
 		}

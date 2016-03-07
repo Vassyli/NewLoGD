@@ -10,6 +10,9 @@ $primaryLighten1: 20%;
 $secondaryBackground: #217821;
 $secondaryForeground: #FFF;
 
+$darkerBackground: darken($secondaryBackground, 5%);
+$lighterBackground: lighten($secondaryBackground, 5%);
+
 $ressource_dir: "./ressources";
 
 $smartphone-width: 300px;
@@ -48,13 +51,22 @@ body {
         font-size: 200%;
     }
     
-    a {
+    a, .button {
         color: $secondaryBackground;
         cursor: pointer;
         
         &:hover {
             color: lighten($secondaryBackground, 20%)
         }
+    }
+    
+    .clear {
+        clear: both;
+    }
+    
+    .col-third {
+        width: 33%;
+        float: left;
     }
     
     #head {
@@ -104,9 +116,7 @@ body {
     #body {        
         #offline {
             display: none;
-            
-            margin-left: 33%;
-            margin-right: 33%;
+            padding: 0em 0.5em;
             
             @include smartphone {
                 margin: 0em 1em;
@@ -139,10 +149,6 @@ body {
                         }
                     }
                     
-                    br {
-                        clear: both;
-                    }
-                    
                     .google {
                         background-image: url($ressource_dir + "/socialbutton/google.png")
                     }
@@ -156,15 +162,108 @@ body {
 
         #online {
             display: none;
-            padding: 0em 1em;
             
-            #logininfo {
-                margin-top: -1em;
-                text-align: right;        
-                a {
+            #toolbar {                
+                margin-top: -2em;
+                border-bottom: 1px solid gray;
+                padding: 0.5em 0.5em;
+                
+                #charactermenu { background-image: url($ressource_dir + "/icons/character.png"); }
+                #mailmenu { background-image: url($ressource_dir + "/icons/mail.png"); }
+                
+                .icon {
+                    width: 32px;
+                    height: 32px;
                     
+                    > a {
+                        display: none;
+                    }
+                }
+                
+                .submenu {
+                    ul {
+                        display: none;
+                        margin-top: 2em;
+                        padding-left: 0em;
+                        list-style-type: none;
+                        border: 1px solid black;
+                        width: 200px;
+                        background-color: white;
+                    }
+                    
+                    li {
+                        display: block;
+                        padding: 0.5em;
+                        border-top: 1px solid black;
+                        
+                        &:first-child {
+                            border-top: 0px solid black;
+                        }
+                    }
+                }
+                
+                div {
+                    margin-left: 1em;
+                    text-align: left;
+                    
+                    &:first-child {
+                        margin-left: 0em;
+                    }
+                    
+                    float: left;
+                }
+                
+                #logininfo {
+                    text-align: right; 
+                    float: right;
+                    
+                    a {
+
+                    }
+                }
+            }
+            
+            .col-center {
+                div.closable {
+                    display: none;
+                    
+                    div.closebutton {
+                        background-image: url($ressource_dir + "/icons/close.png");
+                        width: 32px;
+                        height: 32px;
+                        
+                        float: right;
+                        right: 0px;
+                        cursor: pointer;
+                        
+                        a {
+                            display: none;
+                        }
+                    }
                 }
             }
         }   
+    }
+}
+
+#characterselection {
+    ul {
+        padding: 0em;
+    }
+    
+    li {
+        list-style-type: none;
+    }
+    .charentry {
+        border: 1px solid black;
+        margin-bottom: 1em;
+        
+        .charname {
+            background-color: $darkerBackground;
+            color: $secondaryForeground;
+            
+            padding: 0.2em 1em;
+            border-bottom: 1px solid grey;
+        }
     }
 }

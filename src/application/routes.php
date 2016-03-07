@@ -30,6 +30,9 @@ trait Routes {
 	public $static_routes = [];
 	/** @var array array of dynamic routes, nearly identical to static routes */
 	public $dynamic_routes = [];
+    
+    /** @var string $path */
+    public $path = "/";
 	
 	/**
 	 * Connects a request method and a route to a callback function
@@ -101,6 +104,7 @@ trait Routes {
 	protected function resolveRoute() : array {
 		// Initialize Variables
 		$path = $this->preparePath();
+        $this->path = $path;
 		
 		$arguments = [];
 		
@@ -113,6 +117,10 @@ trait Routes {
 		
 		return [$path, $controller, $arguments];
 	}
+    
+    public function getPath() {
+        return $this->path;
+    }
 	
 	/**
 	 * Tries to resolve the route as a static route

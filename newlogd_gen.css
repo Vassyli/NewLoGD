@@ -10,11 +10,16 @@ body {
   @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min-resolution: 125dpi) {
     body {
       font-size: 200%; } }
-  body a {
+  body a, body .button {
     color: #217821;
     cursor: pointer; }
-    body a:hover {
+    body a:hover, body .button:hover {
       color: #37c837; }
+  body .clear {
+    clear: both; }
+  body .col-third {
+    width: 33%;
+    float: left; }
   body #head {
     margin-top: 2em;
     margin-bottom: 2em;
@@ -50,8 +55,7 @@ body {
           text-align: right; } }
   body #body #offline {
     display: none;
-    margin-left: 33%;
-    margin-right: 33%; }
+    padding: 0em 0.5em; }
     @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min-resolution: 125dpi) {
       body #body #offline {
         margin: 0em 1em; } }
@@ -70,17 +74,71 @@ body {
           display: none; }
         body #body #offline #login #sociallogin .socialbutton:first-child {
           margin-left: 0; }
-      body #body #offline #login #sociallogin br {
-        clear: both; }
       body #body #offline #login #sociallogin .google {
         background-image: url("./ressources/socialbutton/google.png"); }
       body #body #offline #login #sociallogin .facebook {
         background-image: url("./ressources/socialbutton/facebook.png"); }
   body #body #online {
-    display: none;
-    padding: 0em 1em; }
-    body #body #online #logininfo {
-      margin-top: -1em;
-      text-align: right; }
+    display: none; }
+    body #body #online #toolbar {
+      margin-top: -2em;
+      border-bottom: 1px solid gray;
+      padding: 0.5em 0.5em; }
+      body #body #online #toolbar #charactermenu {
+        background-image: url("./ressources/icons/character.png"); }
+      body #body #online #toolbar #mailmenu {
+        background-image: url("./ressources/icons/mail.png"); }
+      body #body #online #toolbar .icon {
+        width: 32px;
+        height: 32px; }
+        body #body #online #toolbar .icon > a {
+          display: none; }
+      body #body #online #toolbar .submenu ul {
+        display: none;
+        margin-top: 2em;
+        padding-left: 0em;
+        list-style-type: none;
+        border: 1px solid black;
+        width: 200px;
+        background-color: white; }
+      body #body #online #toolbar .submenu li {
+        display: block;
+        padding: 0.5em;
+        border-top: 1px solid black; }
+        body #body #online #toolbar .submenu li:first-child {
+          border-top: 0px solid black; }
+      body #body #online #toolbar div {
+        margin-left: 1em;
+        text-align: left;
+        float: left; }
+        body #body #online #toolbar div:first-child {
+          margin-left: 0em; }
+      body #body #online #toolbar #logininfo {
+        text-align: right;
+        float: right; }
+    body #body #online .col-center div.closable {
+      display: none; }
+      body #body #online .col-center div.closable div.closebutton {
+        background-image: url("./ressources/icons/close.png");
+        width: 32px;
+        height: 32px;
+        float: right;
+        right: 0px;
+        cursor: pointer; }
+        body #body #online .col-center div.closable div.closebutton a {
+          display: none; }
+
+#characterselection ul {
+  padding: 0em; }
+#characterselection li {
+  list-style-type: none; }
+#characterselection .charentry {
+  border: 1px solid black;
+  margin-bottom: 1em; }
+  #characterselection .charentry .charname {
+    background-color: #1c641c;
+    color: #FFF;
+    padding: 0.2em 1em;
+    border-bottom: 1px solid grey; }
 
 /*# sourceMappingURL=newlogd_gen.css.map */

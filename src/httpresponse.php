@@ -205,6 +205,13 @@ class HttpResponse {
 		$this->setContentType(self::CONTENT_JSON);
 		$this->setBody(\json_encode($body, JSON_PRETTY_PRINT));
 	}
+    
+    public function jsonFromObject(\JsonSerializable $body) {
+        $this->finalize();
+        
+		$this->setContentType(self::CONTENT_JSON);
+		$this->setBody(\json_encode($body, JSON_PRETTY_PRINT));
+    }
 	
 	/**
 	 * Sends an error 404

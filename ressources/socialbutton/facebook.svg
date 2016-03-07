@@ -16,9 +16,9 @@
    inkscape:version="0.91 r13725"
    viewBox="0 0 64 64"
    sodipodi:docname="facebook.svg"
-   inkscape:export-filename="C:\Users\sauterb\bin\xampp7\htdocs\newlogd\ressources\socialbutton\facebook.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-filename="C:\Users\sauterb\bin\xampp7\htdocs\newlogd\ressources\socialbutton\facebook_2x.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180">
   <title
      id="title4185">Facebook Sociallogin</title>
   <defs
@@ -30,10 +30,10 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.75"
-     inkscape:cx="92.804992"
-     inkscape:cy="-11.284965"
-     inkscape:current-layer="layer1"
+     inkscape:zoom="5.5"
+     inkscape:cx="16.616349"
+     inkscape:cy="28.913677"
+     inkscape:current-layer="layer4"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
@@ -56,7 +56,7 @@
   </metadata>
   <g
      id="layer1"
-     inkscape:label="Layer 1"
+     inkscape:label="Background"
      inkscape:groupmode="layer">
     <rect
        style="opacity:0.88414636;fill:#45619d;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.5014832;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -65,24 +65,34 @@
        height="63.498516"
        x="0.2507416"
        y="0.25074261" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Shadow">
     <ellipse
        style="opacity:0.88414636;fill:#000000;fill-opacity:0.10989009;fill-rule:nonzero;stroke:none;stroke-width:0.07090142;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path4183"
+       id="path4183-0"
        cx="32"
-       cy="43.272728"
-       rx="12.287276"
-       ry="3.4690948" />
+       cy="48.602432"
+       rx="18.844084"
+       ry="5.3975677" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Logo">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:24px;line-height:125%;font-family:'Latin Modern Sans Demi Cond';-inkscape-font-specification:'Latin Modern Sans Demi Cond Semi-Bold';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="25.805"
-       y="44.145"
-       id="text4146"
+       x="23.15"
+       y="49.600002"
+       id="text4146-6"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan4148"
-         x="25.805"
-         y="44.145"
-         style="font-size:35px">f</tspan></text>
+         id="tspan4148-2"
+         x="23.15"
+         y="49.600002"
+         style="font-size:50px">f</tspan></text>
   </g>
 </svg>
