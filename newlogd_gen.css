@@ -128,14 +128,14 @@ body {
         body #body #online .col-center div.closable div.closebutton a {
           display: none; }
 
-#characterselection ul {
+#characterwidget ul {
   padding: 0em; }
-#characterselection li {
+#characterwidget li {
   list-style-type: none; }
-#characterselection .charentry {
+#characterwidget .charentry {
   border: 1px solid black;
   margin-bottom: 1em; }
-  #characterselection .charentry .charname {
+  #characterwidget .charentry .charname {
     background-color: #1c641c;
     color: #FFF;
     padding: 0.2em 1em;
