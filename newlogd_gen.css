@@ -141,4 +141,27 @@ body {
     padding: 0.2em 1em;
     border-bottom: 1px solid grey; }
 
+form.created fieldset {
+  border: none; }
+  form.created fieldset legend {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    font-weight: bold; }
+  form.created fieldset label {
+    width: 100%; }
+    form.created fieldset label span {
+      display: block;
+      float: left;
+      width: 50%; }
+      form.created fieldset label span:last-child::after {
+        clear: both; }
+    form.created fieldset label button {
+      margin: 0;
+      padding: 0;
+      margin-left: 50%;
+      width: 50%; }
+    form.created fieldset label input, form.created fieldset label textarea {
+      width: 100%; }
+
 /*# sourceMappingURL=newlogd_gen.css.map */

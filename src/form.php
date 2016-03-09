@@ -19,7 +19,7 @@ use NewLoGD\i18n;
  */
 class Form implements \JsonSerializable {
     protected $formdata = [
-        "method" => "post",
+        "method" => "POST",
         "target" => "",
         "form" => [
         ],

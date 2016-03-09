@@ -8,7 +8,8 @@ var MAINVIEW_ONLINE = 1;
 var MAINVIEW_OFFLINE = 0;
 
 var submenu_connections = {
-    "#charactermenu_view" : ["./character", "showSelectionScreen"],
+    "#charactermenu_view" : ["./character", "characters", "showSelectionScreen"],
+    "#charactermenu_create" : ["./character/create", "characters", "showCreationScreen"],
 };
 
 function App(body) {
@@ -22,6 +23,10 @@ App.prototype = {
     scene : null,
     mail : null,
     
+    /**
+     * Prepares and runs the app
+     * @returns {undefined}
+     */
     run : function() {
         this.loginProcedure();
         
@@ -35,6 +40,12 @@ App.prototype = {
         this.reload();
     },
     
+    /**
+     * Does the login procedure: If a user is returned from a OAuth site via a hash
+     * url, this procedure takes the information from it and posts the informations
+     * received to the server.
+     * @returns {undefined}
+     */
     loginProcedure : function() {
          // Get query string information after the hash (#)
         var params = getUrlParams(location.hash.substring(1));
@@ -62,6 +73,10 @@ App.prototype = {
         }
     },
     
+    /**
+     * Creates real submenus and connects them to their actions
+     * @returns {undefined}
+     */
     createSubmenus : function() {
         var app = this;
         var submenu = $(".submenu");
@@ -70,32 +85,40 @@ App.prototype = {
             .mouseleave(this.toggleSubmenu);
         
         // Connect Submenu items with click actions
-        for(var id in submenu_connections) {
+        var id;
+        for(id in submenu_connections) {
             var target = submenu_connections[id];
             var argnum = target.length;
             
-            if(argnum === 2) {
-                $(id).click(function() {
-                    console.log("[App] Fetch", target[0])
-                    $.get(target[0])
-                        .done(function(answer) {
-                            fn = app.characters[target[1]];
-                            fn(app.characters, answer);
-                        })
-                })
+            if(argnum === 3) {
+                // Remember: We need to call a callback function here that returns a callback
+                // Otherwise, the callback function would only contain the information about
+                // the last item in submenu_connections, meaning that all menu clicks will have
+                // the same target and effect!
+                var onClick = function(id, uri, widget, func, app) {
+                    console.log("[App] Connect menu point for ", id, uri, widget, func);
+                    
+                    return function() {
+                        console.log("[App] Clicked on menu", id, "fetch from", uri);
+                        
+                        $.get(uri).done(function(answer){
+                            var fn = app[widget][func];
+                            fn(app[widget], answer);
+                        });
+                    };
+                }(id, target[0], target[1], target[2], this);
+                
+                // Bind the onClick-callback to this item
+                $(id).click(onClick);
             }
-            /*if(target.count )
-            $(id).click
-            
-            $("#charactermenu_view").click(function() {
-       $.get("./character").done(function(a) {
-          character_showSelection("view", a); 
-       });
-       $("#charactermenu ul").hide();
-    });*/
         }
     },
     
+    /**
+     * Hides and shows a given submenu on mouseenter/mouseleave
+     * @param {type} event
+     * @returns {undefined}
+     */
     toggleSubmenu : function(event) {
         var target = $("ul", event["currentTarget"]);
         if(event.type === "mouseenter") {
@@ -106,20 +129,34 @@ App.prototype = {
         }
     },
     
+    /**
+     * Equips all div-tags with certain classes with features.
+     * It equips all .closable with a close-button that hides the modal and shows
+     * the scene again.
+     * @returns {undefined}
+     */
     createModals : function() {
         var closables = $(".closable");
         closables.prepend("<div class='closebutton'><a>Close</a></div><br class='clear'>");
-        closables.click(function() {
+        $(".closebutton", closables).click(function() {
             $(".col-center > div").hide();
             $("#scenewidget").show();
         });
     },
     
+    /**
+     * Hides all central widgets, including the scene
+     * @returns {undefined}
+     */
     hideCentralWidgets : function() {
         $("#online .col-center > div").hide();
         $("#scenewidget").hide();
     },
     
+    /**
+     * Reloads fundamental page informations
+     * @returns {undefined}
+     */
     reload : function() {
         console.log("[App] Fetch root data");
         
@@ -130,6 +167,11 @@ App.prototype = {
             });
     },
     
+    /**
+     * Loads the Application and either shows the online or the offline variant
+     * @param {type} answer
+     * @returns {undefined}
+     */
     load : function(answer) {
         this.loggedin = this.isLoggedin(answer);
         console.log("[App] Number of Session Hits: " + answer["pagehits"]);
@@ -144,11 +186,21 @@ App.prototype = {
         }
     },
     
+    /**
+     * Loads common features of the online and offline versions
+     * @param {type} answer
+     * @returns {undefined}
+     */
     loadBasic : function(answer) {
         this.setGametitle(answer["gametitle"]);
         this.setGameversion(answer["version"]);
     },
     
+    /**
+     * Loads features only found in the offline version
+     * @param {type} answer
+     * @returns {undefined}
+     */
     loadOffline : function(answer) {
         var app = this;
         
@@ -166,6 +218,11 @@ App.prototype = {
             });
     },
     
+    /**
+     * Loads features only found in the online version
+     * @param {type} answer
+     * @returns {undefined}
+     */
     loadOnline : function(answer) {
         var app = this;
         
@@ -177,7 +234,12 @@ App.prototype = {
         });
         $("#user_name").text(answer["activeuser"]["name"]);
     },
-            
+    
+    /**
+     * Checks the loginstate and returns true if the user is online, false if not.
+     * @param {type} answer Root-Answer from /
+     * @returns {Boolean} True if loggedin, false if not
+     */
     isLoggedin : function(answer) {
         if("loginstate" in answer && answer["loginstate"] > 0) {
             return true;
@@ -187,6 +249,10 @@ App.prototype = {
         }
     },
     
+    /**
+     * Calls the logout node and logs the user out.
+     * @returns {undefined}
+     */
     logout : function() {
         var app = this;
         $.get("./logout").done(function() {
@@ -194,14 +260,30 @@ App.prototype = {
         });
     },
     
+    /**
+     * Sets the game title
+     * @param {string} title
+     * @returns {undefined}
+     */
     setGametitle : function(title) {
         $("#title").html(title); 
     },
     
+    /**
+     * Sets the game version
+     * @param {string} version
+     * @returns {undefined}
+     */
     setGameversion : function(version) {
         $("#version").html(version);
     },
     
+    /**
+     * Depending on the loginstate, this function either hides offline and shows 
+     * online widgets, or vice-versa.
+     * @param {type} what
+     * @returns {undefined}
+     */
     toggleMainview : function(what) {
         if(what === MAINVIEW_OFFLINE) {
             $("#offline").show();
@@ -213,6 +295,12 @@ App.prototype = {
         }
     },
     
+    /**
+     * Creates a button for social-login and connects it.
+     * @param {string} provider The Provider
+     * @param {type} providerdata Providerdata from /auth
+     * @returns {$} The Button jQuery object
+     */
     createSocialbutton : function(provider, providerdata) {
         var app = this;
         var button = $("<div><a></a></div>");
@@ -226,6 +314,12 @@ App.prototype = {
         return button;
     },
     
+    /**
+     * Starts the authorization by getting more detailled information about the 
+     * provider from /auth/{provider}.
+     * @param {type} provider
+     * @returns {undefined}
+     */
     authorizationStart : function(provider) {
         var app = this;
         var uri = "./auth/" + provider;
@@ -236,6 +330,11 @@ App.prototype = {
         });
     },
     
+    /**
+     * Relocates the user to the OAuth provider login page
+     * @param {type} answer
+     * @returns {undefined}
+     */
     authorizationSend : function(answer) { 
         var providerurl;
         
@@ -281,6 +380,23 @@ CharacterWidget.prototype = {
     },
     
     /**
+     * Shows the character creation screen
+     * @param {type} self
+     * @param {type} form
+     * @returns {undefined}
+     */
+    showCreationScreen : function(self, form) {
+        self.clearWidget();
+        
+        // Create formular from JSON answer
+        var form = new Form(form);
+        
+        self.charenclosement.html(form.render());
+                
+        self.showWidget();
+    },
+    
+    /**
      * shows the Selection Screen for Characters
      * @param {CharacterSelection} self A reference to an instance of this class
      * @param {object} listOfCharacters List of characters as a JSON object
@@ -321,6 +437,98 @@ CharacterWidget.prototype = {
 
         this.charenclosement.append(entry);
     }
+};
+
+function Form(formdata) {
+    this.formdata = formdata;
+    this.formid = formdata["target"].replace(/[^a-zA-Z]/g, "_");
+    this.method = formdata["method"];
+    this.target = "." + formdata["target"];
+}
+
+Form.prototype = {
+    /** @type {object} Basic form data */
+    formdata : {},
+    method : "POST",
+    form : null,
+    
+    /**
+     * Renders the form and returns it as a jQuery object
+     * @returns {$}
+     */
+    render : function(charwidget) {
+        var self = this;
+        // Create basic form
+        this.form = $("<form><fieldset><legend></legend></fieldset></form>");
+        var html = this.form;
+        // fill with data
+        html.id = this.formid;
+        html.method = this.formdata.method;
+        html.target = this.formdata.target;
+        html.addClass("created");
+        $("legend", html).html(this.formdata.title);
+        
+        for(var name in this.formdata.form) {
+            $("fieldset", html).append(this.addItem(name, this.formdata.form[name]));
+        }
+        
+        $("fieldset", html).append(this.addSubmitButton());
+        
+        // Connect
+        html.submit(function(event) {
+            event.preventDefault();
+            console.log(self.form);
+            console.log(self.form.serialize());
+            
+            if(self.method === HTTP_POST) {
+                $.post(self.target, self.form.serialize())
+                    .done(function(answer) {
+                        console.log("[Form] Success");
+                        console.log(answer);
+                        charwidget.showCreationScreen();
+                    })
+                    .fail(function(answer) {
+                        console.log("[Form] Error from server");
+                        console.log(answer);
+                    });
+            }
+        })
+        
+        return html;
+    },
+    
+    addItem : function(name, data) {
+        var item = $("<label></label>");
+        var label = $("<span></span>");
+        var inputwidget = $("<span></span>");
+        
+        label.html(data["label"]);
+        
+        switch(data["type"]) {
+            case "varchar":
+                inputwidget.append(this.varchar(name, data));
+                break;
+        }
+        
+        item.append(label).append(inputwidget);
+        return item;
+    },
+    
+    addSubmitButton : function() {
+        var item = $("<label><button name='_submit' type='submit'>Submit</button></label>");
+        return item;
+    },
+    
+    varchar : function(name, data) {
+        var widget = $("<input type='text' name='" + name + "'>");
+        return widget;
+    },
+    
+    text : function(name, data) {
+        var widget = $("<textarea name='" + name + "'></textarea>");
+        console.log("[Form] Add textarea with name", name);
+        return widget;
+    },
 };
 
 

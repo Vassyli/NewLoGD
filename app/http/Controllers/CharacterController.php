@@ -57,13 +57,23 @@ class CharacterController extends Controller {
     public function getCreateForm() {
         $form = new Form($this->app->getPath());
         $form->title(i18n::_("formtitle", "character"));
-        
-        if($this->app->getRequestMethod() == App\POST) {
-            
-        }
-        
         $form->varchar("name", i18n::_("name", "character"));
         
-        return $form;
+        if($this->app->getRequestMethod() == App\POST) {
+            $this->response->invalidData([]);
+            
+            /*$form->validate($_POST);
+            
+            if($form->isValid()) {
+                return "OK";
+            }
+            else {
+                $this->response->invalidData();
+                return false;
+            }*/
+        }
+        else {
+            return $form;
+        }
     }
 }

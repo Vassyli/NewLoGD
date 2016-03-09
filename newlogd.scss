@@ -267,3 +267,43 @@ body {
         }
     }
 }
+
+form.created {
+    fieldset {
+        border: none;
+        
+        legend {
+            margin: 0;
+            padding: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        label {
+            width: 100%;
+            
+            span {
+                display: block;
+                float: left;
+                width: 50%;
+                
+                &:last-child {
+                    &::after {
+                        clear: both;
+                    }
+                }
+            }
+            
+            button {
+                margin: 0;
+                padding: 0;
+                margin-left: 50%;
+                width: 50%;
+            }
+            
+            input, textarea {
+                width: 100%;
+            }
+        }
+    }
+}

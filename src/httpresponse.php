@@ -36,6 +36,7 @@ class HttpResponse {
 	const NOTFOUND = 404;
 	const METHODNOTALLOWED = 405;
 	const TEAPOT = 418;
+    const UNPROCESSABLEENTITY = 422;
 	const TOOMANYREQUESTS = 429;
 	const CENSORED = 451;
 	
@@ -225,5 +226,10 @@ class HttpResponse {
     public function forbidden(string $message = "") {
         $this->setStatus(self::FORBIDDEN);
         $this->plain("Error 403 - Forbidden\r\n".$message);
+    }
+    
+    public function invalidData(array $message) {
+        $this->setStatus(self::UNPROCESSABLEENTITY);
+        $this->json($message);
     }
 }
