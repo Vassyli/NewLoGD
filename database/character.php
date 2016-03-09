@@ -30,13 +30,14 @@ class Character {
     private $name;
     
     /**
-	 * @Column(type="integer")
+	 * @Column(type="integer", options={"default"=1})
 	 */
-    private $level;
+    private $level = 1;
     
     public function getId() { return $this->id; }
     
     public function getOwner() { return $this->owner; }
+    public function setOwner(User $owner) { $this->owner = $owner; }
     
     public function getName() { return $this->name; }
     public function setName($name) { $this->name = $name; }

@@ -369,6 +369,7 @@ CharacterWidget.prototype = {
         
         // Remove everything in the enclosement
         $("*", this.charenclosement).remove();
+        this.charenclosement.html("");
     },
     
     /**
@@ -390,9 +391,20 @@ CharacterWidget.prototype = {
         
         // Create formular from JSON answer
         var form = new Form(form);
+        form.done = function(self) { return function(answer) {
+            self.showCreationMessage(self, answer);
+        }}(self);
         
         self.charenclosement.html(form.render());
                 
+        self.showWidget();
+    },
+    
+    showCreationMessage : function(self, answer) {
+        self.clearWidget();
+        
+        self.charenclosement.html(answer[0]);
+        
         self.showWidget();
     },
     
@@ -451,12 +463,13 @@ Form.prototype = {
     formdata : {},
     method : "POST",
     form : null,
+    done : null,
     
     /**
      * Renders the form and returns it as a jQuery object
      * @returns {$}
      */
-    render : function(charwidget) {
+    render : function() {
         var self = this;
         // Create basic form
         this.form = $("<form><fieldset><legend></legend></fieldset></form>");
@@ -482,11 +495,7 @@ Form.prototype = {
             
             if(self.method === HTTP_POST) {
                 $.post(self.target, self.form.serialize())
-                    .done(function(answer) {
-                        console.log("[Form] Success");
-                        console.log(answer);
-                        charwidget.showCreationScreen();
-                    })
+                    .done(self.done)
                     .fail(function(answer) {
                         console.log("[Form] Error from server");
                         console.log(answer);

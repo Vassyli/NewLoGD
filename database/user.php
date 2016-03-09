@@ -73,6 +73,10 @@ class User implements \JsonSerializable {
 	public function setSocialauth_id($socialauth_id) { $this->socialauth_id = $socialauth_id; }
     
     public function getCharacters() { return $this->characters; }
+    public function addCharacter(Character $character) {
+        $this->characters->add($character);
+        $character->setOwner($this);
+    }
     
     public function jsonSerialize() {
         return [

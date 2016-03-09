@@ -148,5 +148,8 @@ class Application {
 		$response->send();
         
         //$this->runMiddleware("terminate");
+        
+        // Save changes to database
+        self::getEntityManager()->flush();
 	}
 }

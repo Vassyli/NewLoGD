@@ -57,20 +57,38 @@ class CharacterController extends Controller {
     public function getCreateForm() {
         $form = new Form($this->app->getPath());
         $form->title(i18n::_("formtitle", "character"));
-        $form->varchar("name", i18n::_("name", "character"));
+        $form->varchar("name", i18n::_("name", "character"), [
+                    "required" => true, 
+                    "validate" => [
+                        "minlength" => 2,
+                        "maxlength" => 50,
+                    ]
+                ]);
         
         if($this->app->getRequestMethod() == App\POST) {
-            $this->response->invalidData([]);
-            
-            /*$form->validate($_POST);
+            $form->setResults($_POST)->validate();
             
             if($form->isValid()) {
-                return "OK";
+                $results = $form->getResults();
+                
+                if(count(Character::_findByName($results["name"])) > 0) {
+                    $this->response->invalidData(i18n::_("creation_nameinuse", "character"));
+                }
+                else {
+                    // Create character
+                    $character = Character::_create($results["name"]);
+                    // Set character owner to current user
+                    Auth::getActiveUser()->addCharacter($character);
+                    
+                    App::getEntityManager()->persist($character);
+                    App::getEntityManager()->flush();
+                    
+                    return [i18n::_("creation_success", "character"), $character->getId()];
+                }
             }
             else {
-                $this->response->invalidData();
-                return false;
-            }*/
+                $this->response->invalidData($form->getValidationErrors());
+            }
         }
         else {
             return $form;

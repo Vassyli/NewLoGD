@@ -7,30 +7,51 @@ use NewLoGD\Helper\Singleton;
 class i18n {
     use Singleton;
     
+    /** @var array $languageStack A language files with decreasing priority */
     public static $languageStack = [];
     
+    public static $languagesLoaded = [];
+    
+    /**
+     * Initializes i18n
+     * 
+     * This method takes the HTTP_ACCEPT_LANGUAGE value and tries to find the 
+     * desired user languages. The language files are then stored inside of 
+     * $this->languageStack with decreasing priority.
+     */
     public function init() {
-        $accept = explode(",", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+        $accept = !empty($_SERVER["HTTP_ACCEPT_LANGUAGE"]) ? explode(",", $_SERVER["HTTP_ACCEPT_LANGUAGE"]) : ["en"];
+        
         foreach($accept as $language) {
             $lang = explode(";", $language)[0];
+            // Canoncialize language
+            $lang_canon = \Locale::canonicalize($lang);
+            $primary_language = \Locale::getPrimaryLanguage($lang_canon);
             
             // Try to load a stack of languages
-            if($this->languageExists($lang)) {
-                self::$languageStack[] = $this->loadLanguage($lang);
+            if($this->languageExists($primary_language) and !in_array($primary_language, self::$languagesLoaded)) {
+                self::$languagesLoaded[] = $primary_language;
+                self::$languageStack[] = $this->loadLanguage($primary_language);
             }
         }
     }
     
+    /**
+     * Returns the filename of a language file depending on primary language 
+     * and region.
+     * @param string $language
+     * @return string
+     */
     public function getLanguageFilename(string $language) : string {
         $lang = explode("-", $language);
-        $lang_main = substr(preg_replace("#[^\p{Ll}]#u", "", $lang[0]), 0, 2);
-        $lang_sub = isset($lang[1]) ? substr(preg_replace("#[^\p{Lu}]#u", "", $lang[1]), 0, 2) : "";
+        $lang_primary = substr(preg_replace("#[^\p{Ll}]#u", "", $lang[0]), 0, 2);
+        $lang_region = isset($lang[1]) ? substr(preg_replace("#[^\p{Lu}]#u", "", $lang[1]), 0, 2) : "";
         
         if(empty($lang_sub)) {
-            $filename = "i18n/translation_{$lang_main}.php";
+            $filename = "i18n/translation_{$lang_primary}.php";
         }
         else {
-            $filename = "i18n/translation_{$lang_main}_{$lang_sub}.php";
+            $filename = "i18n/translation_{$lang_primary}_{$lang_region}.php";
         }
         
         return $filename;

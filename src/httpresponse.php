@@ -228,8 +228,14 @@ class HttpResponse {
         $this->plain("Error 403 - Forbidden\r\n".$message);
     }
     
-    public function invalidData(array $message) {
+    public function invalidData($message) {
         $this->setStatus(self::UNPROCESSABLEENTITY);
-        $this->json($message);
+        
+        if(is_array($message)) {
+            $this->json($message);
+        }
+        else {
+            $this->plain($message);
+        }
     }
 }
