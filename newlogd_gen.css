@@ -135,11 +135,16 @@ body {
 #characterwidget .charentry {
   border: 1px solid black;
   margin-bottom: 1em; }
-  #characterwidget .charentry .charname {
+  #characterwidget .charentry .charhead {
     background-color: #1c641c;
     color: #FFF;
     padding: 0.2em 1em;
     border-bottom: 1px solid grey; }
+  #characterwidget .charentry .charname {
+    cursor: pointer; }
+    #characterwidget .charentry .charname a {
+      color: white !important;
+      font-weight: bold; }
 
 form.created fieldset {
   border: none; }
@@ -149,6 +154,7 @@ form.created fieldset {
     font-size: 1.2em;
     font-weight: bold; }
   form.created fieldset label {
+    display: block;
     width: 100%; }
     form.created fieldset label span {
       display: block;
@@ -163,5 +169,10 @@ form.created fieldset {
       width: 50%; }
     form.created fieldset label input, form.created fieldset label textarea {
       width: 100%; }
+  form.created fieldset .invalid span,
+  form.created fieldset .invalidated span {
+    color: red; }
+form.created span.error {
+  color: red; }
 
 /*# sourceMappingURL=newlogd_gen.css.map */

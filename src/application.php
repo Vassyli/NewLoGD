@@ -150,6 +150,7 @@ class Application {
         //$this->runMiddleware("terminate");
         
         // Save changes to database
+        self::getEntityManager()->persist(Auth::getActiveUser());
         self::getEntityManager()->flush();
 	}
 }

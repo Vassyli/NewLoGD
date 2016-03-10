@@ -51,6 +51,11 @@ class User implements \JsonSerializable {
      */
     private $characters;
     
+    /**
+     * @OneToOne(targetEntity="Character")
+     */
+    private $current_character = NULL;
+    
     public function __construct() {
         $this->characters = new ArrayCollection();
     }
@@ -76,6 +81,11 @@ class User implements \JsonSerializable {
     public function addCharacter(Character $character) {
         $this->characters->add($character);
         $character->setOwner($this);
+    }
+    
+    public function getCurrentCharacter() { return $this->current_character; }
+    public function setCurrentCharacter(Character $character) {
+        $this->current_character = $character;
     }
     
     public function jsonSerialize() {

@@ -54,6 +54,39 @@ class CharacterController extends Controller {
         }
 	}
     
+    public function getCurrentCharacter() {
+        $character = Auth::getActiveUser()->getCurrentCharacter();
+        
+        if($character === NULL) {
+            $this->resonse->notFound(i18n::_("nucurrent", "character"));
+            return false;
+        }
+        
+        return Character::getPublicFields($character);
+    }
+    
+    public function setCurrentCharacter(int $id) {
+        // Get requested character
+        $character = Character::_find($id);
+        
+        // Check ownership
+        if(Auth::getActiveUser() != $character->getOwner()) {
+            // active User does not own this character.
+            $this->response->forbidden(i18n::_("notowner", "character"));
+            return false;
+        }
+        
+        try {
+            Auth::getActiveUser()->setCurrentCharacter($character);
+            $this->response->noContent();
+            return true;
+        }
+        catch(\PDOException $e) {
+            $this->response->forbidden(i18n::_("inuse", "character"));
+            return false;
+        }
+    }
+    
     public function getCreateForm() {
         $form = new Form($this->app->getPath());
         $form->title(i18n::_("formtitle", "character"));

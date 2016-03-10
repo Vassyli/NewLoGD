@@ -258,12 +258,21 @@ body {
         border: 1px solid black;
         margin-bottom: 1em;
         
-        .charname {
+        .charhead {
             background-color: $darkerBackground;
             color: $secondaryForeground;
             
             padding: 0.2em 1em;
             border-bottom: 1px solid grey;
+        }
+        
+        .charname {
+            cursor: pointer;
+            
+            a {
+                color: white !important;
+                font-weight: bold;
+            }
         }
     }
 }
@@ -280,6 +289,7 @@ form.created {
         }
         
         label {
+            display: block;
             width: 100%;
             
             span {
@@ -305,5 +315,14 @@ form.created {
                 width: 100%;
             }
         }
+        
+        .invalid span,
+        .invalidated span {
+            color: red;
+        }
+    }
+    
+    span.error {
+        color: red;
     }
 }

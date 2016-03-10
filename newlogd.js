@@ -12,6 +12,25 @@ var submenu_connections = {
     "#charactermenu_create" : ["./character/create", "characters", "showCreationScreen"],
 };
 
+// JQuery extensions
+jQuery.each( [ "put", "delete" ], function( i, method ) {
+  jQuery[ method ] = function( url, data, callback, type ) {
+    if ( jQuery.isFunction( data ) ) {
+      type = type || callback;
+      callback = data;
+      data = undefined;
+    }
+
+    return jQuery.ajax({
+      url: url,
+      type: method,
+      dataType: type,
+      data: data,
+      success: callback
+    });
+  };
+});
+
 function App(body) {
     this.body = body;
 }
@@ -138,10 +157,16 @@ App.prototype = {
     createModals : function() {
         var closables = $(".closable");
         closables.prepend("<div class='closebutton'><a>Close</a></div><br class='clear'>");
-        $(".closebutton", closables).click(function() {
-            $(".col-center > div").hide();
-            $("#scenewidget").show();
-        });
+        $(".closebutton", closables).click(this.showScene);
+    },
+    
+    showScene : function(){
+        $(".col-center > div").hide();
+        $("#scenewidget").show();
+    },
+    
+    refreshScene : function(){
+        this.showScene();
     },
     
     /**
@@ -438,14 +463,25 @@ CharacterWidget.prototype = {
     addSelectionEntry : function(character) {
         console.log("[Chars] Add Character", character);
         
-        var entry = $("<div class='charentry'>\n\
-            <div class='charname'></div>\n\
-            <div class='charimage'></div>\n\
-            <ul class='charinfo'><li></li></ul>\n\
-        </div>");
+        var entry = $("<div class='charentry'>"
+            + "<div class='charhead'>"
+                + "<div class='charname'><a></a></div>"
+            + "</div><div class='charbody'>"
+            + "</div>"
+        + "</div");
 
         // Fill with data
-        $(".charname", entry).html(character["name"]);
+        $(".charname a", entry).html(character["name"]);
+        $(".charname", entry).click(function(app, charid) {
+            return function(event) {
+                console.log("[CharacterWidget] Set current character to", charid);
+                $.put("./character/current/" + charid)
+                    .done(function(answer) {
+                        console.log("put success");
+                        app.refreshScene();
+                    });
+            }
+        }(app, character["id"]));
 
         this.charenclosement.append(entry);
     }
@@ -464,6 +500,10 @@ Form.prototype = {
     method : "POST",
     form : null,
     done : null,
+    validators : {
+        "minlength" : "checkMinLength",
+        "maxlength" : "checkMaxLength",
+    },
     
     /**
      * Renders the form and returns it as a jQuery object
@@ -472,7 +512,7 @@ Form.prototype = {
     render : function() {
         var self = this;
         // Create basic form
-        this.form = $("<form><fieldset><legend></legend></fieldset></form>");
+        this.form = $("<form autocomplete='off'><fieldset><legend></legend></fieldset></form>");
         var html = this.form;
         // fill with data
         html.id = this.formid;
@@ -493,31 +533,137 @@ Form.prototype = {
             console.log(self.form);
             console.log(self.form.serialize());
             
+            // Prevent form submission if one field has been marked as invalid by JS
+            if($(".invalidated", self.form).length > 0) {
+                return false;
+            }
+            
+            // Clean up errors from the last time
+            $("#" + self.formid + "__error").remove();
+            $(".invalid", self.form).removeClass("invalid");
+            
             if(self.method === HTTP_POST) {
                 $.post(self.target, self.form.serialize())
                     .done(self.done)
-                    .fail(function(answer) {
-                        console.log("[Form] Error from server");
-                        console.log(answer);
-                    });
+                    .fail(function(form) {
+                        return function(answer) {
+                            if("responseJSON" in answer) {
+                                form.invalidate(form, answer["responseJSON"]);
+                            }
+                            else {
+                                form.invalidateOther(form, answer["responseText"]);
+                            }
+                        };
+                    }(self));
             }
-        })
+        });
         
         return html;
     },
     
+    /**
+     * Invalidates a Field based on the server answer
+     * @param {Form} self
+     * @param {type} answer
+     * @returns {undefined}
+     */
+    invalidate : function(self, answer) {
+        for(var key in answer) {
+            var labelid = "#" + self.formid + "_" + key;
+            console.log(labelid, $(labelid));
+            $(labelid).addClass("invalid");
+        }
+    },
+    
+    /**
+     * Displays general error messages that can only be checked on server side
+     * @param Form self
+     * @param {type} answer
+     * @returns {undefined}
+     */
+    invalidateOther : function(self, answer) {
+        var id = self.formid + "__error";
+        self.form.prepend($("<span id='" + id + "' class='error'>" + answer + "</span>"));
+    },
+    
+    /**
+     * Observes the change of a form field and marks it as invalid when deemed invalid.
+     * @param {Form} self
+     * @param {type} event
+     */
+    onChange : function(self, event) {
+        var field = event["currentTarget"];
+        var fieldname = field.name;
+        var fieldvalue = field.value;
+        var labelid = "#" + self.formid + "_" + fieldname;
+        var label = $(labelid);
+        
+        var fielddata = self.formdata["form"][fieldname];
+        
+        if("options" in fielddata && "validate" in fielddata["options"]) {
+            var errors = 0;
+            for(var validator in fielddata["options"]["validate"]) {
+                if(validator in self.validators) {
+                    // Get function callback
+                    var fn = self[self.validators[validator]];
+                    if(fn(fieldvalue, fielddata["options"]["validate"][validator]) === false) {
+                        errors++;
+                    }
+                }
+            }
+            
+            if(errors > 0) {
+                console.log("[Form] field", fieldname, "has been deemed to be invalid");
+                label.addClass("invalidated");
+            }
+            else {
+                console.log("[Form] field", fieldname, "has been deemed to be valid");
+                label.removeClass("invalidated")
+            }
+        }
+        
+        // Inform the Form about this change
+        self.onFormChange();
+    },
+    
+    /**
+     * Deactivates the submit button if a field has been deemded invalid by JS
+     */
+    onFormChange : function() {
+        if($(".invalidated", self.form).length > 0) {
+            $("[name='_submit']", self.form).prop("disabled", true);
+        }
+        else {
+            $("[name='_submit']", self.form).prop("disabled", false);
+        }
+    },
+    
+    /**
+     * Adds an item to the Form
+     * @param {string} name Identifier of the field
+     * @param {object} data Additional data about the field to be added
+     * @returns {$} The whole field including surrounding html tags
+     */
     addItem : function(name, data) {
         var item = $("<label></label>");
         var label = $("<span></span>");
         var inputwidget = $("<span></span>");
         
         label.html(data["label"]);
+        item.attr("id", this.formid + "_" + name);
         
         switch(data["type"]) {
             case "varchar":
-                inputwidget.append(this.varchar(name, data));
+                var field = this.varchar(name, data);
                 break;
         }
+        
+        field.change(function(self) {
+            return function(event) {
+                self.onChange(self, event);
+            }
+        }(this));
+        inputwidget.append(field);
         
         item.append(label).append(inputwidget);
         return item;
@@ -538,6 +684,14 @@ Form.prototype = {
         console.log("[Form] Add textarea with name", name);
         return widget;
     },
+    
+    checkMinLength : function(value, arguments) {
+        return value.length >= arguments;
+    },
+    
+    checkMaxLength : function(value, arguments) {
+        return value.length <= arguments;
+    }
 };
 
 

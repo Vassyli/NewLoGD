@@ -90,6 +90,7 @@ $app->addRouteGroup("/user", [
 $app->addRouteGroup("/character", [
     [A\GET, "", "CharacterController@all"],
     [A\GET, "/current", "CharacterController@getCurrentCharacter"],
+    [A\PUT, "/current/{id}", "CharacterController@setCurrentCharacter"],
     [A\GET | A\POST, "/create", "CharacterController@getCreateForm"],
     [A\GET, "/{id}", "CharacterController@getCharacter"],
 ]);

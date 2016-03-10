@@ -207,6 +207,11 @@ class HttpResponse {
 		$this->setBody(\json_encode($body, JSON_PRETTY_PRINT));
 	}
     
+    public function noContent() {
+        $this->finalize();
+        $this->setStatus(self::NOCONTENT);
+    }
+    
     public function jsonFromObject(\JsonSerializable $body) {
         $this->finalize();
         
