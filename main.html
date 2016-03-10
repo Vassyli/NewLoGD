@@ -1,58 +1,78 @@
 <!DOCTYPE html>
 <html>
 	<head>
+        <title>NewLoGD</title>
+        <!-- meta -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-		
 		<script src="newlogd.js"></script>
 		
+        <!-- stylesheets -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="w3.css">
 		<link rel="stylesheet" type="text/css" href="newlogd_gen.css" media="screen">
-		
-		<title>NewLoGD</title>
 	</head>
 	<body>
-		<div id="main">
-            <div id="head">
-                <h1 id="title">(Gametitle)</h1>
-                <div id="version">(version)</div>
+        <div id="main">
+            <div id="head" class="w3-container top">
+                <h1 id="title" class="w3-left w3-wide">(Gametitle)</h1>
+                <div id="version" class="w3-right w3-wide">(version)</div>
             </div>
             
             <div id="body">
-                <div id="offline">
-                    <div class="col-third col-left">
+                <div id="offline" class="w3-row">
+                    <div class="w3-col m4 l3">
                         &nbsp;
                     </div>
-                    <div class="col-third col-center">
+                    <div class="w3-col m4 l6 col-center">
                         <div id="login">
-                            <div id="loginmessage">Login with the social login of your choice:</div>
+                            <h2>Login</h2>
+                            <div id="loginmessage"><p>Login with the social login of your choice:</p></div>
                             <div id="sociallogin">
                                 <br class="clear">
                             </div>
                         </div>
                     </div>
-                    <div class="col-third col-right">
+                    <div class="w3-col m4 l3 col-right">
                         &nbsp;
                     </div>
                     <br class="clear">
                 </div>
 
-                <div id="online">
-                    <div id="toolbar">
-                        <div id="charactermenu" class="icon submenu button"><a>Characters</a><ul>
+                <div id="online" class="w3-row">
+                    <ul id="toolbar" class="w3-navbar w3-slim">
+                        <li id="charactermenu" class="w3-dropdown-hover w3-hover-green w3-white">
+                            <a class="icon w3-hover-green"><span>Characters</span> </a>
+                            <div class="w3-dropdown-content w3-border">
+                                <a id="charactermenu_view" class="w3-hover-green"><span>View</span></a>
+                                <a id="charactermenu_create" class="w3-hover-green"><span>Create</span></a>
+                            </div>
+                        </li>
+                        <li id="mailmenu"><a class="icon"><span>Mail</span></a></li>
+                        <li id="logininfo" class="w3-right"><a><span>Logout</span></a></li>
+                        <!--<div id="charactermenu" class="icon submenu button"><a>Characters</a><ul>
                                 <li id="charactermenu_view"><a>View</a></li>
                                 <li id="charactermenu_create"><a>Create</a></li>
-                        </ul></div>
-                        <div id="mailmenu" class="icon"><a>Mail</a></div>
+                        </ul></div>-->
+                        <!--<div id="mailmenu" class="icon"><a>Mail</a></div>
                         <div id="logininfo">Hi, <span id="user_name"></span>. <a>Logout</a></div>
-                        <br class="clear">
+                        <br class="clear">-->
+                    </ul>
+                    
+                    <div class="w3-col m4 l3 col-left">
+                        &nbsp;
                     </div>
-                    <div class="col-third col-left">&nbsp;</div>
-                    <div class="col-third col-center">&nbsp;
+                    <div class="w3-col m4 l6 col-center">&nbsp;
                         <div id="scenewidget" class="main">Szene</div>
                         <div id="characterwidget" class="main closable">
                             <div class="enclosement"></div>
                         </div>
                     </div>
-                    <div class="col-third col-right">&nbsp;</div>
+                    <div class="w3-col m4 l3 col-right">
+                        &nbsp;
+                    </div>
                 </div>
             </div>
 		</div>

@@ -99,9 +99,9 @@ App.prototype = {
     createSubmenus : function() {
         var app = this;
         var submenu = $(".submenu");
-        submenu
+        /*submenu
             .mouseenter(this.toggleSubmenu)
-            .mouseleave(this.toggleSubmenu);
+            .mouseleave(this.toggleSubmenu);*/
         
         // Connect Submenu items with click actions
         var id;
@@ -217,6 +217,7 @@ App.prototype = {
      * @returns {undefined}
      */
     loadBasic : function(answer) {
+        console.log("[App] Load Basic stuff")
         this.setGametitle(answer["gametitle"]);
         this.setGameversion(answer["version"]);
     },
@@ -310,6 +311,7 @@ App.prototype = {
      * @returns {undefined}
      */
     toggleMainview : function(what) {
+        console.log("Mainview toggled");
         if(what === MAINVIEW_OFFLINE) {
             $("#offline").show();
             $("#online").hide();
@@ -466,7 +468,7 @@ CharacterWidget.prototype = {
         var entry = $("<div class='charentry'>"
             + "<div class='charhead'>"
                 + "<div class='charname'><a></a></div>"
-            + "</div><div class='charbody'>"
+            + "</div><div class='charbody'>&nbsp;"
             + "</div>"
         + "</div");
 
@@ -512,20 +514,20 @@ Form.prototype = {
     render : function() {
         var self = this;
         // Create basic form
-        this.form = $("<form autocomplete='off'><fieldset><legend></legend></fieldset></form>");
+        this.form = $("<form autocomplete='off' class='w3-form w3-text-black'><h2></h2></form>");
         var html = this.form;
         // fill with data
         html.id = this.formid;
         html.method = this.formdata.method;
         html.target = this.formdata.target;
         html.addClass("created");
-        $("legend", html).html(this.formdata.title);
+        $("h2", html).html(this.formdata.title);
         
         for(var name in this.formdata.form) {
-            $("fieldset", html).append(this.addItem(name, this.formdata.form[name]));
+            html.append(this.addItem(name, this.formdata.form[name]));
         }
         
-        $("fieldset", html).append(this.addSubmitButton());
+        html.append(this.addSubmitButton());
         
         // Connect
         html.submit(function(event) {
@@ -583,7 +585,7 @@ Form.prototype = {
      */
     invalidateOther : function(self, answer) {
         var id = self.formid + "__error";
-        self.form.prepend($("<span id='" + id + "' class='error'>" + answer + "</span>"));
+        self.form.prepend($("<div id='" + id + "' class='w3-container w3-red error'><p>" + answer + "</p></div>"));
     },
     
     /**
@@ -645,7 +647,7 @@ Form.prototype = {
      * @returns {$} The whole field including surrounding html tags
      */
     addItem : function(name, data) {
-        var item = $("<label></label>");
+        var item = $("<label class='w3-label'></label>");
         var label = $("<span></span>");
         var inputwidget = $("<span></span>");
         
@@ -670,12 +672,12 @@ Form.prototype = {
     },
     
     addSubmitButton : function() {
-        var item = $("<label><button name='_submit' type='submit'>Submit</button></label>");
+        var item = $("<label class='w3-label'><button class='w3-btn' name='_submit' type='submit'>Submit</button></label>");
         return item;
     },
     
     varchar : function(name, data) {
-        var widget = $("<input type='text' name='" + name + "'>");
+        var widget = $("<input type='text' name='" + name + "' class='w3-input w3-validate'>");
         return widget;
     },
     

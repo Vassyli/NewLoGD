@@ -3,326 +3,141 @@
     Author     : Basilius Sauter
 */
 
-$fontStack: Calibri, Helvetica, sans-serif;
-$primaryTint: #111;
-$primaryLighten1: 20%;
+$bgColour: #3E753B;
+$fgColour: #E9E5CE;
 
-$secondaryBackground: #217821;
-$secondaryForeground: #FFF;
+$iconsSocial: "./ressources/socialbutton/";
+$iconsInterface: "./ressources/icons/";
 
-$darkerBackground: darken($secondaryBackground, 5%);
-$lighterBackground: lighten($secondaryBackground, 5%);
+html {
+    overflow-y: scroll; 
+}
 
-$ressource_dir: "./ressources";
+a {
+    cursor: pointer;
+}
 
-$smartphone-width: 300px;
-$tablet-width: 768px;
-$desktop-width: 1024px;
+.clear {
+    clear: both;
+}
 
-$ratio: 1.3;
+.w3-btn {
+    background-color: $bgColour;
+    color: $fgColour;
+}
 
-
-@mixin smartphone {
-    @media only screen and (-webkit-min-device-pixel-ratio: $ratio),
-  only screen and (min-resolution: #{round($ratio*96)}dpi) {
-        @content;
+.w3-form {
+    .w3-label {
+        display: block;
+        margin-bottom: 0.5em;
+        color: black;
+    }
+    
+    .invalid,
+    .invalidated {
+        color: red;
     }
 }
 
-@mixin tablet {
-  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
-    @content;
-  }
+#head {
+    position: relative;
+    
+    color: $fgColour;
+    background-color: $bgColour;
 }
 
-@mixin desktop {
-  @media (min-width: #{$desktop-width}) {
-    @content;
-  }
+#version {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    
+    padding-bottom: 1em;
+    padding-right: 1em;
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    font: 100% $fontStack;
-    color: $primaryTint;
-    
-    @include smartphone {
-        font-size: 200%;
-    }
-    
-    a, .button {
-        color: $secondaryBackground;
+#sociallogin {
+    .socialbutton {
+        float: left;
+        margin: 1em 0.5em;
+        
+        width: 64px;
+        height: 64px;
+           
         cursor: pointer;
         
-        &:hover {
-            color: lighten($secondaryBackground, 20%)
-        }
+        &:first-child {margin-left: 0;}
+        a {display: none;}
     }
-    
-    .clear {
-        clear: both;
-    }
-    
-    .col-third {
-        width: 33%;
-        float: left;
-    }
-    
-    #head {
-        margin-top: 2em;
-        margin-bottom: 2em;
-        width: 100%;
-        height: 10%;
-        overflow: hidden;
-        
-        padding: 1em;
-            
-        border-top: 1px solid darken($secondaryBackground, 50%);
-        border-bottom: 1px solid darken($secondaryBackground, 50%);
-        
-        background-color: $secondaryBackground;
-        color: $secondaryForeground;
-        
-        @include smartphone {
-            margin-top: 0em;
-            height: 2em;
-        }
-        
-        #title {            
-            text-align: center;
-            font-size: 200%;
-            font-weight: bold;
-            
-            @include smartphone {
-                margin-top: 0.2em;
-                float: left;
-            }
-        }
+    .google {background-image: url($iconsSocial + "google.png"); }
+    .facebook {background-image: url($iconsSocial + "facebook.png");}
+}
 
-        #version {
-            &:before { content: "Version: "; }
-            text-align: center;
-            margin-top: -0.5em;
-            
-            @include smartphone {
-                margin-top: 1.5em;
-                margin-right: 0.5em;
-                text-align: right;
-            }
-        }
-    }
+
+
+#toolbar {
+    border-bottom: 1px solid grey;
     
-    #body {        
-        #offline {
+    .icon {
+        width: 48px;
+        height: 2.5em;
+        background-repeat: no-repeat;
+        background-position: center center;
+        text-align: center;
+        
+        span {
             display: none;
-            padding: 0em 0.5em;
-            
-            @include smartphone {
-                margin: 0em 1em;
-            }
-            
-            #login {
-                #loginmessage {
-                    font-weight: bold;
-                }
-                
-                #sociallogin {
-                    margin-top: 1em;
-                    
-                    .socialbutton {                        
-                        margin: 0.5em;
-                        width: 64px;
-                        height: 64px;
-                        
-                        float: left;
-                        background-color: black;
-                        
-                        cursor: pointer;
-                        
-                        a {
-                            display: none;
-                        }
-                        
-                        &:first-child {
-                            margin-left: 0;
-                        }
-                    }
-                    
-                    .google {
-                        background-image: url($ressource_dir + "/socialbutton/google.png")
-                    }
-                    
-                    .facebook {
-                        background-image: url($ressource_dir + "/socialbutton/facebook.png")
-                    }
-                }
-            }
         }
+    }
+    
+    .w3-dropdown-hover > a {
+        cursor: default;
+    }
+    
+    a:hover,
+    .w3-dropdown-hover:hover {
+        background-color: $bgColour !important;
+    }
+}
 
-        #online {
+#charactermenu .icon { background-image: url($iconsInterface + "character.png"); }
+#mailmenu .icon { background-image: url($iconsInterface + "mail.png");}
+
+#offline, #online {
+    display: none
+}
+
+.closable {
+    display: none;
+    
+    .closebutton {
+        width: 1.5em;
+        height: 2em;
+        float: right;
+        
+        background-image: url($iconsInterface + "close.png");
+        background-repeat: no-repeat;
+        background-position: center center;
+        
+        a {
             display: none;
-            
-            #toolbar {                
-                margin-top: -2em;
-                border-bottom: 1px solid gray;
-                padding: 0.5em 0.5em;
-                
-                #charactermenu { background-image: url($ressource_dir + "/icons/character.png"); }
-                #mailmenu { background-image: url($ressource_dir + "/icons/mail.png"); }
-                
-                .icon {
-                    width: 32px;
-                    height: 32px;
-                    
-                    > a {
-                        display: none;
-                    }
-                }
-                
-                .submenu {
-                    ul {
-                        display: none;
-                        margin-top: 2em;
-                        padding-left: 0em;
-                        list-style-type: none;
-                        border: 1px solid black;
-                        width: 200px;
-                        background-color: white;
-                    }
-                    
-                    li {
-                        display: block;
-                        padding: 0.5em;
-                        border-top: 1px solid black;
-                        
-                        &:first-child {
-                            border-top: 0px solid black;
-                        }
-                    }
-                }
-                
-                div {
-                    margin-left: 1em;
-                    text-align: left;
-                    
-                    &:first-child {
-                        margin-left: 0em;
-                    }
-                    
-                    float: left;
-                }
-                
-                #logininfo {
-                    text-align: right; 
-                    float: right;
-                    
-                    a {
-
-                    }
-                }
-            }
-            
-            .col-center {
-                div.closable {
-                    display: none;
-                    
-                    div.closebutton {
-                        background-image: url($ressource_dir + "/icons/close.png");
-                        width: 32px;
-                        height: 32px;
-                        
-                        float: right;
-                        right: 0px;
-                        cursor: pointer;
-                        
-                        a {
-                            display: none;
-                        }
-                    }
-                }
-            }
-        }   
+        }
     }
 }
 
 #characterwidget {
-    ul {
-        padding: 0em;
-    }
-    
-    li {
-        list-style-type: none;
-    }
     .charentry {
-        border: 1px solid black;
+        border: 1px solid grey;
         margin-bottom: 1em;
         
         .charhead {
-            background-color: $darkerBackground;
-            color: $secondaryForeground;
-            
-            padding: 0.2em 1em;
-            border-bottom: 1px solid grey;
+            padding: 0.3em;
+            background-color: $bgColour;
         }
         
         .charname {
-            cursor: pointer;
-            
             a {
-                color: white !important;
-                font-weight: bold;
+                color: $fgColour;
             }
         }
-    }
-}
-
-form.created {
-    fieldset {
-        border: none;
-        
-        legend {
-            margin: 0;
-            padding: 0;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        
-        label {
-            display: block;
-            width: 100%;
-            
-            span {
-                display: block;
-                float: left;
-                width: 50%;
-                
-                &:last-child {
-                    &::after {
-                        clear: both;
-                    }
-                }
-            }
-            
-            button {
-                margin: 0;
-                padding: 0;
-                margin-left: 50%;
-                width: 50%;
-            }
-            
-            input, textarea {
-                width: 100%;
-            }
-        }
-        
-        .invalid span,
-        .invalidated span {
-            color: red;
-        }
-    }
-    
-    span.error {
-        color: red;
     }
 }
