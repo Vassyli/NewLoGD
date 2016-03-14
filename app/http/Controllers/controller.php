@@ -117,4 +117,16 @@ class Controller {
         
         return true;
     }
+    
+    /**
+     * Returns the current character
+     * @return type
+     */
+    protected function getCurrentCharacter() {
+        if(Auth::getActiveUser() === NULL) {
+            throw new \Expcetion("[App\Http\Controllers\controller] Return of current character is not possible.");
+        }
+        
+        return Auth::getActiveUser()->getCurrentCharacter();
+    }
 }

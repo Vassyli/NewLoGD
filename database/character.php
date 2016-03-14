@@ -8,6 +8,8 @@
 
 namespace Database;
 
+use NewLoGD\Application as App;
+
 /**
  * ORM for Character table
  * @Entity
@@ -34,6 +36,10 @@ class Character {
 	 */
     private $level = 1;
     
+    /** 
+     */
+    private $scene = NULL;
+    
     public function getId() { return $this->id; }
     
     public function getOwner() { return $this->owner; }
@@ -45,4 +51,17 @@ class Character {
     public function getLevel() {return $this->level; }
     public function setLevel($level) { $this->level = $level; }
     public function addLevel($level = 1) { $this->level+=$level; }
+    
+    public function getScene() {
+        if($this->scene === NULL) {
+            $entityManager = App::getEntityManager();
+            $this->scene = $entityManager->find("\\Database\\CharacterScene", $this->id);
+        }
+        
+        return $this->scene;
+    }
+    public function setScene(CharacterScene $scene) {
+        App::getEntityManager()->persist($scene);
+        $this->scene = $scene;
+    }
 }

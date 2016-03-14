@@ -56,15 +56,28 @@ class Application {
 		self::$config = $config;
 		self::$entityManager = $entityManager;
 		
-		// Get request method
-		switch($_SERVER["REQUEST_METHOD"]) {
+        $this->setRequestMethod($_SERVER["REQUEST_METHOD"]);
+	}
+    
+    /**
+     * Sets and normalized the request method.
+     * ToDo: Implement a default request method everything falls back to in order 
+     * to return an error.
+     * @param string $request_method The HTTP request method from the user (GET, POST...)
+     */
+    protected function setRequestMethod(string $request_method) {
+        switch(strtoupper($request_method)) {
 			case "GET": $this->request_method = App\GET; break;
 			case "POST": $this->request_method = App\POST; break;
 			case "PUT": $this->request_method = App\PUT; break;
 			case "DELETE": $this->request_method = App\DELETE; break;
 		}
-	}
+    }
     
+    /**
+     * Returns the request method
+     * @return int request method identifier
+     */
     public function getRequestMethod() {
         return $this->request_method;
     }
@@ -83,15 +96,30 @@ class Application {
 		else
 			return self::$config[$configtype][$configkey]??NULL;
 	}
+    
 	/**
 	 * Returns a reference to the Doctrine entity manager
+     * @return EntityManager The entity Manager
 	 */
 	public static function getEntityManager() : EntityManager { return self::$entityManager; }
-	/**
+    
+    /**
+     * Returns the full qualified entity name
+     */
+    public static function table(string $tablename) {
+        return "\\Database\\".$tablename;
+    }
+	
+    /**
 	 * Returns a reference to Auth
+     * @return Auth The Auth-Class
 	 */
 	public static function getAuth() : Auth { return self::$auth; }
-    /** Sets a reference to Auth */
+    
+    /** 
+     * Sets a reference to Auth 
+     * @param Auth $auth Auth object
+     */
     public static function setAuth(Auth $auth) { self::$auth = $auth; }
 	
 	/**

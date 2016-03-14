@@ -101,4 +101,8 @@ $app->addRouteGroup("/auth", [
 	[A\GET, "/{word}", "AuthController@auth"],
 ]);
 
+$app->addRouteGroup("/scene", [
+   [A\GET, "", "SceneController@getScene"], 
+]);
+
 $app->addRoute(A\GET, "/test", "Controller@test");
