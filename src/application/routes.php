@@ -1,6 +1,7 @@
 <?php
 /**
- * Defines a trait managing routes as well as some request method constants
+ * src/application/routes.php - Trait for route managing
+ * 
  * @author Basilius Sauter
  * @package NewLoGD
  * @subpackage Application
@@ -31,7 +32,7 @@ trait Routes {
 	/** @var array array of dynamic routes, nearly identical to static routes */
 	public $dynamic_routes = [];
     
-    /** @var string $path */
+    /** @var string $path The path */
     public $path = "/";
 	
 	/**
@@ -118,6 +119,10 @@ trait Routes {
 		return [$path, $controller, $arguments];
 	}
     
+    /**
+     * Returns the called path
+     * @return string The path
+     */
     public function getPath() {
         return $this->path;
     }

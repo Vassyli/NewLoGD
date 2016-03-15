@@ -26,6 +26,7 @@ class Controller {
 	/** @var HttpResponse reference to httpresponse object */
 	protected $response = NULL;
     
+    /** @var bool False if this page disallowes anonymous access */
     protected $allow_anonymous = true;
 	
 	/**
@@ -110,6 +111,10 @@ class Controller {
 		return "Hello World.";
 	}
     
+    /**
+     * Checks if the current user has access to the controller
+     * @return bool True if access is ok, False if not.
+     */
     public function checkAccess() : bool {
         if(Auth::getLoginState() == Auth::OFFLINE) {
             return $this->allow_anonymous;

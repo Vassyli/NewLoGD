@@ -1,5 +1,7 @@
 <?php
 /**
+ * src/application/middleware.php - Trait for managing middleware
+ * 
  * @author Basilius Sauter
  * @package NewLoGD
  * @subpackage Application

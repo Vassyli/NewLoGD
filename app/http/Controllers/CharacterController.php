@@ -38,34 +38,48 @@ class CharacterController extends Controller {
         return $return;
 	}
 	
-	public function getCharacter(int $id) {
+    /**
+     * Returns informations about a specific character.
+     * @param int $id Primary id of the character
+     * @return array Information about the specific character
+     */
+	public function getCharacter(int $id) : array {
         $character = Character::_find($id);
         
         if($character === null) {
             $this->response->notFound("No character with this ID exists");
-            return false;
         }
-        elseif($character->getOwner() == Auth::getActiveUser()) {
-            return Character::getPublicFields($character);
+        elseif($character->getOwner() != Auth::getActiveUser()) {
+            $this->response->forbidden("This character is not yours.");
         }
         else {
-            $this->response->forbidden("This character is not yours.");
-            return false;
-        }
+            return Character::getPublicFields($character);
+        }        
+        
+        return [];
 	}
     
-    public function getCurrentCharacter() {
+    /**
+     * Returns information about the current active character.
+     * @return array Information about the current character
+     */
+    public function getCurrentCharacter() : array {
         $character = Auth::getActiveUser()->getCurrentCharacter();
         
         if($character === NULL) {
             $this->resonse->notFound(i18n::_("nucurrent", "character"));
-            return false;
+            return [];
         }
         
         return Character::getPublicFields($character);
     }
     
-    public function setCurrentCharacter(int $id) {
+    /**
+     * Tries to set the current character to a given ID
+     * @param int $id The primary id of the character
+     * @return bool True if successful, False of not.
+     */
+    public function setCurrentCharacter(int $id) : bool {
         // Get requested character
         $character = Character::_find($id);
         
@@ -87,7 +101,13 @@ class CharacterController extends Controller {
         }
     }
     
-    public function getCreateForm() {
+    /**
+     * Returns an array describing the form needed to create a character - and, 
+     * if this method is called via a POST, it returns error information about 
+     * the form and, if successfull, it creates the character.
+     * @return array GET: Array describing the formular; POST: Array describing errors or a success message
+     */
+    public function creation() : array {
         $form = new Form($this->app->getPath());
         $form->title(i18n::_("formtitle", "character"));
         $form->varchar("name", i18n::_("name", "character"), [
@@ -124,7 +144,7 @@ class CharacterController extends Controller {
             }
         }
         else {
-            return $form;
+            return $form->jsonSerialize();
         }
     }
 }
