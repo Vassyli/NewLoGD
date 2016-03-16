@@ -60,6 +60,7 @@ class SceneController extends Controller {
                 }
                 
                 $scene = $character->getScene();
+                //$scene = $defaultscene;
             }
             
             return [

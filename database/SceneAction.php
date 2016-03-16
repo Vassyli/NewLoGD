@@ -99,9 +99,7 @@ class SceneAction implements \JsonSerializable {
         return [
             "id" => $this->id,
             "title" => $this->title,
-            "scene" => $this->scene,
-            "parent" => $this->parent,
-            "childs" => $this->childs,
+            "childs" => $this->childs->toArray(),
         ];
     }
 }
