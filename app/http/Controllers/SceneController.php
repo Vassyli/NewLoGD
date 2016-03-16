@@ -54,9 +54,8 @@ class SceneController extends Controller {
                 else {
                     $charscene = App::table("CharacterScene");
                     $defaultscene = new $charscene();
+                    $defaultscene->fillFromScene($default);
                     $defaultscene->setCharacter($character);
-                    $defaultscene->setTitle($default->getTitle());
-                    $defaultscene->setBody($default->getBody());
                     $character->setScene($defaultscene);
                 }
                 
@@ -66,6 +65,7 @@ class SceneController extends Controller {
             return [
                 "title" =>  $scene->getTitle(),
                 "body" => $scene->getBody(),
+                "actions" => $scene->getActions(),
             ];
         }
     }

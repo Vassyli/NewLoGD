@@ -26,10 +26,16 @@ class CharacterScene {
     private $title;
     
     /** 
-     * @var string Scene Description
-     * @Column(type="text") 
+     * @var array Scene Description
+     * @Column(type="string") 
      */
     private $body;
+    
+    /** 
+     * @var array Scene Actions
+     * @Column(type="json_array") 
+     */
+    private $actions;
     
     /** 
      * Returns the character owning this scene
@@ -65,4 +71,15 @@ class CharacterScene {
      * @param string $body Text describing the scene 
      */
 	public function setBody($body) { $this->body = $body; }
+    
+    public function getActions() { return $this->actions;} 
+    public function setActions(array $actions) {
+        $this->actions = $actions;
+    }
+    
+    public function fillFromScene(Scene $scene) {
+        $this->setTitle($scene->getTitle());
+        $this->setBody($scene->getBody());
+        $this->setActions($scene->getActions()->toArray());
+    }
 }
