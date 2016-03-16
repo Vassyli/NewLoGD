@@ -1,9 +1,17 @@
 <?php
+/**
+ * src/auth.php - Authentification managing class
+ * 
+ * @author Basilius Sauter
+ * @pacakge NewLoGD
+ */
 
 namespace NewLoGD;
 
 use App\Models\UserModel;
+
 use Database\User;
+
 use NewLoGD\Application;
 use NewLoGD\Config;
 

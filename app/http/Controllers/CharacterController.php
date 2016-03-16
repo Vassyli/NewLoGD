@@ -21,6 +21,7 @@ use App\Models\UserModel as User;
  * Controller for character management
  */
 class CharacterController extends Controller {
+    /** {@inherit} */
     protected $allow_anonymous = false;
             
 	/**

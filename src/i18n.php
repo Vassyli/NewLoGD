@@ -1,16 +1,23 @@
 <?php
+/**
+ * newlogd/i18n.php - Internationalization utility
+ */
 
 namespace NewLoGD;
 
 use NewLoGD\Helper\Singleton;
 
+/**
+ * Provides utilities for internationaliztion (i18n)
+ */
 class i18n {
     use Singleton;
     
-    /** @var array $languageStack A language files with decreasing priority */
-    public static $languageStack = [];
+    /** @var array $languageStack All language files with decreasing priority */
+    public static $language_stack = [];
     
-    public static $languagesLoaded = [];
+    /** @var array $langaguesLoaded A list of all languages loaded */
+    public static $languages_loaded = [];
     
     /**
      * Initializes i18n
@@ -29,9 +36,9 @@ class i18n {
             $primary_language = \Locale::getPrimaryLanguage($lang_canon);
             
             // Try to load a stack of languages
-            if($this->languageExists($primary_language) and !in_array($primary_language, self::$languagesLoaded)) {
-                self::$languagesLoaded[] = $primary_language;
-                self::$languageStack[] = $this->loadLanguage($primary_language);
+            if($this->languageExists($primary_language) and !in_array($primary_language, self::$languages_loaded)) {
+                self::$languages_loaded[] = $primary_language;
+                self::$language_stack[] = $this->loadLanguage($primary_language);
             }
         }
     }
@@ -39,8 +46,8 @@ class i18n {
     /**
      * Returns the filename of a language file depending on primary language 
      * and region.
-     * @param string $language
-     * @return string
+     * @param string $language The language to convert to a filename
+     * @return string The filename of the desired language
      */
     public function getLanguageFilename(string $language) : string {
         $lang = explode("-", $language);
@@ -57,22 +64,39 @@ class i18n {
         return $filename;
     }
     
+    /**
+     * Checks if a language exists
+     * @param string $language The language to check
+     * @return bool True if it exists, False if it doesn't
+     */
     public function languageExists(string $language) : bool {
         $filename = $this->getLanguageFilename($language);
         return file_exists($filename);
     }
     
+    /**
+     * Loads a language file and returns its content
+     * @param string $language The language to load
+     * @return array The translation array from the language
+     */
     public function loadLanguage(string $language) : array {
         return include $this->getLanguageFilename($language);
     }
     
-    public static function _(string $identifier, string $scheme = "", array $arguments = []) {
-        foreach(self::$languageStack as $language) {
-            if(isset($language[$scheme]) and isset($language[$scheme][$identifier])) {
-                return vsprintf($language[$scheme][$identifier], $arguments);
+    /**
+     * Translates a given string
+     * @param string $identifier String identifier
+     * @param string $context Translation context of the string
+     * @param array $arguments Additional arguments that are supplied to the string for vsprintf
+     * @return string The translated string (or a generated string (($context|$identifier)) to see untranslated strings)
+     */
+    public static function _(string $identifier, string $context = "", array $arguments = []) : string {
+        foreach(self::$language_stack as $language) {
+            if(isset($language[$context]) and isset($language[$context][$identifier])) {
+                return vsprintf($language[$context][$identifier], $arguments);
             }
         }
         
-        return "((" . $scheme. "|". $identifier . "))";
+        return "((" . $context. "|". $identifier . "))";
     }
 }

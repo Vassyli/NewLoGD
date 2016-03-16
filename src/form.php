@@ -15,7 +15,6 @@ use NewLoGD\i18n;
  * 
  * NewLoGD\Form is a easy-to-use interface to build forms from PHP methods which 
  * also does data validation.
- * @param string $target Target route to post the form
  */
 class Form implements \JsonSerializable {
     /** @var array Array containing the form data */
@@ -42,8 +41,11 @@ class Form implements \JsonSerializable {
     /** @var array a lits of validation errors */
     protected $validation_errors = [];
     
-    /** The constructor */
-    public function __construct($target) {
+    /** 
+     * The constructor 
+     * @param string $target Target route to post the form
+     */
+    public function __construct(string $target) {
         $this->formdata["target"] = $target;
     }
     
@@ -157,6 +159,11 @@ class Form implements \JsonSerializable {
         return $this;
     }
     
+    /**
+     * Returns an array describing validation errors.
+     * @return array Validation errors
+     * @throws \Exception Thrown if no validation has been done.
+     */
     public function getValidationErrors() : array {
         if($this->validated === NULL) {
             throw new \Exception("[NewLoGD\\Form] getValidationErrors can only be called is the form was validated!");

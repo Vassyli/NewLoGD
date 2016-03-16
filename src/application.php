@@ -104,9 +104,11 @@ class Application {
 	public static function getEntityManager() : EntityManager { return self::$entityManager; }
     
     /**
-     * Returns the full qualified entity name
+     * Returns the full qualified entity name (FQEN)
+     * @param string $tablename The name of the table that needs to get converted
+     * @return string The FQEN
      */
-    public static function table(string $tablename) {
+    public static function table(string $tablename) : string {
         return "\\Database\\".$tablename;
     }
 	

@@ -8,7 +8,7 @@
  *	or a controller.
  *	
  *	[API]
- *	$app->addRoute($requesttype
+ *	$app->addRoute($requesttype, $route, $controller)
  *	
  *	[Variables]
  *	$requesttype:

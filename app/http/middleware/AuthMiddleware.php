@@ -1,5 +1,7 @@
 <?php
 /**
+ * app/http/middleware/AuthMiddleware.php
+ * 
  * @author Basilius Sauter
  * @pacakge App
  * @subpackage Http\Middleware
@@ -23,7 +25,7 @@ class AuthMiddleware implements MiddlewareHead {
      * @param array $profile session profile
      * @return int user id
      */
-    public function createUser(array $profile) : int {
+    protected function createUser(array $profile) : int {
         // Create User
         $user = UserModel::_create(
             $profile["name"], 
@@ -55,17 +57,34 @@ class AuthMiddleware implements MiddlewareHead {
         return false;
     }
     
+    /**
+     * Returns the user id if the user has been find or false if no such user exists.
+     * @param int $userid The user id to look up
+     * @return bool|int False if the user with this id does not exists or else the id
+     */
     public function getUser(int $userid) {
         $user = UserModel::_find($userid);
         return $user === NULL?false:$user->getId();
     }
     
+    /**
+     * Logs the user in
+     * @param int $userid The id of the user that needs to be logged in
+     */
     public function loginUser(int $userid) {
         Session::put("userid", $userid);
         Auth::setLoginState(Auth::ONLINE);
         Auth::setActiveUser($userid);
     }
     
+    /**
+     * Decided if the user is authorized, checks if he exists already in the database and 
+     * creates him if he doesn't, sets the login state. Also deletes the Session/logs the 
+     * user out if he somehow disappeared from the database.
+     * 
+     * @param HttpResponse $httpresponse The HttpResponse object
+     * @return bool True if ok to call next middleware
+     */
     public function head(HttpResponse $httpresponse) : bool {
         // Initialize Authentification
         $auth = new Auth(Application::getConfig());

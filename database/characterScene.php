@@ -13,29 +13,56 @@ namespace Database;
  * @Table(name="Character_Scenes")
  */
 class CharacterScene {
-    /** @Id @OneToOne(targetEntity="Character") */
+    /** 
+     * @var \Database\Character Character id
+     * @Id @OneToOne(targetEntity="Character") 
+     */
     private $character;
     
-    /** @Column(type="string") */
+    /** 
+     * @var string Scene Title
+     * @Column(type="string") 
+     */
     private $title;
     
-    /** @Column(type="text") */
+    /** 
+     * @var string Scene Description
+     * @Column(type="text") 
+     */
     private $body;
     
-    /** @return Character The instance of the owning Character */
+    /** 
+     * Returns the character owning this scene
+     * @return Character The instance of the owning Character 
+     */
     public function getCharacter() { return $this->character; }
-    /** @param Character $character The owning Character */
+    /** 
+     * Sets the character owning this scene
+     * @param Character $character The owning Character 
+     */
     public function setCharacter(Character $character) {
         $this->character = $character;
     }
 	
-    /** @return string The Title of the Scene */
+    /** 
+     * Gets the Scene title
+     * @return string The Title of the Scene 
+     */
 	public function getTitle() { return $this->title; }
-    /** @param string $title The title of the Scene */
+    /** 
+     * Sets the title of the scene
+     * @param string $title The title of the Scene 
+     */
 	public function setTitle($title){ $this->title = $title; }
 	
-    /** @return string Text describing the scene */
+    /** 
+     * Gets the description of the scene
+     * @return string Text describing the scene 
+     */
 	public function getBody() { return $this->body; }
-    /** @param string $body Text describing the scene */
+    /** 
+     * Sets the description of the scene
+     * @param string $body Text describing the scene 
+     */
 	public function setBody($body) { $this->body = $body; }
 }

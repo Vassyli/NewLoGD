@@ -1,5 +1,7 @@
 <?php
 /*
+ * app/http/controller/SceneController.php
+ * 
  * @author Basilius Sauter
  * @package App
  * @subpackage Http\Controllers
@@ -15,6 +17,7 @@ use NewLoGD\i18n;
  * Controls everything related to a Scene
  */
 class SceneController extends Controller {
+    /** {@inherit} */
     protected $allow_anonymous = false;
     
     /**

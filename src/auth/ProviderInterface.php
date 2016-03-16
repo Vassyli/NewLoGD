@@ -9,9 +9,14 @@
 
 namespace NewLoGD\Auth;
 
-function getUrlContents(string $url) {
+/**
+ * Returns the content of a uri using curl
+ * @param string $uri The uri that should get fetched
+ * @return bool|string|array False if request wasn't successfull, string if json_decode wasn't successfull, else an array
+ */
+function getUrlContents(string $uri) {
 	$options = [
-		\CURLOPT_URL => $url,
+		\CURLOPT_URL => $uri,
 		\CURLOPT_HTTPGET => true,
 		\CURLOPT_RETURNTRANSFER => true,
 	];

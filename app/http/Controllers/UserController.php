@@ -15,6 +15,7 @@ use App\Models\UserModel as User;
  * Controller for user management
  */
 class UserController extends Controller {
+    /** {@inherit} */
     protected $allow_anonymous = false;
             
 	/**

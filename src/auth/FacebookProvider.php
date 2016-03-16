@@ -11,17 +11,33 @@ namespace NewLoGD\Auth;
 
 use NewLoGD\Session;
 
+/**
+ * Provides the ability for OAuth with Facebook
+ */
 final class FacebookProvider implements ProviderInterface {
+    /** @var array Configuration details for facebook */
 	protected $config = [];
 	
+    /**
+     * Constructor
+     * @param array $config Configuration details for Facebook
+     */
 	public function __construct(array $config) {
 		$this->config = $config;
 	}
 	
+    /**
+     * Returns the api uri of facebook that handels oauth requests
+     * @return string OAuth uri
+     */
 	public function getAuthUri() : string {
 		return "https://www.facebook.com/dialog/oauth";
 	}
 	
+    /**
+     * Returns parameters needed to successfully identify the user at facebook
+     * @return array OAuth parameters (@link /config/auth.php)
+     */
 	public function getAuthParams() : array {
 		return [
 			"client_id" => $this->config["id"],
@@ -32,6 +48,12 @@ final class FacebookProvider implements ProviderInterface {
 		];
 	}
 	
+    /**
+     * Tries to verify the validity of the token sent by the user. For this, 
+     * newlogd needs to get it's own token from facebook first
+     * @param string $token The token to verify
+     * @return bool True of verification is ok, False if not
+     */
 	public function checkAccessToken(string $token) : bool {
 		// Facebook needs a app access token in addition to the client access token
 		$url = sprintf("https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials", rawurlencode($this->config["id"]), rawurlencode($this->config["secret"]));
@@ -52,6 +74,11 @@ final class FacebookProvider implements ProviderInterface {
 		return true;
 	}
 	
+    /**
+     * Returns normalized informations about the user profile stored at the provider
+     * @param string $token
+     * @return bool|array false if facebook returns something errornous, an array returning providerid, name and email if successful
+     */
 	public function getProfileData(string $token) {
 		$url = sprintf("https://graph.facebook.com/%s?fields=id,name,email&access_token=%s", Session::get("auth.userid"), rawurlencode(Session::get("auth.accesstoken")));
 		$content = getUrlContents($url);

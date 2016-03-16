@@ -19,7 +19,12 @@ class UserModel extends Model {
 	/** @var array list of public column names */
 	public static $public = ["id", "name"];
 	
-	public static function _findByEmail($value) {
+    /**
+     * Returns a list of users matching the email address
+     * @param string $value The email address to look up.
+     * @return array<\Database\User> List of User entries matching the email address
+     */
+	public static function _findByEmail(string $value) {
 		$qb = Application::getEntityManager()->createQueryBuilder();
         $qb->select("u")
             ->from(self::ormName(), "u")
@@ -31,7 +36,15 @@ class UserModel extends Model {
         return $users;
 	}
     
-    public static function _create($name, $email, $socialauth_type, $socialauth_id) : User {
+    /**
+     * Creates a new entry in the User database
+     * @param string $name Name of the user
+     * @param string $email E-mail of the user
+     * @param string $socialauth_type Socialauth provider (facebook, google)
+     * @param string $socialauth_id Provider specific user id
+     * @return \Database\User A User entity
+     */
+    public static function _create(string $name, string $email, string $socialauth_type, string $socialauth_id) : User {
         $orm = self::ormName();
         $user = new $orm();
         $user->setName($name);

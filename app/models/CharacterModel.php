@@ -19,7 +19,12 @@ class CharacterModel extends Model {
 	/** @var array list of public column names */
 	public static $public = ["id", "name", "level"];
 	
-    public static function _findByName($value) {
+    /**
+     * Returns a list of Database\Character that match the name $value
+     * @param string $value The name that needs to be looked up
+     * @return mixed NULL if no name has been found, a array<\Database\Character> if yes.
+     */
+    public static function _findByName(string $value) {
 		$qb = Application::getEntityManager()->createQueryBuilder();
         $qb->select("t")
             ->from(self::ormName(), "t")
@@ -32,7 +37,12 @@ class CharacterModel extends Model {
         return $result;
 	}
     
-    public static function _create($name) : Character {
+    /**
+     * Creates a new Character and returns a Instance of Database\Character
+     * @param string $name Name of the Character
+     * @return Character
+     */
+    public static function _create(string $name) : Character {
         $orm = self::ormName();
         
         $entry = new $orm();
