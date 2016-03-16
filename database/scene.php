@@ -7,6 +7,8 @@
 
 namespace Database;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * ORM for Scenes
  * @Entity
@@ -30,6 +32,19 @@ class Scene {
      * @Column(type="text") 
      */
     private $body;
+    
+    /**
+     * @var array List of actions
+     * @OneToMany(targetEntity="SceneAction", mappedBy="scene", cascade={"persist"}, orphanRemoval=true)
+     */
+    private $actions;
+    
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->actions = new ArrayCollection();
+    }
     
     /** 
      * Returns the primary id
@@ -58,4 +73,18 @@ class Scene {
      * @param string $body Text describing the Scene 
      */
 	public function setBody($body) { $this->body = $body; }
+    
+    /**
+     * Returns a list of actions
+     * @return array List of actions
+     */
+    public function getActions() { return $this->actions; }
+    /**
+     * Adds an action to this scene.
+     * @param \Database\SceneAction $action The Character
+     */
+    public function addAction(SceneAction $action) {
+        $this->actions->add($action);
+        $action->setScene($this);
+    }
 }

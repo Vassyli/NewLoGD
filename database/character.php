@@ -42,6 +42,7 @@ class Character {
     
     /**
      * @var CharacterScene The current scene the character is viewing
+     * @OneToOne(targetEntity="CharacterScene", mappedBy="character")
      */
     private $scene = NULL;
     
