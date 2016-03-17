@@ -96,4 +96,19 @@ a {
   #characterwidget .charentry .charname a {
     color: #E9E5CE; }
 
+#sceneactions {
+  padding-right: 1em; }
+  #sceneactions .w3-sidenav {
+    position: relative !important;
+    width: 100%;
+    z-index: inherit !important; }
+    #sceneactions .w3-sidenav > div > a {
+      background-color: #3E753B !important;
+      color: #E9E5CE !important;
+      cursor: default; }
+    #sceneactions .w3-sidenav .w3-accordion-content {
+      display: block !important; }
+      #sceneactions .w3-sidenav .w3-accordion-content a {
+        padding-left: 2em !important; }
+
 /*# sourceMappingURL=newlogd_gen.css.map */

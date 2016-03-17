@@ -188,7 +188,7 @@ App.prototype = {
      */
     hideCentralWidgets : function() {
         $("#online .col-center > div").hide();
-        $("#scenewidget").hide();
+        this.scene.hideWidget();
     },
     
     /**
@@ -402,6 +402,11 @@ SceneWidget.prototype = {
         console.log("[Scene] Show");
     },
     
+    hideWidget : function() {
+        this.scenedesc.hide();
+        this.sceneactions.hide();
+    },
+    
     reload : function() {
         console.log("[Scene] Reload");
         $.get("./scene")
@@ -416,12 +421,42 @@ SceneWidget.prototype = {
         this.clear();
         this.scenedesc.append("<h2>" + answer["title"] + "</h2>")
         this.scenedesc.append(renderSceneDescription(answer["body"]));
+        this.sceneactions.append(this.createActions(answer["actions"]));
     },
     
     clear : function() {
         this.scenedesc.html("");
         this.sceneactions.html("");
         console.log("[Scene] Clear")
+    },
+    
+    createActions : function(actions) {
+        var html = $("<nav class='w3-sidenav'></nav>");
+        
+        for(var key in actions) {
+            var hasChilds = actions[key]["childs"].length > 0;
+            
+            if(hasChilds) {
+                var divContainer = $("<div class='w3-accordion'></div>")
+                var anchor = $("<a>" + actions[key]["title"] + "</a>");
+                divContainer.append(anchor);
+                
+                var innerContainer = $("<div class='w3-accordion-content'></div>");
+                for(var childkey in actions[key]["childs"]) {
+                    var anchor = $("<a>" + actions[key]["childs"][childkey]["title"] + "</a>");
+                    innerContainer.append(anchor);
+                }
+                divContainer.append(innerContainer);
+                
+                html.append(divContainer);
+            }
+            else {
+                var anchor = $("<a>" + actions[key]["title"] +"</a>");
+                html.append(anchor)
+            }
+        }
+        
+        return html;
     },
 }
 

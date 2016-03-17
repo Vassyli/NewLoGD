@@ -141,3 +141,27 @@ a {
         }
     }
 }
+
+#sceneactions {
+    padding-right: 1em;
+    
+    .w3-sidenav {
+        position: relative !important;
+        width: 100%;
+        z-index: inherit !important;
+        
+        > div > a {
+            background-color: $bgColour !important;
+            color: $fgColour !important;
+            cursor: default;
+        }
+        
+        .w3-accordion-content {
+            display: block !important;
+            
+            a {
+                padding-left: 2em !important;
+            }
+        }
+    }
+}
