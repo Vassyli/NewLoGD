@@ -72,7 +72,7 @@ class Scene {
      * Sets the body 
      * @param string $body Text describing the Scene 
      */
-	public function setBody($body) { $this->body = $body; }
+	public function setBody($body) { $this->body = normalizeLineBreaks($body); }
     
     /**
      * Returns a list of actions

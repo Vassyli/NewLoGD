@@ -36,9 +36,9 @@ class Config implements \ArrayAccess {
 		}
 		
 		$this->config = [
-			"app" => require "config/app.php",
-			"auth" => require "config/auth.php",
-			"db" => require "config/db.php",
+			"app" => require __DIR__ . "/../config/app.php",
+			"auth" => require __DIR__ . "/../config/auth.php",
+			"db" => require __DIR__ . "/../config/db.php",
 		];
 	}
 	

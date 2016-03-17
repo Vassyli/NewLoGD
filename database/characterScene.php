@@ -7,6 +7,8 @@
 
 namespace Database;
 
+use function NewLoGD\Helper\normalizeLineBreaks;
+
 /**
  * ORM for Scenes
  * @Entity
@@ -70,7 +72,7 @@ class CharacterScene {
      * Sets the description of the scene
      * @param string $body Text describing the scene 
      */
-	public function setBody($body) { $this->body = $body; }
+	public function setBody($body) { $this->body = normalizeLineBreaks($body); }
     
     public function getActions() { return $this->actions;} 
     public function setActions(array $actions) {

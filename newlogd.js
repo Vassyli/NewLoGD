@@ -55,6 +55,7 @@ App.prototype = {
         
         // Create bigger controls
         this.characters = new CharacterWidget(this);
+        this.scene = new SceneWidget(this);
         
         this.reload();
     },
@@ -157,15 +158,27 @@ App.prototype = {
     createModals : function() {
         var closables = $(".closable");
         closables.prepend("<div class='closebutton'><a>Close</a></div><br class='clear'>");
-        $(".closebutton", closables).click(this.showScene);
+        $(".closebutton", closables).click(function(app) {
+            return function () {
+                app.showScene();
+            }
+        }(this));
     },
     
+    /**
+     * Shows the Scene
+     */
     showScene : function(){
         $(".col-center > div").hide();
-        $("#scenewidget").show();
+        this.scene.showWidget();
     },
     
+    /**
+     * Refreshs the Scene
+     */
     refreshScene : function(){
+        console.log(this.scene);
+        this.scene.reload();
         this.showScene();
     },
     
@@ -190,6 +203,8 @@ App.prototype = {
             .done(function(answer){
                 app.load(answer);
             });
+            
+        this.scene.reload();
     },
     
     /**
@@ -373,6 +388,42 @@ App.prototype = {
         window.location = providerurl;
     },
 };
+
+function SceneWidget(app) {
+    this.app = app;
+    this.scenedesc = $("#scenewidget");
+    this.sceneactions = $("#sceneactions");
+}
+
+SceneWidget.prototype = {
+    showWidget : function() {
+        this.scenedesc.show();
+        this.sceneactions.show();
+        console.log("[Scene] Show");
+    },
+    
+    reload : function() {
+        console.log("[Scene] Reload");
+        $.get("./scene")
+            .done(function(scene) {
+                return function(answer) {
+                    scene.render(answer);
+                }
+            }(this));
+    },
+    
+    render : function(answer) {
+        this.clear();
+        this.scenedesc.append("<h2>" + answer["title"] + "</h2>")
+        this.scenedesc.append(renderSceneDescription(answer["body"]));
+    },
+    
+    clear : function() {
+        this.scenedesc.html("");
+        this.sceneactions.html("");
+        console.log("[Scene] Clear")
+    },
+}
 
 /**
  * Class which provides functions for the character widget
@@ -696,6 +747,18 @@ Form.prototype = {
     }
 };
 
+function renderSceneDescription(raw) {
+    var rendered = "";
+    var splitted = raw.split(/([\n][\n])/);
+    
+    console.log(raw, splitted);
+    
+    for(var p in splitted) {
+        rendered = rendered + "<p>" + splitted[p] + "</p>";
+    }
+    
+    return rendered;
+}
 
 function getUrlParams(query) {
 	var urlParams = {};

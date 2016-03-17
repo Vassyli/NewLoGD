@@ -13,7 +13,8 @@
 	
 	"require-dev": {
 		"phpdocumentor/graphviz" : "1.0.*",
-        "phpdocumentor/phpdocumentor": "dev-master"
+        "phpdocumentor/phpdocumentor": "dev-master",
+        "phpunit/phpunit" : "*"
     },
 	
 	"minimum-stability": "dev"
