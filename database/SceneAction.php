@@ -57,7 +57,7 @@ class SceneAction implements \JsonSerializable {
     
     /**
      * @var \Database\Scene Parent Scene
-     * @OneToOne(targetEntity="Scene")
+     * @ManyToOne(targetEntity="Scene")
      * @JoinColumn(name="target_scene", referencedColumnName="id", nullable=true)
      */
     private $target_scene = NULL;
