@@ -68,6 +68,8 @@
 use NewLoGD\Application as A;
 use NewLoGD\Session;
 
+use const NewLoGD\Application\{GET, POST, PUT,DELETE};
+
 // Modifications are ok after this line
 
 /*$app->addRoute(A\GET, "/", function($app, $response) { 
@@ -76,33 +78,34 @@ return [
 	"comment" => "NewLoGD",
 	"hits" => Session::get("hits"),
 ]; });*/
-$app->addRoute(A\GET, "/", "MainController@run");
-$app->addRoute(A\GET, "/logout", function() {
+$app->addRoute(GET, "/", "MainController@run");
+$app->addRoute(GET, "/logout", function() {
     Session::drop();
     return "Session dropped";
 });
 
 $app->addRouteGroup("/user", [
-    [A\GET, "", "UserController@all"],
-    [A\GET, "/{id}", "UserController@getUser"],
+    [GET, "", "UserController@all"],
+    [GET, "/{id}", "UserController@getUser"],
 ]);
 
 $app->addRouteGroup("/character", [
-    [A\GET, "", "CharacterController@all"],
-    [A\GET, "/current", "CharacterController@getCurrentCharacter"],
-    [A\PUT, "/current/{id}", "CharacterController@setCurrentCharacter"],
-    [A\GET | A\POST, "/create", "CharacterController@creation"],
-    [A\GET, "/{id}", "CharacterController@getCharacter"],
+    [GET, "", "CharacterController@all"],
+    [GET, "/current", "CharacterController@getCurrentCharacter"],
+    [PUT, "/current/{id}", "CharacterController@setCurrentCharacter"],
+    [GET | POST, "/create", "CharacterController@creation"],
+    [GET, "/{id}", "CharacterController@getCharacter"],
 ]);
 
 $app->addRouteGroup("/auth", [
-	[A\GET, "", "AuthController@all"],
-	[A\POST, "", "AuthController@token"],
-	[A\GET, "/{word}", "AuthController@auth"],
+	[GET, "", "AuthController@all"],
+	[POST, "", "AuthController@token"],
+	[GET, "/{word}", "AuthController@auth"],
 ]);
 
 $app->addRouteGroup("/scene", [
-   [A\GET, "", "SceneController@getScene"], 
+    [GET, "", "SceneController@getScene"],
+    [POST, "/change", "SceneController@switchScene"],
 ]);
 
 $app->addRoute(A\GET, "/test", "Controller@test");

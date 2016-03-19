@@ -443,8 +443,14 @@ SceneWidget.prototype = {
                 
                 var innerContainer = $("<div class='w3-accordion-content'></div>");
                 for(var childkey in actions[key]["childs"]) {
-                    var anchor = $("<a>" + actions[key]["childs"][childkey]["title"] + "</a>");
-                    innerContainer.append(anchor);
+                    var subanchor = $("<a>" + actions[key]["childs"][childkey]["title"] + "</a>");
+                    
+                    if(actions[key]["childs"][childkey]["target"] !== null) {
+                        // Target is not NULL - add a link
+                        subanchor.click(this.onActionClick(this, actions[key]["childs"][childkey]["id"]));
+                    }
+                    
+                    innerContainer.append(subanchor);
                 }
                 divContainer.append(innerContainer);
                 
@@ -454,10 +460,24 @@ SceneWidget.prototype = {
                 var anchor = $("<a>" + actions[key]["title"] +"</a>");
                 html.append(anchor)
             }
+            
+            if(actions[key]["target"] !== null) {
+                // Target is not NULL - add a link
+                anchor.click(this.onActionClick(this, actions[key]["id"]));
+            }
         }
         
         return html;
     },
+    
+    onActionClick : function(scene, actionid) {
+        return function(event) {
+            console.log("[Scene] Call action", actionid);
+            $.post("./scene/change", {"id" : actionid})
+                .done(function(answer) {scene.reload();})
+                .fail(function(answer) {console.log("[Scene] Switch of Scene failed, reaspon: ", answer)})
+        };
+    }
 }
 
 /**

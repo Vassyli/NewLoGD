@@ -7,12 +7,16 @@ namespace Database;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use NewLoGD\Helper\find;
+
 /**
  * ORM for SceneActions
  * @Entity
  * @Table(name="Scene_Actions")
  */
 class SceneAction implements \JsonSerializable {
+    use find;
+    
     /**
      * @var int primary id
      * @Id @Column(type="integer") @GeneratedValue
@@ -44,6 +48,13 @@ class SceneAction implements \JsonSerializable {
      * @Column(type="string")
      */
     private $title = "";
+    
+    /**
+     * @var \Database\Scene Parent Scene
+     * @OneToOne(targetEntity="Scene")
+     * @JoinColumn(name="target_scene", referencedColumnName="id", nullable=true)
+     */
+    private $target_scene = NULL;
     
     /**
      * Constructor
@@ -95,11 +106,25 @@ class SceneAction implements \JsonSerializable {
      */
     public function setTitle(string $title) { $this->title = $title; }
     
+    /**
+     * Returns the target scene of the action
+     * @return \Database\Scene|null NULL of no Scene or else the Scene.
+     */
+    public function getTargetScene() { return $this->target_scene; }
+    /**
+     * Sets the target scene.
+     * @param \Database\Scene $target The target Scene
+     */
+    public function setTargetScene(Scene $target) {
+        
+    }
+    
     public function jsonSerialize() {
         return [
             "id" => $this->id,
             "title" => $this->title,
             "childs" => $this->childs->toArray(),
+            "target" => is_null($this->target_scene) ? null : $this->target_scene->getId(),
         ];
     }
 }

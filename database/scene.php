@@ -9,12 +9,16 @@ namespace Database;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use NewLoGD\Helper\find;
+
 /**
  * ORM for Scenes
  * @Entity
  * @Table(name="Scenes")
  */
 class Scene {
+    use find;
+    
     /** 
      * @var int primary id
      * @Id @Column(type="integer") @GeneratedValue

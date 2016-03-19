@@ -12,5 +12,6 @@ function normalizeLineBreaks(string $input) : string {
         "\r" => "\n"
     ];
     
+    
     return \str_replace(array_keys($strReplace), array_values($strReplace), $input);
 }

@@ -243,4 +243,9 @@ class HttpResponse {
             $this->plain($message);
         }
     }
+    
+    public function internalError(string $message = "Internal Server Error") {
+        $this->setStatus(self::INTERNALERROR);
+        $this->plain($message);
+    }
 }

@@ -29,7 +29,7 @@ class CharacterScene {
     
     /** 
      * @var array Scene Description
-     * @Column(type="string") 
+     * @Column(type="text") 
      */
     private $body;
     

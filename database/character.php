@@ -111,4 +111,13 @@ class Character {
         App::getEntityManager()->persist($scene);
         $this->scene = $scene;
     }
+    public function switchScene(Scene $scene) {
+        if($this->scene === NULL) {
+            $charscene = new CharacterScene();
+            $charscene->setCharacter($this);
+            $this->setScene($charscene);
+        }
+        
+        $this->scene->fillFromScene($scene);
+    }
 }

@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 
 use NewLoGD\Application;
 use NewLoGD\Auth;
+use NewLoGD\Exceptions\ControllerException;
 use NewLoGD\HttpResponse;
 
 /**
@@ -39,6 +40,21 @@ class Controller {
 		$this->app = $app;
 		$this->response = $response;
 	}
+    
+    protected function callback($callback, $args) {
+        if(is_callable($callback)) {
+			if(empty($args)) {
+				$args = array_merge([$this, $callback], $args);
+			}
+			$answer = call_user_func_array($callback, $args);
+			//$answer = $callback($this->app, $this->response);
+		}
+		else {
+			$answer = call_user_func_array([$this, $callback], $args);
+		}
+        
+        return $answer;
+    }
 	
 	/** 
 	 * Calls the given callback with given arguments
@@ -49,16 +65,13 @@ class Controller {
 	 * @param array $args arguments to give the callback
 	 */
 	public function call($callback, array $args = []) {
-		if(is_callable($callback)) {
-			if(empty($args)) {
-				$args = array_merge([$this, $callback], $args);
-			}
-			$answer = call_user_func_array($callback, $args);
-			//$answer = $callback($this->app, $this->response);
-		}
-		else {
-			$answer = call_user_func_array([$this, $callback], $args);
-		}
+        try {
+            $answer = $this->callback($callback, $args);
+        }
+        catch (ControllerException $ex) {
+            $errormethod = $ex->getResponseMethod();
+            $this->response->$errormethod($ex->getMessage());
+        }
         
         if($this->response->isFinalized()) {
             return false;
