@@ -44,10 +44,16 @@ class SceneAction implements \JsonSerializable {
     private $childs;
     
     /**
-     * @var type 
+     * @var string Action Title 
      * @Column(type="string")
      */
     private $title = "";
+    
+    /**
+     * @var int Sorting weight - the bigger, the further down
+     * @Column(type="integer", options={"default" = 0})
+     */
+    private $sorting = 0;
     
     /**
      * @var \Database\Scene Parent Scene
@@ -105,6 +111,17 @@ class SceneAction implements \JsonSerializable {
      * @param string $title Action Title
      */
     public function setTitle(string $title) { $this->title = $title; }
+    
+    /**
+     * Get sorting weight
+     * @return int Sorting weight
+     */
+    public function getSorting() : int { return $this->sorting; }
+    /**
+     * Set sorting weight
+     * @param string $sort Sorting weight
+     */
+    public function setSorting(int $sorting) { $this->sorting = $sorting; }
     
     /**
      * Returns the target scene of the action

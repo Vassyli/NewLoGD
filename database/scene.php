@@ -40,6 +40,7 @@ class Scene {
     /**
      * @var array List of actions
      * @OneToMany(targetEntity="SceneAction", mappedBy="scene", cascade={"persist"}, orphanRemoval=true)
+     * @OrderBy({"sorting" = "ASC"})
      */
     private $actions;
     
