@@ -17,9 +17,9 @@ require "bootstrap/bootstrap.php";
 $app = new Application($config, $entityManager);
 
 // Load routes
-require "app/http/routes.php";
+require "app/Http/routes.php";
 // Load middleware
-require "app/http/middleware.php";
+require "app/Http/middleware.php";
 
 // Return $app
 return $app;

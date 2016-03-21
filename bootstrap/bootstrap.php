@@ -25,7 +25,7 @@ use NewLoGD\{Config, Extensions, i18n};
 use Doctrine\ORM\{EntityManager, Mapping\AnsiQuoteStrategy, Tools\Setup};
 
 // Useful functions
-require_once __DIR__ . "/../src/helper/functions.php";
+require_once __DIR__ . "/../src/Helper/functions.php";
 
 // Get Autoloader (cannot use require_once here since it would return "true" if this script is called via doctrine CLI)
 $autoloader = require __DIR__ . "/../vendor/autoload.php";
