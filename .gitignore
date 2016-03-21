@@ -1,5 +1,5 @@
 dbconfig.php
-app/*.php
+config/*.php
 vendor/
 output/
 docs/
