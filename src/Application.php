@@ -139,7 +139,7 @@ class Application {
 			}
 			elseif(is_string($found_route["call"])) {
 				$call = explode("@", $found_route["call"]);
-                $controllerclass = "\\App\\Http\\Controllers\\".$call[0];
+                $controllerclass = ($call[0][0] === "\\") ? $call[0] : "\\App\\Http\\Controllers\\".$call[0];
 				$controller = new $controllerclass($this, $response);
                 
                 if($controller->checkAccess()) {

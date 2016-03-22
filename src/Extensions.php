@@ -4,6 +4,7 @@ namespace NewLoGD;
 
 class Extensions {
     protected $extensions_loaded = [];
+    protected $extensions_metadata = NULL;
     
     public function __construct(string $extensions) {
         $this->extensions_loaded = require $extensions;
@@ -25,6 +26,31 @@ class Extensions {
         return $sources;
     }
     
+    public function addRoutes(Application $app) {
+        $this->loadMetaData();
+        foreach($this->extensions_metadata as $extension => $meta) {
+            if(isset($meta["routes"])) {
+                foreach($meta["routes"] as $route) {
+                    $method = $route[0];
+                    $path = "/ext/".$extension.$route[1];
+                    $controller = str_replace("#", "\\Extensions\\".$extension."\\Http\\Controller\\", $route[2]);
+                    $app->addRoute($method, $path, $controller);
+                }
+            }
+        }
+    }
+    
+    public function addMiddleware(Application $app) {
+        $this->loadMetaData();
+        foreach($this->extensions_metadata as $extension => $meta) {
+            if(isset($meta["middleware"])) {
+                foreach($meta["middleware"] as $middleware) {
+                    $app->addMiddleware($middleware);
+                }
+            }
+        }
+    }
+    
     protected function extensionToNamespace(string $extension) : string {
         return "\\Extensions\\" . $extension . "\\";
     }
@@ -35,5 +61,13 @@ class Extensions {
     
     protected function extensionToAnnotationSource(string $extension) : string {
         return $this->extensionToPath($extension) . "/database";
+    }
+    
+    protected function loadMetaData() {
+        if($this->extensions_metadata === NULL) {
+            foreach($this->extensions_loaded as $extension) {
+                $this->extensions_metadata[$extension] = require $this->extensionToPath($extension) . "/Meta.php";
+            }
+        }
     }
 }
