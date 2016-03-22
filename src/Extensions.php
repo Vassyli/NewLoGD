@@ -33,7 +33,7 @@ class Extensions {
                 foreach($meta["routes"] as $route) {
                     $method = $route[0];
                     $path = "/ext/".$extension.$route[1];
-                    $controller = str_replace("#", "\\Extensions\\".$extension."\\Http\\Controller\\", $route[2]);
+                    $controller = str_replace("#", "\\Extensions\\".$extension."\\Http\\Controllers\\", $route[2]);
                     $app->addRoute($method, $path, $controller);
                 }
             }

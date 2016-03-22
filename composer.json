@@ -3,7 +3,8 @@
         "psr-4": {
 			"NewLoGD\\": "src/", 
 			"App\\": "app/",
-			"Database\\": "database/"
+			"Database\\": "database/",
+            "Extensions\\": "Extensions/"
 		}
     },
 	

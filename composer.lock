@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2e065d2679bf68b9e34ba2a69762ba71",
+    "hash": "32d369c699e50c36e5d445c471dbdfc0",
     "content-hash": "9578b44e89cdeb933c1a90569281d9f1",
     "packages": [
         {
@@ -611,12 +611,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "7223e0768010b189d217d8304e0cca838dec4491"
+                "reference": "9a5aef5fc0d4eff86853d44202b02be8d5a20154"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/7223e0768010b189d217d8304e0cca838dec4491",
-                "reference": "7223e0768010b189d217d8304e0cca838dec4491",
+                "url": "https://api.github.com/repos/symfony/console/zipball/9a5aef5fc0d4eff86853d44202b02be8d5a20154",
+                "reference": "9a5aef5fc0d4eff86853d44202b02be8d5a20154",
                 "shasum": ""
             },
             "require": {
@@ -663,7 +663,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-10 10:11:44"
+            "time": "2016-03-17 09:19:04"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1191,12 +1191,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "5a49ebd966390d757f74b55e4731d509e38ea1eb"
+                "reference": "94d8d29fc83e1cc988223f568a388a45977540d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/5a49ebd966390d757f74b55e4731d509e38ea1eb",
-                "reference": "5a49ebd966390d757f74b55e4731d509e38ea1eb",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/94d8d29fc83e1cc988223f568a388a45977540d6",
+                "reference": "94d8d29fc83e1cc988223f568a388a45977540d6",
                 "shasum": ""
             },
             "require": {
@@ -1249,7 +1249,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2016-02-29 21:23:18"
+            "time": "2016-03-20 02:14:26"
         },
         {
             "name": "kherge/version",
@@ -1551,23 +1551,23 @@
         },
         {
             "name": "phpdocumentor/graphviz",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/GraphViz.git",
-                "reference": "aa243118c8a055fc853c02802e8503c5435862f7"
+                "reference": "a906a90a9f230535f25ea31caf81b2323956283f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/GraphViz/zipball/aa243118c8a055fc853c02802e8503c5435862f7",
-                "reference": "aa243118c8a055fc853c02802e8503c5435862f7",
+                "url": "https://api.github.com/repos/phpDocumentor/GraphViz/zipball/a906a90a9f230535f25ea31caf81b2323956283f",
+                "reference": "a906a90a9f230535f25ea31caf81b2323956283f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -1588,7 +1588,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2014-07-19 06:52:59"
+            "time": "2016-02-02 13:00:08"
         },
         {
             "name": "phpdocumentor/phpdocumentor",
@@ -3135,12 +3135,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "e9459f257aca44816bd3a031178eeaec33310114"
+                "reference": "899382810fc8fddc741cd60c3757b98cc6ef5113"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/e9459f257aca44816bd3a031178eeaec33310114",
-                "reference": "e9459f257aca44816bd3a031178eeaec33310114",
+                "url": "https://api.github.com/repos/symfony/process/zipball/899382810fc8fddc741cd60c3757b98cc6ef5113",
+                "reference": "899382810fc8fddc741cd60c3757b98cc6ef5113",
                 "shasum": ""
             },
             "require": {
@@ -3176,7 +3176,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-16 15:31:59"
+            "time": "2016-03-16 16:16:47"
         },
         {
             "name": "symfony/stopwatch",
@@ -3297,12 +3297,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "1ad42f49e48c6090abc9499125daee87382e967c"
+                "reference": "be4427f4d4ae41624afa03e587f7e9720b5f4ef2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/1ad42f49e48c6090abc9499125daee87382e967c",
-                "reference": "1ad42f49e48c6090abc9499125daee87382e967c",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/be4427f4d4ae41624afa03e587f7e9720b5f4ef2",
+                "reference": "be4427f4d4ae41624afa03e587f7e9720b5f4ef2",
                 "shasum": ""
             },
             "require": {
@@ -3361,7 +3361,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-12 00:32:06"
+            "time": "2016-03-16 16:16:47"
         },
         {
             "name": "symfony/yaml",
