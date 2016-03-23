@@ -8,6 +8,8 @@
 
 namespace Database;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use NewLoGD\Application as App;
 
 /**
@@ -45,6 +47,17 @@ class Character {
      * @OneToOne(targetEntity="CharacterScene", mappedBy="character")
      */
     private $scene = NULL;
+    
+    /**
+     * @var array<\Database\CharacterProperties> List of database characters
+     * @OneToMany(targetEntity="CharacterProperty", mappedBy="character")
+     */
+    private $properties = [];
+    private $_properties = NULL;
+    
+    public function __construct() {
+        $this->properties = ArrayCollection();
+    }
     
     /**
      * Gets the primary id
@@ -119,5 +132,40 @@ class Character {
         }
         
         $this->scene->fillFromScene($scene);
+    }
+    
+    public function get($fieldname, $default = NULL) {
+        $this->loadProperties();
+        
+        return $this->_properties[$fieldname][1]??$default;
+    }
+    
+    public function set($fieldname, $value) {
+        $this->loadProperties();
+        
+        if(isset($this->_properties[$fieldname])) {
+            // Key has already been set - change
+            $this->_properties[$fieldname][1] = $value;
+            $this->properties[$this->_properties[$fieldname][0]]->setValue($value);
+        }
+        else {
+            // Key is not known - create it!
+            $property = new CharacterProperty();
+            $property->setCharacter($this);
+            $property->setKey($fieldname);
+            $property->setValue($value);
+            App::getEntityManager()->persist($property);
+            $this->properties->add($property);
+            $this->_properties[$fieldname] = $value;
+        }
+    }
+    
+    private function loadProperties() {
+        if($this->_properties === NULL) {
+            $this->_properties = [];
+            foreach($this->properties as $key => $val) {
+                $this->_properties[$val->getKey()] = [$key, $val->getValue()];
+            }
+        }
     }
 }
