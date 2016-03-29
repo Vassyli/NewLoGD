@@ -84,4 +84,12 @@ class CharacterScene {
         $this->setBody($scene->getBody());
         $this->setActions($scene->getActions()->toArray());
     }
+    
+    public function addParagraph(string $message) {
+        var_dump($this->body);
+        $this->body .= "\n\n" . normalizeLineBreaks($message);
+        var_dump($this->body);
+    }
+    
+    public function addAction() {}
 }

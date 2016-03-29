@@ -802,17 +802,90 @@ Form.prototype = {
     }
 };
 
+function ListWidget(apiRoot, displayKey) {
+    this.apiRoot = apiRoot;
+    this.displayKey = displayKey;
+    this.id = getUniqueId();
+    
+    this.load();
+}
+
+ListWidget.prototype = {
+    data : {},
+    load : function() {
+        $.get(this.apiRoot).done(function(self) {
+            console.log("[ListWidget] load data")
+            return function(answer) {
+                console.log("[ListWidget] Data", answer);
+                self.storeData(answer);
+                self.renderData();
+            };
+        }(this))
+    },
+    storeData : function(data) {
+        this.data = data;
+    },
+    renderData : function() {
+        console.log("[ListWidget] render Data");
+        var widget = $("#" + this.id);
+        widget.empty();
+        for(var row in this.data) {
+            widget.append("<p>" + this.data[row][this.displayKey] + "</p>");
+        }
+    },
+    display : function() {
+        return "<div class='widget_list' id='" + this.id + "'>(loading)</div>";
+    }
+};
+
+function getUniqueId() {
+    return "_newlogd_id_" + Math.round(new Date().getTime() + Math.random() * 100)
+}
+
 function renderSceneDescription(raw) {
     var rendered = "";
-    var splitted = raw.split(/([\n][\n])/);
-    
-    console.log(raw, splitted);
+    var splitted = raw.split("\n\n");
     
     for(var p in splitted) {
-        rendered = rendered + "<p>" + splitted[p] + "</p>";
+        var row = splitted[p];
+        
+        if(row.substring(0, 1) === "@") {
+            var widget = createWidgetFromString(row);
+            if(typeof widget === "string") {
+                rendered = rendered + widget;
+            }
+            else {
+                console.log(widget);
+                rendered = rendered + widget.display();
+            }
+        }
+        else {
+            rendered = rendered + "<p>" + splitted[p] + "</p>";
+        }
     }
     
     return rendered;
+}
+
+function createWidgetFromString(row) {
+    if(row.substr(0, 2) === "@{" && row.substr(row.length-1, 1) === "}") {
+        var creationString = row.substring(2, row.length-1);
+        var creationParts = creationString.split("|");
+        console.log("[Widgets] Widget String OK", creationString, creationParts);
+        var apiRoot = "./ext/" + creationParts[0];
+        switch(creationParts[1]) {
+            case "List":
+                return new ListWidget(apiRoot, creationParts[2]);
+                break;
+            default:
+                return "###Widget not supported###";
+                break;
+        }
+    }
+    else {
+        console.log("[Widgets] Faulty Widget String", row.substr(0, 2), row.substr(row.length-1, 1));
+        return "###Faulty Widget###" + row;
+    }
 }
 
 function getUrlParams(query) {

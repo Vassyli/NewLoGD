@@ -14,7 +14,7 @@ use NewLoGD\Application;
 require "bootstrap/bootstrap.php";
 
 // Create application
-$app = new Application($config, $entityManager);
+$app = new Application($config, $entityManager, $extensions);
 
 // Load routes
 require "app/Http/routes.php";

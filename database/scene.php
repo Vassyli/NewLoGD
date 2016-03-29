@@ -43,12 +43,18 @@ class Scene {
      * @OrderBy({"sorting" = "ASC"})
      */
     private $actions;
+    /**
+     * @var array List of Extensions
+     * @OneToMany(targetEntity="SceneExtension", mappedBy="scene", cascade={"persist"}, orphanRemoval=true)
+     */
+    private $extensions;
     
     /**
      * Constructor
      */
     public function __construct() {
         $this->actions = new ArrayCollection();
+        $this->extensions = new ArrayCollection();
     }
     
     /** 
@@ -91,5 +97,9 @@ class Scene {
     public function addAction(SceneAction $action) {
         $this->actions->add($action);
         $action->setScene($this);
+    }
+    
+    public function getExtensions() {
+        return $this->extensions;
     }
 }

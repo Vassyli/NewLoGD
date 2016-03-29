@@ -9,18 +9,23 @@ declare(strict_types=1);
 
 namespace NewLoGD;
 
-use NewLoGD\Application as App;
-use NewLoGD\Application\Routes;
-use NewLoGD\Application\Middleware;
-use NewLoGD\Auth;
-use NewLoGD\Config;
-use NewLoGD\HttpResponse;
-use NewLoGD\Session;
-use App\Http\Controllers;
-use App\Models;
-use App\Models\UserModel;
 use Doctrine\ORM\EntityManager;
-use Hybridauth\Hybrid_Auth;
+
+use NewLoGD\Application as App;
+use NewLoGD\{
+    Application\Routes,
+    Application\Middleware,
+    Auth,
+    Config,
+    Extensions,
+    HttpResponse
+};
+
+use App\{
+    Http\Controllers
+};
+
+use const NewLoGD\Application\{GET, POST, DELETE, PUT};
 
 /**
  * Main class controlling the http application
@@ -44,6 +49,8 @@ class Application {
 	protected static $entityManager = NULL;
 	/** @var Auth Reference to Auth */
 	protected static $auth = NULL;
+	/** @var Auth Reference to Extensions */
+    protected static $extensions = NULL;
 	
 	/**
 	 * Constructor
@@ -51,10 +58,11 @@ class Application {
 	 * @param Config $config A instance of config
 	 * @param EntityManager $entityManager A instance of the Doctrine entity manager.
 	 */
-	public function __construct(Config $config, EntityManager $entityManager) {
+	public function __construct(Config $config, EntityManager $entityManager, Extensions $extensions) {
 		// Save interface references in static
 		self::$config = $config;
 		self::$entityManager = $entityManager;
+        self::$extensions = $extensions;
 		
         $this->setRequestMethod($_SERVER["REQUEST_METHOD"]);
 	}
@@ -102,6 +110,12 @@ class Application {
      * @return EntityManager The entity Manager
 	 */
 	public static function getEntityManager() : EntityManager { return self::$entityManager; }
+    
+    /**
+	 * Returns a reference to the Extension Manager
+     * @return EntityManager The entity Manager
+	 */
+	public static function getExtensionManager() : Extensions { return self::$extensions; }
     
     /**
      * Returns the full qualified entity name (FQEN)

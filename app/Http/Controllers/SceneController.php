@@ -129,6 +129,10 @@ class SceneController extends Controller {
             }
             
             $character->switchScene($new_scene);
+            
+            // Change Scene according to extensions
+            App::getExtensionManager()->extendScene($character->getScene(), $new_scene);
+            
             return "OK";
         }
         else {

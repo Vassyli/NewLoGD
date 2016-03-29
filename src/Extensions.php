@@ -2,6 +2,8 @@
 
 namespace NewLoGD;
 
+use Database\{CharacterScene, Scene};
+
 class Extensions {
     protected $extensions_loaded = [];
     protected $extensions_metadata = NULL;
@@ -51,6 +53,17 @@ class Extensions {
         }
     }
     
+    public function extendScene(CharacterScene $c_scene, Scene $scene) {
+        $extensions = $scene->getExtensions();
+        foreach($extensions as $extension) {
+            $extensionname = $extension->getExtension();
+            $classname = $this->extensionToSceneClass($extensionname);
+            // $classname is a Class implementing changes to the scene.
+            $m_scene = new $classname();
+            $m_scene->change($c_scene);
+        }
+    }
+    
     protected function extensionToNamespace(string $extension) : string {
         return "\\Extensions\\" . $extension . "\\";
     }
@@ -61,6 +74,10 @@ class Extensions {
     
     protected function extensionToAnnotationSource(string $extension) : string {
         return $this->extensionToPath($extension) . "/database";
+    }
+    
+    protected function extensionToSceneClass(string $extension) : string {
+        return $this->extensionToNamespace($extension) . "Scene";
     }
     
     protected function loadMetaData() {
