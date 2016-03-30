@@ -111,4 +111,12 @@ a {
       #sceneactions .w3-sidenav .w3-accordion-content a {
         padding-left: 2em !important; }
 
+.widget_list {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black; }
+  .widget_list p {
+    margin: 0em;
+    padding-left: 2em;
+    text-indent: -2em; }
+
 /*# sourceMappingURL=newlogd_gen.css.map */

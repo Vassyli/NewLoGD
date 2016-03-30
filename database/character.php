@@ -56,7 +56,7 @@ class Character {
     private $_properties = NULL;
     
     public function __construct() {
-        $this->properties = ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
     
     /**

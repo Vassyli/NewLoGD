@@ -165,3 +165,14 @@ a {
         }
     }
 }
+
+.widget_list {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    
+    p {
+        margin: 0em;
+        padding-left: 2em;
+        text-indent: -2em;
+    }
+}

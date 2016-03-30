@@ -11,5 +11,7 @@ return [
     "author" => "Basilius Sauter",
     "routes" => [
         [GET, "", "#CommentaryController@all"],
+        [GET, "/page_{id}_{id}", "#CommentaryController@page"],
+        [POST, "", "#CommentaryController@post"],
     ],
 ];

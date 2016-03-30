@@ -15,6 +15,7 @@ return [
     "password" => "",
     "host" => "localhost",
     "driver" => "pdo_mysql",
+    "charset" => "utf8",
 	
     // SQlite 
     /*
