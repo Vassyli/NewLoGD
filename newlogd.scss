@@ -175,4 +175,22 @@ a {
         padding-left: 2em;
         text-indent: -2em;
     }
+    
+    .w3-center {
+        border-bottom: 1px solid black !important;
+        height: 39px;
+    }
+    
+    .inactive {
+        visibility: hidden;
+        
+        a {
+            color: gray !important;
+            cursor: default !important;
+        }
+        
+        a:hover {
+            background-color: inherit;
+        }
+    }
 }

@@ -420,8 +420,15 @@ SceneWidget.prototype = {
     render : function(answer) {
         this.clear();
         this.scenedesc.append("<h2>" + answer["title"] + "</h2>")
+        $widgets = {};
+        
         this.scenedesc.append(renderSceneDescription(answer["body"]));
         this.sceneactions.append(this.createActions(answer["actions"]));
+        
+        for(var id in $widgets) {
+            console.log("Load", $widgets[id]);
+            $widgets[id].load();
+        }
     },
     
     clear : function() {
@@ -802,41 +809,194 @@ Form.prototype = {
     }
 };
 
-function ListWidget(apiRoot, displayKey) {
+function ListWidget(apiRoot, settings) {
     this.apiRoot = apiRoot;
-    this.displayKey = displayKey;
     this.id = getUniqueId();
+    this.page = 0;
+    this.numComments = 0;
+    this.maxPage = 0;
     
-    this.load();
+    this.setSettings(settings);
+    
+    $widgets[this.id] = this;
 }
 
 ListWidget.prototype = {
     data : {},
+    connected : false,
+    setSettings: function(settings) {
+        this.reversed = "reversed" in settings && settings["reversed"] === true ? true : false;
+        this.limit = "limit" in settings ? settings["limit"] : 20;
+    },
     load : function() {
-        $.get(this.apiRoot).done(function(self) {
+        // Get comments
+        $.get(this.apiRoot + "/page_" + this.page + "_" + this.limit).done(function(self) {
             console.log("[ListWidget] load data")
             return function(answer) {
                 console.log("[ListWidget] Data", answer);
-                self.storeData(answer);
+                self.numComments = answer["count"];
+                self.maxPage = answer["count"] / self.limit + 1;
+                self.storeData(answer["comments"]);
                 self.renderData();
+                self.connect();
             };
-        }(this))
+        }(this));
     },
     storeData : function(data) {
         this.data = data;
     },
     renderData : function() {
         console.log("[ListWidget] render Data");
-        var widget = $("#" + this.id);
+        var widget = this.getWidget(".comments");
         widget.empty();
-        for(var row in this.data) {
-            widget.append("<p>" + this.data[row][this.displayKey] + "</p>");
+        var numOfComments = this.data.length;
+        for(var i = 0; i < numOfComments; i++) {
+            var index = this.reversed ? numOfComments - i - 1: i;
+            
+            widget.append("<p>" + this.data[index]["line"] + "</p>");
+        }
+        
+        // Buttons
+        if(this.page >= this.maxPage - 2) {
+            this.getWidget(".previous").addClass("inactive");
+        }
+        else {
+            this.getWidget(".previous").removeClass("inactive")
+        }
+        
+        if(this.page === 0) {
+            this.getWidget(".next").addClass("inactive");
+        }
+        else {
+            this.getWidget(".next").removeClass("inactive");
         }
     },
     display : function() {
-        return "<div class='widget_list' id='" + this.id + "'>(loading)</div>";
+        return "<div class='widget_list' id='" + this.id + "'>"
+            + '<div class="w3-center"><ul class="w3-pagination">'
+                + '<li class="w3-float-left previous inactive"><a>&#10094; Previous</a></li>'
+                + '<li class="w3-float-left refresh"><a>Refresh</a></li>'
+                + '<li class="w3-float-right next inactive"><a>Next &#10095;</a></li>'
+            + '</ul></div>'
+            + '<div class="comments">(loading)</div>'
+        + "</div>";
+    },
+    getWidget : function(selectors) {
+        if(typeof selectors === "undefined") {
+            selectors = "";
+        }
+        
+        return $("#" + this.id + " " + selectors);
+    },
+    connect : function() {
+        if(this.connected === false) {
+            this.connected = true;
+            // Previous
+            this.getWidget(".previous").click(function(self) {
+                return function() {
+                    if(self.page < self.maxPage - 2) {
+                        self.page++;
+                        self.load();
+                    }
+                }
+            }(this));
+            // Refresh
+            this.getWidget(".refresh").click(function(self) {
+                return function() {
+                    self.load();
+                }
+            }(this));
+            // Forward
+            this.getWidget(".next").click(function(self) {
+                return function() {
+                    if(self.page > 0) {
+                        self.page--;
+                        self.load();
+                    }
+                }
+            }(this));
+            
+            $(document).on("newlogd:refreshSceneWidgets", function(self) {
+                return function(event) {
+                    console.log("[ListWidget] Listened to event. Exec reload.");
+                    self.load();
+                }
+            }(this));
+        }
     }
 };
+
+function SimpleformWidget(apiRoot, displayKey) {
+    this.apiRoot = apiRoot;
+    this.displayKey = displayKey;
+    this.id = getUniqueId();
+    this.action = apiRoot;
+    
+    this.options = {
+        "maxlength" : ("maxlength" in this.displayKey?" maxlength='" + this.displayKey["maxlength"] + "'":""),
+        "name" : ("name" in this.displayKey ? this.displayKey["name"] : "line"),
+        "text" : ("text" in this.displayKey ? this.displayKey["text"] : "Type something"),
+        "submit" : ("submit" in this.displayKey ? this.displayKey["submit"] : "Submit"),
+    }
+    
+    $widgets[this.id] = this;
+}
+
+SimpleformWidget.prototype = {
+    connected : false,
+    load : function() {
+        this.connect();
+    },
+    connect : function() {
+        if(this.connected === false) {
+            this.connected = true;
+            
+            var form = this.getWidget("form");
+            console.log("Ahja", form);
+            form.submit(function(self, form) {
+                return function() {
+                    var name = self.options["name"];
+                    var value = $("input[name=" + name + "]", form)[0].value;
+                    var action = form.action;
+                    var data = {};
+                    data[name] = value;
+                    
+                    $.post(form.action, data)
+                            .done(function(self) {
+                                return function(answer) {
+                                    console.log("[SimpleformWidget] Success", answer, data, self.apiRoot);
+                                    $(document).trigger("newlogd:refreshSceneWidgets");
+                                };
+                            }(self))
+                            .fail(function(self) {
+                                return function(answer) {
+                                    console.log("[SimpleformWidget] No Success", answer, data);
+                                };
+                            }(self));
+                    return false;
+                };
+            }(this, form[0]));
+        }
+    },
+    done : function() {
+        
+    },
+    getWidget : function(selectors) {
+        if(typeof selectors === "undefined") {
+            selectors = "";
+        }
+        
+        return $("#" + this.id + " " + selectors);
+    },
+    display : function() {
+        return "<div class='widget_simpleform' id='" + this.id + "'>"
+                +"<form method='POST' action='" + this.action + "' class='w3-form w3-text-black'>"
+                    + "<label class='w3-label'><span>" + this.options["text"] + "</span><span><input class='w3-input' type='text'" + this.options["maxlength"] + " name='"+ this.options["name"] +"'></span></label>"
+                    + "<label><button type='submit' class='w3-btn'>" + this.options["submit"] + "</button></label>"
+                + "</form>"
+            + "</div>";
+    }
+}
 
 function getUniqueId() {
     return "_newlogd_id_" + Math.round(new Date().getTime() + Math.random() * 100)
@@ -873,12 +1033,30 @@ function createWidgetFromString(row) {
         var creationParts = creationString.split("|");
         console.log("[Widgets] Widget String OK", creationString, creationParts);
         var apiRoot = "./ext/" + creationParts[0];
+        // Options
+        var options = {};
+        var i = 0;
+        for(var key in creationParts) {
+            i++;
+            if(i <= 2) {
+                continue;
+            }
+            
+            var pair = creationParts[key].split(":");
+            if(pair.length === 1) {
+                options[pair[0]] = true;
+            }
+            else {
+                options[pair[0]] = pair[1];
+            }
+        }
+        
         switch(creationParts[1]) {
             case "List":
-                return new ListWidget(apiRoot, creationParts[2]);
+                return new ListWidget(apiRoot, options);
                 break;
             default:
-                return "###Widget not supported###";
+                return new SimpleformWidget(apiRoot, options);
                 break;
         }
     }
@@ -907,6 +1085,7 @@ function getUrlParams(query) {
 }
 
 $body = $("body");
+$widgets = {};
 
 $(document).ready(function() {
 	console.log("[App] Document DOM is ready");

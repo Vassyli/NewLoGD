@@ -59,8 +59,8 @@ class Extensions {
             $extensionname = $extension->getExtension();
             $classname = $this->extensionToSceneClass($extensionname);
             // $classname is a Class implementing changes to the scene.
-            $m_scene = new $classname();
-            $m_scene->change($c_scene);
+            $m_scene = new $classname($c_scene, $extension);
+            $m_scene->change();
         }
     }
     

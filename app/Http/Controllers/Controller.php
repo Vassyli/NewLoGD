@@ -41,8 +41,8 @@ class Controller {
 		$this->response = $response;
 	}
     
-    protected function callback($callback, $args) {
-        if(is_callable($callback)) {
+    protected function callback($callback, $args) { 
+        if(\is_object($callback) && $callback instanceof \Closure) {
 			if(empty($args)) {
 				$args = array_merge([$this, $callback], $args);
 			}

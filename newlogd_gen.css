@@ -118,5 +118,15 @@ a {
     margin: 0em;
     padding-left: 2em;
     text-indent: -2em; }
+  .widget_list .w3-center {
+    border-bottom: 1px solid black !important;
+    height: 39px; }
+  .widget_list .inactive {
+    visibility: hidden; }
+    .widget_list .inactive a {
+      color: gray !important;
+      cursor: default !important; }
+    .widget_list .inactive a:hover {
+      background-color: inherit; }
 
 /*# sourceMappingURL=newlogd_gen.css.map */
